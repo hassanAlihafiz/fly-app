@@ -3,12 +3,13 @@ import React, { Component } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import TextInputComponent from "../components/TextInput";
 import { KeyboardAvoidingScrollView } from "react-native-keyboard-avoiding-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default class StripeScreen extends Component {
   render() {
     return (
       <View style={{ flex: 1, justifyContent: "space-between" }}>
-        <KeyboardAvoidingScrollView>
+        <KeyboardAwareScrollView>
           <View>
             <TextInputComponent
               placeholder={"CARD HOLDER'S NAME"}
@@ -63,14 +64,14 @@ export default class StripeScreen extends Component {
               </View>
             </View>
           </View>
-        </KeyboardAvoidingScrollView>
+        </KeyboardAwareScrollView>
 
         <TouchableOpacity
           style={{
             backgroundColor: "green",
             justifyContent: "center",
             alignItems: "center",
-            height: 50,
+            height: 65,
           }}
         >
           <Text style={{ fontWeight: "bold", color: "#FFFFFF" }}>Pay 150</Text>

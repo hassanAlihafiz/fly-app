@@ -46,32 +46,34 @@ const CustomDrawerContent = (props) => {
           paddingLeft: 12,
         }}
       >
-        <View style={styles.item}>
-          <View style={styles.iconContainer}>
-            <MaterialIcons
-              name="logout"
-              size={24}
-              color="#c74647"
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <View style={styles.item}>
+            <View style={styles.iconContainer}>
+              <MaterialIcons
+                name="logout"
+                size={24}
+                color="#c74647"
+                style={{
+                  alignSelf: "center",
+                }}
+              />
+            </View>
+            <Text
               style={{
+                left: 12,
+                borderBottomWidth: 1,
+                borderBottomColor: "grey",
+                width: "100%",
+                color: "#c74647",
+                fontSize: 20,
+                height: 40,
                 alignSelf: "center",
               }}
-            />
+            >
+              Logout
+            </Text>
           </View>
-          <Text
-            style={{
-              left: 12,
-              borderBottomWidth: 1,
-              borderBottomColor: "grey",
-              width: "100%",
-              color: "#c74647",
-              fontSize: 20,
-              height: 40,
-              alignSelf: "center",
-            }}
-          >
-            Logout
-          </Text>
-        </View>
+        </TouchableOpacity>
       </Pressable>
     </DrawerContentScrollView>
   );
