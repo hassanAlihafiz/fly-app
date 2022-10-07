@@ -18,7 +18,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 const Login = ({ navigation }) => {
   return (
     // <KeyboardAvoidingView behavior="padding">
-    <View style={{ flex: 1, width: wp("90%") }}>
+    <View style={{ flex: 1, width: wp("90%"), backgroundColor: "white" }}>
       <FacebookSocialButton
         buttonViewStyle={{
           alignSelf: "center",
@@ -35,6 +35,7 @@ const Login = ({ navigation }) => {
           justifyContent: "flex-start",
           marginTop: 10,
           marginBottom: 10,
+          backgroundColor: "#d7d7d7",
         }}
       />
       <Text style={{ alignSelf: "center", marginTop: 10, marginBottom: 10 }}>
@@ -54,32 +55,44 @@ const Login = ({ navigation }) => {
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
-            borderRadius: 30,
+
             width: wp("80%"),
           }}
         >
-          <Feather
-            name="mail"
-            size={24}
-            color="#737373"
+          <View
             style={{
-              alignSelf: "center",
-              height: 40,
-              paddingTop: 7,
-              paddingLeft: 10,
-              paddingRight: 10,
+              borderTopLeftRadius: 5,
               backgroundColor: "#d7d7d7",
+              borderBottomLeftRadius: 5,
             }}
-          />
+          >
+            <Feather
+              name="mail"
+              size={24}
+              color="#737373"
+              style={{
+                alignSelf: "center",
+                height: 40,
+                paddingTop: 7,
+                paddingLeft: 10,
+                paddingRight: 10,
+              }}
+            />
+          </View>
           <TextInput
+            keyboardType="email-address"
             placeholder="yours@example.com"
+            autoComplete="email"
             style={{
               height: 40,
-              borderWidth: 2,
-              borderColor: "#ececec",
+              borderWidth: 1,
+              borderColor: "#d7d7d7",
               width: wp("70%"),
               paddingLeft: 10,
               paddingRight: 10,
+              backgroundColor: "white",
+              borderTopRightRadius: 5,
+              borderBottomRightRadius: 5,
             }}
           />
         </View>
@@ -91,28 +104,39 @@ const Login = ({ navigation }) => {
             width: wp("80%"),
           }}
         >
-          <MaterialIcons
-            name="lock-outline"
-            size={24}
-            color="#737373"
+          <View
             style={{
-              alignSelf: "center",
-              height: 40,
-              paddingTop: 7,
-              paddingLeft: 10,
-              paddingRight: 10,
+              borderTopLeftRadius: 5,
               backgroundColor: "#d7d7d7",
+              borderBottomLeftRadius: 5,
             }}
-          />
+          >
+            <MaterialIcons
+              name="lock-outline"
+              size={24}
+              color="#737373"
+              style={{
+                alignSelf: "center",
+                height: 40,
+                paddingTop: 7,
+                paddingLeft: 10,
+                paddingRight: 10,
+              }}
+            />
+          </View>
           <TextInput
+            keyboardType="visible-password"
+            secureTextEntry={true}
             placeholder="yours password"
             style={{
               height: 40,
-              borderWidth: 2,
-              borderColor: "#ececec",
+              borderWidth: 1,
+              borderColor: "#d7d7d7",
               width: wp("70%"),
               paddingLeft: 10,
               paddingRight: 10,
+              borderTopRightRadius: 5,
+              borderBottomRightRadius: 5,
             }}
           />
         </View>
