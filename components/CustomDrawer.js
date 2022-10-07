@@ -1,11 +1,13 @@
 import {
   DrawerContentScrollView,
+  DrawerItem,
   DrawerItemList,
 } from "@react-navigation/drawer";
 import React from "react";
 import {
   Image,
   Platform,
+  Pressable,
   StatusBar,
   StyleSheet,
   Text,
@@ -14,6 +16,7 @@ import {
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
+import { MaterialIcons } from "@expo/vector-icons";
 const CustomDrawerContent = (props) => {
   const navigation = useNavigation();
   return (
@@ -35,7 +38,41 @@ const CustomDrawerContent = (props) => {
         </View>
         <DrawerItemList {...props} />
       </View>
-      {/* <Text style={styles.version}>V 1.0.2</Text> */}
+      <Pressable
+        style={{
+          height: 60,
+          backgroundColor: "#FFFFFF",
+          width: "100%",
+          paddingLeft: 12,
+        }}
+      >
+        <View style={styles.item}>
+          <View style={styles.iconContainer}>
+            <MaterialIcons
+              name="logout"
+              size={24}
+              color="#c74647"
+              style={{
+                alignSelf: "center",
+              }}
+            />
+          </View>
+          <Text
+            style={{
+              left: 12,
+              borderBottomWidth: 1,
+              borderBottomColor: "grey",
+              width: "100%",
+              color: "#c74647",
+              fontSize: 20,
+              height: 40,
+              alignSelf: "center",
+            }}
+          >
+            Logout
+          </Text>
+        </View>
+      </Pressable>
     </DrawerContentScrollView>
   );
 };
@@ -68,5 +105,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 12,
     fontWeight: "bold",
+  },
+  item: {
+    flexDirection: "row",
   },
 });

@@ -8,11 +8,11 @@ import {
 import React, { Component } from "react";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
-const CardView = () => {
+const CardView = ({ name, img }) => {
   return (
     <TouchableOpacity style={styles.mainContainer}>
       <ImageBackground
-        source={require("../assets/sedan.jpg")}
+        source={img}
         style={{
           height: hp(30),
           width: "100%",
@@ -36,7 +36,7 @@ const CardView = () => {
               opacity: 0.8,
             }}
           >
-            SEDAN
+            {name}
           </Text>
         </View>
       </ImageBackground>
