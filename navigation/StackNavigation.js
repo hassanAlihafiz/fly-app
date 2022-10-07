@@ -13,8 +13,8 @@ const StackNavigation = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Landing" component={LandingScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
+      {/* <Stack.Screen name="Landing" component={LandingScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} /> */}
 
       <Stack.Screen name="HomeScreen" component={DrawerTab} />
     </Stack.Navigator>
