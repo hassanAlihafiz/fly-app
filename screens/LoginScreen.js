@@ -17,6 +17,7 @@ const Login = ({ navigation }) => {
           flex: 1,
           justifyContent: "space-between",
           alignItems: "center",
+          backgroundColor: "white",
         }}
       >
         <View
