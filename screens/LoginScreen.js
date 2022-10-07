@@ -1,18 +1,56 @@
-import { Text, TouchableOpacity, View } from "react-native";
-import React, { Component } from "react";
+import { Image, KeyboardAvoidingView, ScrollView, View } from "react-native";
+import React from "react";
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import AuthTabs from "../components/AuthTabs";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { StatusBar } from "expo-status-bar";
 
 const Login = ({ navigation }) => {
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
-      <Text style={{ alignSelf: "center" }}>LoginScreen</Text>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("HomeScreen");
+    <KeyboardAwareScrollView>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <Text>Login</Text>
-      </TouchableOpacity>
-    </View>
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: hp("40%"),
+          }}
+        >
+          <Image
+            // style={styles.tinyLogo}
+            style={{
+              backgroundColor: "red",
+              width: 200,
+              height: 200,
+              borderRadius: 100,
+            }}
+            source={require("../assets/logo.png")}
+          />
+        </View>
+
+        <View
+          style={{
+            justifyContent: "center",
+            alignSelf: "center",
+            height: hp("60%"),
+            width: wp("90%"),
+          }}
+        >
+          <AuthTabs navigation={navigation} />
+        </View>
+      </View>
+      <StatusBar style="auto" />
+    </KeyboardAwareScrollView>
   );
 };
 export default Login;
