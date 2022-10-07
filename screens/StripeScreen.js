@@ -18,8 +18,16 @@ export default class StripeScreen extends Component {
               placeholder={"EMAIL ADDRESS"}
               name="EMAIL ADDRESS"
             />
-            <TextInputComponent placeholder={"PHONE"} name="PHONE" />
-            <TextInputComponent placeholder={"ZIP CODE"} name="ZIP CODE" />
+            <TextInputComponent
+              placeholder={"PHONE"}
+              name="PHONE"
+              maxLength={11}
+            />
+            <TextInputComponent
+              placeholder={"ZIP CODE"}
+              name="ZIP CODE"
+              maxLength={5}
+            />
             <TextInputComponent
               placeholder={"94110"}
               name="CREDIT CARD NUMBER"
@@ -36,14 +44,22 @@ export default class StripeScreen extends Component {
                   width: "65%",
                 }}
               >
-                <TextInputComponent placeholder={"MM/YY"} name="EXPIRY DATE" />
+                <TextInputComponent
+                  placeholder={"MM/YY"}
+                  name="EXPIRY DATE"
+                  maxLength={5}
+                />
               </View>
               <View
                 style={{
                   width: "30%",
                 }}
               >
-                <TextInputComponent placeholder={"CVC"} name="CVC" />
+                <TextInputComponent
+                  placeholder={"CVC"}
+                  name="CVC"
+                  maxLength={3}
+                />
               </View>
             </View>
           </View>

@@ -13,6 +13,7 @@ const TextInputComponent = (props) => {
           borderBottomWidth: 1,
           fontSize: 20,
         }}
+        maxLength={props.maxLength}
       />
     </View>
   );

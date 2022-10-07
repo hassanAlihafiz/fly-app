@@ -7,6 +7,7 @@ import LandingScreen from "../screens/LandingScreen";
 import Login from "../screens/LoginScreen";
 import StripeScreen from "../screens/StripeScreen";
 import SettingScreen from "../screens/Settings";
+import ServiceOfferedScreen from "../screens/ServiceOffered";
 import { Entypo, FontAwesome5, Ionicons } from "@expo/vector-icons";
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -60,7 +61,7 @@ const DrawerTab = () => {
       />
       <Drawer.Screen
         name="Service Offered"
-        component={Login}
+        component={ServiceOffered}
         options={{
           drawerLabelStyle: {
             borderBottomWidth: 1,
@@ -138,6 +139,18 @@ const SettingStack = () => {
       }}
     >
       <Stack.Screen name="Main Setting" component={SettingScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const ServiceOffered = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Main Service" component={ServiceOfferedScreen} />
     </Stack.Navigator>
   );
 };
