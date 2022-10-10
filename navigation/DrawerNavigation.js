@@ -8,7 +8,8 @@ import Login from "../screens/LoginScreen";
 import StripeScreen from "../screens/StripeScreen";
 import SettingScreen from "../screens/Settings";
 import ServiceOfferedScreen from "../screens/ServiceOffered";
-import { Entypo, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Entypo, Feather, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import Map from "../screens/Map";
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 const HomeStack = () => {
@@ -123,6 +124,26 @@ const DrawerTab = () => {
               size={22}
               style={{ color: focused ? "black" : "grey" }}
             />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Map"
+        component={Map}
+        options={{
+          headerTitle: "Map",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 20,
+            fontWeight: "bold",
+          },
+          drawerLabelStyle: {
+            borderBottomWidth: 1,
+            height: 30,
+            borderBottomColor: "grey",
+          },
+          drawerIcon: ({ focused }) => (
+            <Feather name="map-pin" size={24} color="black" />
           ),
         }}
       />
