@@ -15,7 +15,7 @@ import { GoogleSocialButton } from "react-native-social-buttons/src/buttons/Goog
 import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Signup = ({navigation}) => {
+const Signup = ({ navigation }) => {
   return (
     <View style={{ flex: 1, width: wp("90%"), backgroundColor: "white" }}>
       <FacebookSocialButton
