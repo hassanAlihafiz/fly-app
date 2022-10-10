@@ -10,6 +10,8 @@ import SettingScreen from "../screens/Settings";
 import ServiceOfferedScreen from "../screens/ServiceOffered";
 import { Entypo, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import DriverHome from "../screens/DriverHome";
+import Completed from "../screens/Completed";
+import DriverProfile from "../screens/DriverProfile";
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 const HomeStack = () => {
@@ -38,10 +40,10 @@ const DriverDrawerTab = () => {
       }}
     >
       <Drawer.Screen
-        name="Home"
+        name="Dashboard"
         component={HomeStack}
         options={{
-          headerTitle: "Fly",
+          headerTitle: "Dashboard",
           headerTitleAlign: "center",
           headerStyle: {
             height: 80,
@@ -55,6 +57,44 @@ const DriverDrawerTab = () => {
             <Ionicons
               name="ios-home"
               size={22}
+              style={{ color: focused ? "black" : "grey" }}
+            />
+          ),
+        }}
+      />
+       <Drawer.Screen
+        name="Completed"
+        component={Completed}
+        options={{
+          drawerLabelStyle: {
+            borderBottomWidth: 1,
+            height: 30,
+            borderBottomColor: "grey",
+          },
+          drawerIcon: ({ focused }) => (
+            <Entypo
+              name="tools"
+              size={24}
+              color="black"
+              style={{ color: focused ? "black" : "grey" }}
+            />
+          ),
+        }}
+      />
+       <Drawer.Screen
+        name="Profile"
+        component={DriverProfile}
+        options={{
+          drawerLabelStyle: {
+            borderBottomWidth: 1,
+            height: 30,
+            borderBottomColor: "grey",
+          },
+          drawerIcon: ({ focused }) => (
+            <Entypo
+              name="tools"
+              size={24}
+              color="black"
               style={{ color: focused ? "black" : "grey" }}
             />
           ),

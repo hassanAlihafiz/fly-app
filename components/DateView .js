@@ -22,7 +22,7 @@ const DateView = ({ name, img, color }) => {
         <View
           style={{
             backgroundColor: color,
-            height: hp(30),
+            height: hp(20),
             width: "100%",
             justifyContent: "center",
           }}

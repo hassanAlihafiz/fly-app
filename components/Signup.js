@@ -15,7 +15,15 @@ import { GoogleSocialButton } from "react-native-social-buttons/src/buttons/Goog
 import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Signup = ({ navigation }) => {
+const Signup= ({ navigation,props }) => {
+  const signUp =()=>{
+    if(props == "customer"){
+      navigation.navigate("HomeScreen")
+    }
+    else{
+      navigation.navigate("DriverScreen")
+    }
+  }
   return (
     <View style={{ flex: 1, width: wp("90%"), backgroundColor: "white" }}>
       <FacebookSocialButton
@@ -154,9 +162,7 @@ const Signup = ({ navigation }) => {
           marginTop: 10,
           marginBottom: 10,
         }}
-        onPress={() => {
-          navigation.navigate("HomeScreen");
-        }}
+        onPress={()=>signUp()}
       >
         <Text
           style={{
