@@ -11,15 +11,16 @@ import Signup from "./Signup";
 
 
 
-const AuthTabs = ({ navigation }) => {
+const AuthTabs = ({ navigation,props }) => {
+  console.log("my", props)
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "first", title: "Log In" },
     { key: "second", title: "Sign Up" },
   ]);
   const renderScene = SceneMap({
-    first: () => <Login navigation={navigation} />,
-    second: () => <Signup navigation={navigation} />,
+    first: () => <Login props={props} navigation={navigation} />,
+    second: () => <Signup props={props} navigation={navigation} />,
   });
 
   return (

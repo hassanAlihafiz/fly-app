@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   KeyboardAvoidingView,
   Text,
@@ -15,7 +15,15 @@ import { GoogleSocialButton } from "react-native-social-buttons/src/buttons/Goog
 import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Login = ({ navigation }) => {
+const Login = ({navigation, props }) => {
+  const Login =()=>{
+    if(props == "customer"){
+      navigation.navigate("HomeScreen")
+    }
+    else{
+      navigation.navigate("DriverScreen")
+    }
+  }
   return (
     // <KeyboardAvoidingView behavior="padding">
     <View style={{ flex: 1, width: wp("90%"), backgroundColor: "white" }}>
@@ -159,9 +167,9 @@ const Login = ({ navigation }) => {
           marginTop: 10,
           marginBottom: 10,
         }}
-        onPress={() => {
-          navigation.navigate("HomeScreen");
-        }}
+        onPress={
+          Login
+        }
       >
         <Text
           style={{

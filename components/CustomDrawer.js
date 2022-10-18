@@ -46,7 +46,7 @@ const CustomDrawerContent = (props) => {
           paddingLeft: 12,
         }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
           <View style={styles.item}>
             <View style={styles.iconContainer}>
               <MaterialIcons
