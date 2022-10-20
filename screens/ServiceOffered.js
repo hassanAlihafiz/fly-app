@@ -6,38 +6,90 @@ import {
   widthPercentageToDP,
 } from "react-native-responsive-screen";
 import ServiceCard from "../components/ServiceCard";
+import PackageCard from "../components/PackageCard";
 
-const ServiceOffered = () => {
+const goldPackage = ["Exterior wash", "Rim clean", "Towel Dried"];
+const platinumPackage = [
+  "Exterior wash",
+  "Rim clean",
+  "Tire shine",
+  "Undercarriage bath",
+  "Towel Dried",
+];
+const deluxPackage = [
+  "Exterior wash",
+  "Vacuumed",
+  "Window clean",
+  "Rim clean",
+  "Tire shine",
+  "Undercarriage bath",
+  "Towel Dried",
+];
+const vipPackage = [
+  "Exterior wash",
+  "Vacuumed",
+  "Window clean",
+  "Rim clean",
+  "Tire shine",
+  "Rain - x",
+  "Body gloss",
+  "Towel Dried",
+];
+const ServiceOffered = ({ navigation }) => {
   return (
     <ScrollView
       style={{ marginBottom: 20 }}
       showsVerticalScrollIndicator={false}
     >
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <Text
-          style={{
-            paddingLeft: 20,
-            marginTop: 10,
-            color: "black",
-            fontWeight: "bold",
-            fontSize: 22,
-          }}
-        >
-          Feature Package
-        </Text>
-        <ScrollView
-          horizontal
-          contentContainerStyle={{
-            marginHorizontal: 5,
-            marginTop: 5,
-            marginBottom: 5,
-          }}
-          showsHorizontalScrollIndicator={false}
-        >
-          <ServiceCard name={"Exterior Package"} price={"114.95"} />
-          <ServiceCard name={"Exterior Package"} price={"114.95"} />
-          <ServiceCard name={"Exterior Package"} price={"114.95"} />
-        </ScrollView>
+      <Text
+        style={{
+          paddingLeft: 20,
+          marginTop: 10,
+          color: "black",
+          fontWeight: "bold",
+          fontSize: 22,
+        }}
+      >
+        Packages
+      </Text>
+      <ScrollView
+        contentContainerStyle={{
+          marginHorizontal: 5,
+          marginTop: 5,
+          marginBottom: 5,
+        }}
+        showsHorizontalScrollIndicator={false}
+      >
+        <PackageCard
+          name="GOLD"
+          price={19}
+          type="GOLD WASH +"
+          details={goldPackage}
+          navigation={navigation}
+        />
+        <PackageCard
+          name="PLATINUM"
+          price={25}
+          type="GOLD WASH +"
+          details={platinumPackage}
+          navigation={navigation}
+        />
+        <PackageCard
+          name="DELUX"
+          price={33}
+          type="Exterior WASH +"
+          details={deluxPackage}
+          navigation={navigation}
+        />
+        <PackageCard
+          name="VIP"
+          price={45}
+          type="GOLD WASH +"
+          details={vipPackage}
+          navigation={navigation}
+        />
+      </ScrollView>
+      {/* <View style={{ flex: 1, justifyContent: "center" }}>
         <Text
           style={{
             paddingLeft: 20,
@@ -86,7 +138,7 @@ const ServiceOffered = () => {
           <ServiceCard name={"Full Tank"} price={"15"} />
           <ServiceCard name={"Full Tank"} price={"15"} />
         </ScrollView>
-      </View>
+      </View> */}
     </ScrollView>
   );
 };
