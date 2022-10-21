@@ -1,11 +1,9 @@
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { widthPercentageToDP } from "react-native-responsive-screen";
+
 import Cart from "../components/Cart";
-import CheckoutBottomSheet from "../components/CheckoutBottomSheet";
 
 const Checkout = ({ route, navigation }) => {
-  const [isVisible, setIsVisible] = React.useState(false);
   const { itemName, itemPrice, imgUrl } = route.params;
 
   return (
@@ -30,11 +28,10 @@ const Checkout = ({ route, navigation }) => {
           marginVertical: 20,
           marginHorizontal: 20,
         }}
-        onPress={() => setIsVisible(true)}
+        onPress={() => navigation.navigate("Payment Screen")}
       >
         <Text style={{ color: "white" }}>Checkout</Text>
       </TouchableOpacity>
-      <CheckoutBottomSheet isVisible={isVisible} setIsVisible={setIsVisible} />
     </View>
   );
 };

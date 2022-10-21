@@ -11,8 +11,16 @@ import ServiceOfferedScreen from "../screens/ServiceOffered";
 import { Entypo, Feather, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Map from "../screens/Map";
 import Checkout from "../screens/Checkout";
+import PaymentScreen from "../screens/PaymentScreen";
+import React from "react";
+import {
+  useNavigationContainerRef,
+  useNavigationState,
+} from "@react-navigation/native";
+
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
+
 const HomeStack = () => {
   return (
     <Stack.Navigator
@@ -30,6 +38,7 @@ const DrawerTab = () => {
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
+        swipeEnabled: true,
         drawerStyle: {
           width: "70%",
         },
@@ -96,7 +105,7 @@ const DrawerTab = () => {
         component={StripeScreen}
         options={{
           headerTitle: "Stripe",
-         headerTitleAlign: "center",
+          headerTitleAlign: "center",
 
           headerStyle: {
             height: 80,
@@ -190,7 +199,7 @@ const ServiceOffered = () => {
     >
       <Stack.Screen name="Main Service" component={ServiceOfferedScreen} />
       <Stack.Screen name="Checkout" component={Checkout} />
-
+      <Stack.Screen name="Payment Screen" component={PaymentScreen} />
     </Stack.Navigator>
   );
 };
