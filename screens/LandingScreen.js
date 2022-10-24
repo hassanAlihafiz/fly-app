@@ -4,9 +4,9 @@ import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from "react-native-responsive-screen";
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 const Landing = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   // React.useEffect(() => {
   //   setTimeout(() => navigation.navigate("Login"), 5000);
   // }, []);
@@ -28,16 +28,38 @@ const Landing = () => {
         }}
       />
       <TouchableOpacity
-      onPress={()=>navigation.navigate("Login", {loginAs:"customer",other:"tt"})}
-      style={{width:"70%", backgroundColor:"black", borderRadius:30,justifyContent:"center",height:50, alignItems:"center", marginBottom:10}}>
-<Text style={{color:"#fff", fontSize:20}}>Login as Customer</Text>
-</TouchableOpacity>
-<TouchableOpacity onPress={()=>navigation.navigate("Login", {
-  loginAs:"driver",
-},)} 
-style={{width:"70%", height:50, backgroundColor:"black", borderRadius:30,justifyContent:"center", alignItems:"center"}}>
-<Text style={{color:"#fff", fontSize:20}}>Login as Driver</Text>
-</TouchableOpacity>
+        onPress={() =>
+          navigation.navigate("Login", { loginAs: "customer", other: "tt" })
+        }
+        style={{
+          width: "70%",
+          backgroundColor: "black",
+          borderRadius: 30,
+          justifyContent: "center",
+          height: 50,
+          alignItems: "center",
+          marginBottom: 10,
+        }}
+      >
+        <Text style={{ color: "#fff", fontSize: 20 }}>Login as Customer</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("Login", {
+            loginAs: "driver",
+          })
+        }
+        style={{
+          width: "70%",
+          height: 50,
+          backgroundColor: "black",
+          borderRadius: 30,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "#fff", fontSize: 20 }}>Login as Driver</Text>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -9,18 +9,16 @@ import { View } from "react-native";
 import Login from "./Login";
 import Signup from "./Signup";
 
-
-
-const AuthTabs = ({ navigation,props }) => {
-  console.log("my", props)
+const AuthTabs = ({ navigation, loginAs }) => {
+  console.log("my", loginAs);
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "first", title: "Log In" },
     { key: "second", title: "Sign Up" },
   ]);
   const renderScene = SceneMap({
-    first: () => <Login props={props} navigation={navigation} />,
-    second: () => <Signup props={props} navigation={navigation} />,
+    first: () => <Login loginAs={loginAs} navigation={navigation} />,
+    second: () => <Signup loginAs={loginAs} navigation={navigation} />,
   });
 
   return (

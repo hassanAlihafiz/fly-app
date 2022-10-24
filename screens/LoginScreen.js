@@ -49,7 +49,7 @@ const Login = ({route, navigation }) => {
             width: wp("90%"),
           }}
         >
-          <AuthTabs props={route.params.loginAs}  navigation={navigation} />
+          <AuthTabs loginAs={route.params.loginAs}  navigation={navigation} />
         </View>
       </View>
       <StatusBar style="auto" />
