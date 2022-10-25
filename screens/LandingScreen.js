@@ -1,15 +1,10 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import React, { Component } from "react";
-import {
-  heightPercentageToDP,
-  widthPercentageToDP,
-} from "react-native-responsive-screen";
+
 import { useNavigation } from "@react-navigation/native";
+
 const Landing = () => {
   const navigation = useNavigation();
-  // React.useEffect(() => {
-  //   setTimeout(() => navigation.navigate("Login"), 5000);
-  // }, []);
 
   return (
     <View

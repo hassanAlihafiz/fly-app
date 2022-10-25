@@ -2,6 +2,8 @@ import { Text, View } from "react-native";
 import React, { Component } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import CardView from "../components/CardView";
+import { getLocalStorage } from "../utils/LocalStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = ({ navigation }) => {
   return (

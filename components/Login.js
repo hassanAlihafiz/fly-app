@@ -18,6 +18,7 @@ import axios from "axios";
 import { Alert } from "react-native";
 import { Overlay } from "@rneui/base";
 import { ActivityIndicator } from "react-native";
+import { LocalStorage } from "../utils/LocalStorage";
 
 const Login = ({ navigation, loginAs }) => {
   const [loading, setLoading] = React.useState(false);
@@ -28,10 +29,11 @@ const Login = ({ navigation, loginAs }) => {
   const [data, setData] = React.useState({
     email: "",
     password: "",
+    userType: loginAs,
   });
 
-  console.log(JSON.stringify(data));
   console.log(loginAs);
+  console.log(data);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -57,19 +59,14 @@ const Login = ({ navigation, loginAs }) => {
             value: true,
             message: "Login Successful",
           });
-          console.log(JSON.stringify(response));
+          LocalStorage("user", JSON.stringify(response?.data));
           if (response.data.userType === "customer" && loginAs === "customer") {
             navigation.navigate("HomeScreen");
           } else if (
-            response.data.userType === "Driver" &&
-            loginAs === "Driver"
+            response.data.userType === "driver" &&
+            loginAs === "driver"
           ) {
             navigation.navigate("DriverScreen");
-          } else {
-            setError({
-              value: true,
-              message: `Please login as a ${response.data.userType.toUpperCase()}`,
-            });
           }
         })
         .catch((error) => {
@@ -113,13 +110,13 @@ const Login = ({ navigation, loginAs }) => {
           alignItems: "center",
         }}
       >
-        <Text style={{ fontSize: 16, textAlign: "center" }}>
+        <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
           {error.message}
         </Text>
         <TouchableOpacity
           style={{
             marginTop: 10,
-            width: 100,
+            width: "100%",
             height: 40,
             backgroundColor: "green",
             justifyContent: "center",
