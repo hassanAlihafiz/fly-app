@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, ScrollView } from "react-native";
 
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { CardField, CardFieldInput } from "@stripe/stripe-react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -12,8 +12,10 @@ import { MaterialIcons } from "@expo/vector-icons";
 import ModalSelector from "react-native-modal-selector";
 import RNPickerSelect from "react-native-picker-select";
 import { countries } from "../utils/Countries";
+import { useNavigation } from "@react-navigation/native";
 
 const PaymentScreen = ({}) => {
+  const navigation = useNavigation();
   const [data, setData] = React.useState({
     firstName: null,
     lastName: null,
@@ -40,25 +42,28 @@ const PaymentScreen = ({}) => {
         backgroundColor: "white",
       }}
     >
-      <KeyboardAvoidingScrollView>
-        <View
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Ionicons name="ios-arrow-back" size={24} color="black" />
+      </TouchableOpacity>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
+            marginVertical: 10,
+            fontSize: 20,
+            fontWeight: "bold",
           }}
         >
-          <Text
-            style={{
-              marginVertical: 10,
-              fontSize: 20,
-              fontWeight: "bold",
-            }}
-          >
-            Billing Info
-          </Text>
-          <MaterialIcons name="payment" size={24} color="black" />
-        </View>
+          Billing Info
+        </Text>
+        <MaterialIcons name="payment" size={24} color="black" />
+      </View>
+      <KeyboardAvoidingScrollView>
         <View
           style={{
             flexDirection: "row",
@@ -272,6 +277,7 @@ const PaymentScreen = ({}) => {
           width: "100%",
           borderRadius: 10,
         }}
+        onPress={() => navigation.navigate("SelectDriver")}
       >
         <Text style={{ color: "white" }}>Confirm and pay</Text>
       </TouchableOpacity>

@@ -18,7 +18,8 @@ import axios from "axios";
 import { Alert } from "react-native";
 import { Overlay } from "@rneui/base";
 import { ActivityIndicator } from "react-native";
-import { LocalStorage } from "../utils/LocalStorage";
+import { setLocalStorage } from "../utils/LocalStorage";
+import { DevSettings } from "react-native";
 
 const Login = ({ navigation, loginAs }) => {
   const [loading, setLoading] = React.useState(false);
@@ -54,21 +55,23 @@ const Login = ({ navigation, loginAs }) => {
       };
       axios(config)
         .then((response) => {
-          setLoading(false);
           setError({
             value: true,
             message: "Login Successful",
           });
-          LocalStorage("user", JSON.stringify(response?.data));
+          setLocalStorage("user", JSON.stringify(response?.data));
           if (response.data.userType === "customer" && loginAs === "customer") {
             navigation.navigate("HomeScreen");
+            setLoading(false);
           } else if (
             response.data.userType === "driver" &&
             loginAs === "driver"
           ) {
             navigation.navigate("DriverScreen");
+            setLoading(false);
           }
         })
+
         .catch((error) => {
           console.log(error);
           setLoading(false);

@@ -17,65 +17,75 @@ import {
 
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { clearLocalStorage, setLocalStorage } from "../utils/LocalStorage";
+import { DevSettings } from "react-native";
 const CustomDrawerContent = (props) => {
   const navigation = useNavigation();
+
+  const handleLogout = async () => {
+    await clearLocalStorage();
+    navigation.navigate("Landing");
+  };
+
   return (
-    <DrawerContentScrollView contentContainerStyle={styles.container}>
+    <>
       <StatusBar
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
         animated={true}
       />
-      <View style={{ flex: 1, backgroundColor: "#FFFF" }}>
-        <View style={styles.headerContainer}>
-          <Text
-            style={{
-              fontWeight: "bold",
-              fontSize: 40,
-            }}
-          >
-            Menu
-          </Text>
-        </View>
-        <DrawerItemList {...props} />
-      </View>
-      <Pressable
-        style={{
-          height: 60,
-          backgroundColor: "#FFFFFF",
-          width: "100%",
-          paddingLeft: 12,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
-          <View style={styles.item}>
-            <View style={styles.iconContainer}>
-              <MaterialIcons
-                name="logout"
-                size={24}
-                color="#c74647"
-                style={{
-                  alignSelf: "center",
-                }}
-              />
-            </View>
+      <DrawerContentScrollView contentContainerStyle={styles.container}>
+        <View style={{ flex: 1, backgroundColor: "#FFFF" }}>
+          <View style={styles.headerContainer}>
             <Text
               style={{
-                left: 12,
-                borderBottomWidth: 1,
-                borderBottomColor: "grey",
-                width: "100%",
-                color: "#c74647",
-                fontSize: 20,
-                height: 40,
-                alignSelf: "center",
+                fontWeight: "bold",
+                fontSize: 40,
               }}
             >
-              Logout
+              Menu
             </Text>
           </View>
-        </TouchableOpacity>
-      </Pressable>
-    </DrawerContentScrollView>
+          <DrawerItemList {...props} />
+        </View>
+        <Pressable
+          style={{
+            height: 60,
+            backgroundColor: "#FFFFFF",
+            width: "100%",
+            paddingLeft: 12,
+          }}
+        >
+          <TouchableOpacity onPress={handleLogout}>
+            <View style={styles.item}>
+              <View style={styles.iconContainer}>
+                <MaterialIcons
+                  name="logout"
+                  size={24}
+                  color="#c74647"
+                  style={{
+                    alignSelf: "center",
+                  }}
+                />
+              </View>
+              <Text
+                style={{
+                  left: 12,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "grey",
+                  width: "100%",
+                  color: "#c74647",
+                  fontSize: 20,
+                  height: 40,
+                  alignSelf: "center",
+                }}
+              >
+                Logout
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </Pressable>
+      </DrawerContentScrollView>
+    </>
   );
 };
 

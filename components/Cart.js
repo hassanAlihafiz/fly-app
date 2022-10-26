@@ -2,13 +2,19 @@ import React from "react";
 import { Image, Text, Touchable, TouchableOpacity, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { BottomSheet } from "@rneui/themed";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const Cart = ({ itemName, itemPrice, imgUrl }) => {
-  
   const serviceFee = parseFloat(itemPrice * 0.12).toFixed(2);
   const total = (parseFloat(itemPrice) + parseFloat(serviceFee)).toFixed(2);
+  const navigation = useNavigation();
+
   return (
     <View>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Ionicons name="ios-arrow-back" size={24} color="black" />
+      </TouchableOpacity>
       <View
         style={{
           flexDirection: "row",

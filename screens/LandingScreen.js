@@ -2,9 +2,23 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import React, { Component } from "react";
 
 import { useNavigation } from "@react-navigation/native";
+import { getLocalStorage } from "../utils/LocalStorage";
 
 const Landing = () => {
   const navigation = useNavigation();
+
+  React.useEffect(() => {
+    async function get() {
+      const user = await getLocalStorage("user");
+
+      if (user != null && user.userType === "customer") {
+        navigation.navigate("HomeScreen");
+      } else if (user != null && user.userType === "driver") {
+        navigation.navigate("DriverScreen");
+      }
+    }
+    get();
+  }, []);
 
   return (
     <View

@@ -20,8 +20,9 @@ import { ActivityIndicator } from "react-native";
 import { getCall, getPostCall } from "../utils/API";
 import { Overlay } from "@rneui/base";
 
-import { LocalStorage } from "../utils/LocalStorage";
+import { LocalStorage, setLocalStorage } from "../utils/LocalStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DevSettings } from "react-native";
 
 const Signup = ({ navigation, loginAs }) => {
   const [loading, setLoading] = React.useState(true);
@@ -82,11 +83,15 @@ const Signup = ({ navigation, loginAs }) => {
             value: true,
             message: `User Successfully Registered`,
           });
+
+          handleData("token", e?.data?.token);
+          setLocalStorage("user", JSON.stringify(data));
           if (loginAs === "customer") {
             navigation.navigate("HomeScreen");
           } else if (loginAs === "driver") {
             navigation.navigate("DriverScreen");
           }
+          
         })
         .catch((e) => {
           console.log(e);
@@ -116,7 +121,7 @@ const Signup = ({ navigation, loginAs }) => {
   return (
     <View style={{ flex: 1, width: wp("90%"), backgroundColor: "white" }}>
       {loading ? (
-        <ActivityIndicator size="large" />
+        <ActivityIndicator style={{ margin: 30 }} size="large" />
       ) : (
         <>
           <Overlay
