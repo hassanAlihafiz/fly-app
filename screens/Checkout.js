@@ -4,7 +4,12 @@ import { Text, TouchableOpacity, View } from "react-native";
 import Cart from "../components/Cart";
 
 const Checkout = ({ route, navigation }) => {
-  const { itemName, itemPrice, imgUrl } = route.params;
+  const { packageData, imgUrl } = route.params;
+
+  const serviceFee = parseFloat(packageData.Price * 0.12).toFixed(2);
+  const total = (
+    parseFloat(packageData.Price) + parseFloat(serviceFee)
+  ).toFixed(2);
 
   return (
     <View
@@ -14,7 +19,13 @@ const Checkout = ({ route, navigation }) => {
         backgroundColor: "white",
       }}
     >
-      <Cart itemName={itemName} itemPrice={itemPrice} imgUrl={imgUrl} />
+      <Cart
+        itemName={packageData.name}
+        itemPrice={packageData.Price}
+        imgUrl={imgUrl}
+        serviceFee={serviceFee}
+        total={total}
+      />
       <TouchableOpacity
         style={{
           position: "absolute",
@@ -28,7 +39,13 @@ const Checkout = ({ route, navigation }) => {
           marginVertical: 20,
           marginHorizontal: 20,
         }}
-        onPress={() => navigation.navigate("Payment Screen")}
+        onPress={() =>
+          navigation.navigate("SelectDriver", {
+            packageData: packageData,
+            serviceFee: serviceFee,
+            total: total,
+          })
+        }
       >
         <Text style={{ color: "white" }}>Checkout</Text>
       </TouchableOpacity>

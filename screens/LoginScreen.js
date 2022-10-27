@@ -13,7 +13,7 @@ const Login = ({ route, navigation }) => {
   // console.log(route.params.loginAs)
   route.params.loginAs;
   return (
-    <KeyboardAwareScrollView>
+    <KeyboardAwareScrollView scrollEnabled={false}>
       <View
         style={{
           flex: 1,
@@ -44,7 +44,7 @@ const Login = ({ route, navigation }) => {
           style={{
             justifyContent: "center",
             alignSelf: "center",
-            height: hp("100%"),
+            height: hp("60%"),
             width: wp("90%"),
           }}
         >

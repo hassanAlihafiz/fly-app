@@ -1,22 +1,28 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { Text } from "react-native";
+import { ScrollView, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+
 import { getCall } from "../utils/API";
 import { getLocalStorage, getToken } from "../utils/LocalStorage";
 import { AntDesign } from "@expo/vector-icons";
 import { KeyboardAvoidingScrollView } from "react-native-keyboard-avoiding-scroll-view";
 import { ActivityIndicator } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import MessageOverlay from "../components/MessageOverlay";
 
-const SelectDriverScreen = () => {
+const SelectDriverScreen = ({ route }) => {
   const navigation = useNavigation();
-
+  const { packageData } = route.params;
   const [loading, setLoading] = React.useState(true);
   const [zipDrivers, setZipDrivers] = React.useState(null);
   const [user, setUser] = React.useState({});
+  const [selectedDriver, setDriver] = React.useState("");
+  const [error, setError] = React.useState({
+    value: false,
+    message: "",
+  });
 
   React.useEffect(() => {
     getUser();
@@ -52,8 +58,16 @@ const SelectDriverScreen = () => {
       });
   };
 
-  console.log("user", user);
-  console.log("zips", zipDrivers);
+  const handleSelect = () => {
+    if (selectedDriver != "") {
+    } else {
+      setError({
+        value: true,
+        message: "Please select a driver",
+      });
+    }
+  };
+  console.log("driver", selectedDriver);
 
   return (
     <View
@@ -66,6 +80,11 @@ const SelectDriverScreen = () => {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="ios-arrow-back" size={24} color="black" />
       </TouchableOpacity>
+      <MessageOverlay
+        value={error.value}
+        setValue={setError}
+        message={error.message}
+      />
       <View
         style={{
           flexDirection: "row",
@@ -84,7 +103,7 @@ const SelectDriverScreen = () => {
         </Text>
         <FontAwesome name="drivers-license-o" size={24} color="black" />
       </View>
-      <KeyboardAvoidingScrollView
+      <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ marginVertical: 10, marginBottom: 50 }}
         contentContainerStyle={{
@@ -100,57 +119,85 @@ const SelectDriverScreen = () => {
                 key={key}
                 style={{
                   marginVertical: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 10,
 
                   width: "98%",
-                  backgroundColor: "white",
-                  padding: 20,
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 1,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.13,
-                  shadowRadius: 4,
-
-                  elevation: 20,
                 }}
               >
-                <AntDesign name="user" size={30} color="black" />
-                <Text style={{ color: "black" }}>
-                  {value.first_name} {value.last_name}
-                </Text>
+                <TouchableOpacity
+                  onPress={() => setDriver(value)}
+                  style={
+                    selectedDriver.id == value.id
+                      ? {
+                          padding: 20,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          borderRadius: 10,
+                          backgroundColor: "#CCC",
+                          shadowColor: "#000",
+                          shadowOffset: {
+                            width: 1,
+                            height: 2,
+                          },
+                          shadowOpacity: 0.13,
+                          shadowRadius: 4,
 
-                <Text key={key} style={{ color: "black" }}>
-                  {value.email}
-                </Text>
+                          elevation: 20,
+                        }
+                      : {
+                          padding: 20,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          borderRadius: 10,
+                          backgroundColor: "white",
+                          shadowColor: "#000",
+                          shadowOffset: {
+                            width: 1,
+                            height: 2,
+                          },
+                          shadowOpacity: 0.13,
+                          shadowRadius: 4,
+
+                          elevation: 20,
+                        }
+                  }
+                >
+                  <AntDesign name="user" size={30} color="black" />
+                  <Text style={{ color: "black" }}>
+                    {value.first_name} {value.last_name}
+                  </Text>
+
+                  <Text key={key} style={{ color: "black" }}>
+                    {value.email}
+                  </Text>
+                </TouchableOpacity>
               </View>
             );
           })
         )}
-      </KeyboardAvoidingScrollView>
+      </ScrollView>
       <TouchableOpacity
         style={{
           position: "absolute",
           bottom: 0,
+          height: 50,
+          marginVertical: 20,
+          marginHorizontal: 20,
           backgroundColor: "#43ce51",
           justifyContent: "center",
           alignItems: "center",
           width: "100%",
           borderRadius: 10,
-          height: 50,
         }}
-        onPress={() => navigation.navigate("SelectDriver")}
+        onPress={handleSelect}
       >
         <Text
           style={{
             color: "white",
           }}
         >
-          Confirm and pay
+          Select Driver
         </Text>
       </TouchableOpacity>
     </View>

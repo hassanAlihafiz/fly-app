@@ -13,19 +13,36 @@ import ModalSelector from "react-native-modal-selector";
 import RNPickerSelect from "react-native-picker-select";
 import { countries } from "../utils/Countries";
 import { useNavigation } from "@react-navigation/native";
+import MessageOverlay from "../components/MessageOverlay";
 
-const PaymentScreen = ({}) => {
+const PaymentScreen = ({ route }) => {
   const navigation = useNavigation();
+  const { packageData } = route.params;
   const [data, setData] = React.useState({
-    firstName: null,
-    lastName: null,
-    address: null,
-    address2: null,
-    city: null,
-    state: null,
-    country: null,
-    zip: null,
+    firstName: "",
+    lastName: "",
+    address: "",
+    address2: "",
+    city: "",
+    state: "",
+    country: "",
+    zip: "",
   });
+  const [cardInfo, setCardInfo] = React.useState({
+    brand: "",
+    cvc: "",
+    expiryMonth: "",
+    expiryYear: "",
+    number: "",
+    validCVC: "",
+    validExpiryDate: "",
+    validNumber: "",
+  });
+  const [error, setError] = React.useState({
+    value: false,
+    message: "",
+  });
+
   const handleData = (name, value) => {
     setData({
       ...data,
@@ -33,6 +50,45 @@ const PaymentScreen = ({}) => {
     });
   };
   console.log(data);
+  console.log(cardInfo);
+  const handelConfirm = () => {
+    if (
+      data.firstName != "" &&
+      data.lastName != "" &&
+      data.address != "" &&
+      data.city != "" &&
+      data.state != "" &&
+      data.country != "" &&
+      data.zip != ""
+    ) {
+      if (
+        cardInfo.brand != "" &&
+        cardInfo.cvc != "" &&
+        cardInfo.expiryMonth != "" &&
+        cardInfo.expiryYear != "" &&
+        cardInfo.number != "" &&
+        cardInfo.validCVC == "Valid" &&
+        cardInfo.validExpiryDate == "Valid" &&
+        cardInfo.validNumber == "Valid"
+      ) {
+         navigation.navigate("SelectDriver", );
+      } else if (
+        cardInfo.validCVC == "Invalid" ||
+        cardInfo.validExpiryDate == "Invalid" ||
+        cardInfo.validNumber == "Invalid"
+      ) {
+        setError({
+          value: true,
+          message: "Please enter valid card details",
+        });
+      }
+    } else {
+      setError({
+        value: true,
+        message: "Please fill all the fields",
+      });
+    }
+  };
 
   return (
     <View
@@ -45,6 +101,13 @@ const PaymentScreen = ({}) => {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="ios-arrow-back" size={24} color="black" />
       </TouchableOpacity>
+
+      <MessageOverlay
+        value={error.value}
+        setValue={setError}
+        message={error.message}
+      />
+
       <View
         style={{
           flexDirection: "row",
@@ -80,7 +143,7 @@ const PaymentScreen = ({}) => {
             <TextInput
               placeholder="First Name"
               autoComplete="name"
-              placeholderTextColor="black"
+              placeholderTextColor="#9EA0A4"
               onChangeText={(e) => handleData("firstName", e)}
               style={{
                 height: 40,
@@ -102,7 +165,7 @@ const PaymentScreen = ({}) => {
             <TextInput
               placeholder="Last Name"
               autoComplete="name"
-              placeholderTextColor="black"
+              placeholderTextColor="#9EA0A4"
               onChangeText={(e) => handleData("lastName", e)}
               style={{
                 height: 40,
@@ -124,7 +187,7 @@ const PaymentScreen = ({}) => {
             <TextInput
               placeholder="Street Address"
               autoComplete="street-address"
-              placeholderTextColor="black"
+              placeholderTextColor="#9EA0A4"
               onChangeText={(e) => handleData("address", e)}
               style={{
                 height: 40,
@@ -146,7 +209,7 @@ const PaymentScreen = ({}) => {
             <TextInput
               placeholder="Apartment, suite, etc"
               autoComplete="postal-address-extended"
-              placeholderTextColor="black"
+              placeholderTextColor="#9EA0A4"
               onChangeText={(e) => handleData("address2", e)}
               style={{
                 height: 40,
@@ -168,7 +231,7 @@ const PaymentScreen = ({}) => {
             <TextInput
               placeholder="City"
               autoComplete="postal-address-locality"
-              placeholderTextColor="black"
+              placeholderTextColor="#9EA0A4"
               onChangeText={(e) => handleData("city", e)}
               style={{
                 height: 40,
@@ -190,7 +253,7 @@ const PaymentScreen = ({}) => {
             <TextInput
               placeholder="State"
               autoComplete="postal-address-region"
-              placeholderTextColor="black"
+              placeholderTextColor="#9EA0A4"
               onChangeText={(e) => handleData("state", e)}
               style={{
                 height: 40,
@@ -218,6 +281,11 @@ const PaymentScreen = ({}) => {
             }}
           >
             <RNPickerSelect
+              placeholder={{
+                label: "Select the Country",
+                inputLabel: "Country",
+                color: "#9EA0A4",
+              }}
               value={data.country}
               style={{ width: "100%" }}
               onValueChange={(value) => handleData("country", value)}
@@ -233,7 +301,8 @@ const PaymentScreen = ({}) => {
             <TextInput
               placeholder="Zip code"
               autoComplete="postal-address-extended-postal-code"
-              placeholderTextColor="black"
+              keyboardType="number-pad"
+              placeholderTextColor="#9EA0A4"
               onChangeText={(e) => handleData("zip", e)}
               style={{
                 height: 40,
@@ -261,7 +330,19 @@ const PaymentScreen = ({}) => {
             marginVertical: 30,
           }}
           postalCodeEnabled={false}
-          onFocus={(e) => console.log(e)}
+          onCardChange={(e) =>
+            setCardInfo({
+              brand: e.brand,
+              cvc: e.cvc,
+              expiryMonth: e.expiryMonth,
+              expiryYear: e.expiryYear,
+              number: e.number,
+              validCVC: e.validCVC,
+              validExpiryDate: e.validExpiryDate,
+              validNumber: e.validNumber,
+            })
+          }
+          dangerouslyGetFullCardDetails
         />
       </KeyboardAvoidingScrollView>
       <TouchableOpacity
@@ -277,7 +358,7 @@ const PaymentScreen = ({}) => {
           width: "100%",
           borderRadius: 10,
         }}
-        onPress={() => navigation.navigate("SelectDriver")}
+        onPress={handelConfirm}
       >
         <Text style={{ color: "white" }}>Confirm and pay</Text>
       </TouchableOpacity>

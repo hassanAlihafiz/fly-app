@@ -69,8 +69,6 @@ const ServiceOffered = ({ navigation }) => {
       });
   };
 
-  console.log(packages[0]);
-
   return (
     <View style={{ marginBottom: 20 }} showsVerticalScrollIndicator={false}>
       <Text
@@ -96,39 +94,8 @@ const ServiceOffered = ({ navigation }) => {
           showsHorizontalScrollIndicator={false}
         >
           {packages.map((value, key) => {
-            return (
-              <PackageCard
-                key={key}
-                name={value.name}
-                price={value.Price}
-                type="GOLD WASH +"
-                details={value.details}
-                navigation={navigation}
-              />
-            );
+            return <PackageCard packageData={value} key={key} />;
           })}
-
-          {/* <PackageCard
-          name="PLATINUM"
-          price={25}
-          type="GOLD WASH +"
-          details={platinumPackage}
-          navigation={navigation}
-        />
-        <PackageCard
-          name="DELUX"
-          price={33}
-          type="Exterior WASH +"
-          details={deluxPackage}
-          navigation={navigation}
-        />
-        <PackageCard
-          name="VIP"
-          price={45}
-          type="GOLD WASH +"
-          details={vipPackage}
-          navigation={navigation}
-        /> */}
         </ScrollView>
       )}
     </View>

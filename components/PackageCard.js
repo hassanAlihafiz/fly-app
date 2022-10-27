@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import {
@@ -5,8 +6,8 @@ import {
   widthPercentageToDP,
 } from "react-native-responsive-screen";
 
-
-const PackageCard = ({ name, price, details, navigation }) => {
+const PackageCard = ({ packageData }) => {
+  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -33,7 +34,7 @@ const PackageCard = ({ name, price, details, navigation }) => {
               color: "white",
             }}
           >
-            {name}
+            {packageData.name}
           </Text>
           <Text
             style={{
@@ -43,7 +44,7 @@ const PackageCard = ({ name, price, details, navigation }) => {
               marginVertical: 3,
             }}
           >
-            ${price}
+            ${packageData.Price}
           </Text>
           <Text
             style={{
@@ -55,7 +56,7 @@ const PackageCard = ({ name, price, details, navigation }) => {
           >
             GOLD WASH +
           </Text>
-          {details.map((value) => {
+          {packageData.details.map((value) => {
             return (
               <View key={value} style={{ flexDirection: "row" }}>
                 <Text
@@ -89,14 +90,13 @@ const PackageCard = ({ name, price, details, navigation }) => {
           }}
           onPress={() =>
             navigation.navigate("Checkout", {
-              itemName: name,
-              itemPrice: price,
+              packageData: packageData,
               imgUrl: require("../assets/images.jpg"),
             })
           }
         >
           <Text style={{ color: "white", alignSelf: "center" }}>
-            {"$" + price}
+            {"$" + packageData.Price}
           </Text>
         </TouchableOpacity>
       </ImageBackground>

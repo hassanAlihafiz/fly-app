@@ -5,9 +5,7 @@ import { BottomSheet } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const Cart = ({ itemName, itemPrice, imgUrl }) => {
-  const serviceFee = parseFloat(itemPrice * 0.12).toFixed(2);
-  const total = (parseFloat(itemPrice) + parseFloat(serviceFee)).toFixed(2);
+const Cart = ({ itemName, itemPrice, imgUrl, serviceFee, total }) => {
   const navigation = useNavigation();
 
   return (

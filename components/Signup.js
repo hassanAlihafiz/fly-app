@@ -23,6 +23,7 @@ import { Overlay } from "@rneui/base";
 import { LocalStorage, setLocalStorage } from "../utils/LocalStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DevSettings } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Signup = ({ navigation, loginAs }) => {
   const [loading, setLoading] = React.useState(true);
@@ -91,7 +92,6 @@ const Signup = ({ navigation, loginAs }) => {
           } else if (loginAs === "driver") {
             navigation.navigate("DriverScreen");
           }
-          
         })
         .catch((e) => {
           console.log(e);
@@ -119,7 +119,15 @@ const Signup = ({ navigation, loginAs }) => {
   }, []);
 
   return (
-    <View style={{ flex: 1, width: wp("90%"), backgroundColor: "white" }}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{
+        flex: 1,
+
+        width: wp("90%"),
+        backgroundColor: "white",
+      }}
+    >
       {loading ? (
         <ActivityIndicator style={{ margin: 30 }} size="large" />
       ) : (
@@ -311,16 +319,17 @@ const Signup = ({ navigation, loginAs }) => {
               }}
             >
               <RNPickerSelect
-                style={{
-                  fontSize: 16,
-                  paddingVertical: 12,
-                  paddingHorizontal: 10,
-                  borderWidth: 1,
-                  borderColor: "gray",
-                  borderRadius: 4,
-                  color: "black",
-                  paddingRight: 30,
-                }}
+                useNativeAndroidPickerStyle={true}
+                // style={{
+                //   fontSize: 16,
+                //   paddingVertical: 12,
+                //   paddingHorizontal: 10,
+                //   borderWidth: 1,
+                //   borderColor: "gray",
+                //   borderRadius: 4,
+                //   color: "black",
+                //   paddingRight: 30,
+                // }}
                 onValueChange={(e) => handleData("zipCodeId", e.toString())}
                 items={zipData.map((value) => {
                   return {
@@ -354,7 +363,7 @@ const Signup = ({ navigation, loginAs }) => {
           </TouchableOpacity>
         </>
       )}
-    </View>
+    </ScrollView>
   );
 };
 

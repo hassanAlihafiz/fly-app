@@ -26,7 +26,9 @@ const AuthTabs = ({ navigation, loginAs }) => {
       navigationState={{ index, routes }}
       renderScene={renderScene}
       onIndexChange={setIndex}
-      initialLayout={{ width: wp("100%"), backgroundColor: "green" }}
+      initialLayout={{
+        backgroundColor: "green",
+      }}
       renderTabBar={(props) => (
         <TabBar
           {...props}
