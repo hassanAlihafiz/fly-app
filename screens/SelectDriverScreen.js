@@ -60,6 +60,10 @@ const SelectDriverScreen = ({ route }) => {
 
   const handleSelect = () => {
     if (selectedDriver != "") {
+      navigation.navigate("PaymentScreen", {
+        driverData: selectedDriver,
+        packageData: packageData,
+      });
     } else {
       setError({
         value: true,
@@ -67,7 +71,6 @@ const SelectDriverScreen = ({ route }) => {
       });
     }
   };
-  console.log("driver", selectedDriver);
 
   return (
     <View

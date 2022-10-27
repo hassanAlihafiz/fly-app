@@ -17,7 +17,8 @@ import MessageOverlay from "../components/MessageOverlay";
 
 const PaymentScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { packageData } = route.params;
+  const { driverData, packageData } = route.params;
+
   const [data, setData] = React.useState({
     firstName: "",
     lastName: "",
@@ -49,8 +50,7 @@ const PaymentScreen = ({ route }) => {
       [name]: value,
     });
   };
-  console.log(data);
-  console.log(cardInfo);
+
   const handelConfirm = () => {
     if (
       data.firstName != "" &&
@@ -71,7 +71,7 @@ const PaymentScreen = ({ route }) => {
         cardInfo.validExpiryDate == "Valid" &&
         cardInfo.validNumber == "Valid"
       ) {
-         navigation.navigate("SelectDriver", );
+        navigation.navigate("SelectDriver");
       } else if (
         cardInfo.validCVC == "Invalid" ||
         cardInfo.validExpiryDate == "Invalid" ||

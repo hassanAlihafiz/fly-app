@@ -200,7 +200,7 @@ const ServiceOffered = () => {
     >
       <Stack.Screen name="Main Service" component={ServiceOfferedScreen} />
       <Stack.Screen name="Checkout" component={Checkout} />
-      <Stack.Screen name="Payment Screen" component={PaymentScreen} />
+      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
       <Stack.Screen name="SelectDriver" component={SelectDriverScreen} />
     </Stack.Navigator>
   );
