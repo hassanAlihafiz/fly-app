@@ -3,8 +3,6 @@ import React from "react";
 import { Text, TouchableOpacity } from "react-native";
 
 const MessageOverlay = ({ value, message, setValue }) => {
-  console.log(value);
-  console.log(message);
   return (
     <Overlay
       isVisible={value}

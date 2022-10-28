@@ -10,14 +10,25 @@ import { TextInput } from "react-native-gesture-handler";
 import { BottomSheet } from "react-native-btr";
 import { MaterialIcons } from "@expo/vector-icons";
 import ModalSelector from "react-native-modal-selector";
-import RNPickerSelect from "react-native-picker-select";
+// import RNPickerSelect from "react-native-picker-select";
 import { countries } from "../utils/Countries";
 import { useNavigation } from "@react-navigation/native";
 import MessageOverlay from "../components/MessageOverlay";
+import { Picker } from "@react-native-picker/picker";
+import { formStyles } from "../components/styles/FormStyle";
+import { ActionSheetIOS } from "react-native";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 const PaymentScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { driverData, packageData } = route.params;
+  const { driverData, packageData, serviceFee, total } = route.params;
+  const [loading, setLoading] = React.useState(false);
+  const [countriesIOS, setCountriesIOS] = React.useState([
+    "Cancel",
+    ...countries.map((value) => {
+      return value.label;
+    }),
+  ]);
 
   const [data, setData] = React.useState({
     firstName: "",
@@ -89,6 +100,23 @@ const PaymentScreen = ({ route }) => {
       });
     }
   };
+  console.log(data);
+  const onCountryPress = () => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: countriesIOS,
+        cancelButtonIndex: 0,
+        userInterfaceStyle: "dark",
+        title: "Select Country",
+      },
+      (buttonIndex) => {
+        if (buttonIndex != 0) {
+          countriesIOS[buttonIndex];
+          handleData("country", countriesIOS[buttonIndex]);
+        }
+      }
+    );
+  };
 
   return (
     <View
@@ -102,6 +130,7 @@ const PaymentScreen = ({ route }) => {
         <Ionicons name="ios-arrow-back" size={24} color="black" />
       </TouchableOpacity>
 
+      <LoadingOverlay loading={loading} />
       <MessageOverlay
         value={error.value}
         setValue={setError}
@@ -280,7 +309,7 @@ const PaymentScreen = ({ route }) => {
               justifyContent: "center",
             }}
           >
-            <RNPickerSelect
+            {/* <RNPickerSelect
               placeholder={{
                 label: "Select the Country",
                 inputLabel: "Country",
@@ -290,7 +319,37 @@ const PaymentScreen = ({ route }) => {
               style={{ width: "100%" }}
               onValueChange={(value) => handleData("country", value)}
               items={countries}
-            />
+            /> */}
+            {Platform.OS === "ios" ? (
+              <TouchableOpacity onPress={onCountryPress}>
+                {data.country != "" ? (
+                  <Text style={formStyles.blackText}>{data.country}</Text>
+                ) : (
+                  <Text style={{ color: formStyles.placeholderTextColor }}>
+                    Country
+                  </Text>
+                )}
+              </TouchableOpacity>
+            ) : (
+              <Picker
+                prompt="Country"
+                style={{ width: "100%" }}
+                selectedValue={data.country}
+                onValueChange={(e) => {
+                  handleData("country", e.toString());
+                }}
+              >
+                {countries.map((value, key) => {
+                  return (
+                    <Picker.Item
+                      key={key}
+                      label={value.label}
+                      value={value.value}
+                    />
+                  );
+                })}
+              </Picker>
+            )}
           </View>
           <View
             style={{
@@ -345,6 +404,7 @@ const PaymentScreen = ({ route }) => {
           dangerouslyGetFullCardDetails
         />
       </KeyboardAvoidingScrollView>
+
       <TouchableOpacity
         style={{
           position: "absolute",
@@ -360,7 +420,7 @@ const PaymentScreen = ({ route }) => {
         }}
         onPress={handelConfirm}
       >
-        <Text style={{ color: "white" }}>Confirm and pay</Text>
+        <Text style={{ color: "white" }}>Confirm and pay: ${total}</Text>
       </TouchableOpacity>
     </View>
   );

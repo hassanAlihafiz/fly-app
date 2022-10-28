@@ -20,6 +20,9 @@ import { Overlay } from "@rneui/base";
 import { ActivityIndicator } from "react-native";
 import { setLocalStorage } from "../utils/LocalStorage";
 import { DevSettings } from "react-native";
+import { container, formStyles } from "./styles/FormStyle";
+import LoadingOverlay from "./LoadingOverlay";
+import MessageOverlay from "./MessageOverlay";
 
 const Login = ({ navigation, loginAs }) => {
   const [loading, setLoading] = React.useState(false);
@@ -85,57 +88,13 @@ const Login = ({ navigation, loginAs }) => {
 
   return (
     // <KeyboardAvoidingView behavior="padding">
-    <View style={{ flex: 1, width: wp("90%"), backgroundColor: "white" }}>
-      <Overlay
-        isVisible={loading}
-        overlayStyle={{
-          padding: 20,
-
-          backgroundColor: "white",
-          borderRadius: 10,
-
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <ActivityIndicator size="large" />
-      </Overlay>
-      <Overlay
-        isVisible={error.value}
-        overlayStyle={{
-          padding: 20,
-          width: 200,
-
-          backgroundColor: "white",
-          borderRadius: 10,
-
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
-          {error.message}
-        </Text>
-        <TouchableOpacity
-          style={{
-            marginTop: 10,
-            width: "100%",
-            height: 40,
-            backgroundColor: "green",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 10,
-          }}
-          onPress={() =>
-            setError({
-              value: false,
-              message: "",
-            })
-          }
-        >
-          <Text style={{ color: "white" }}>Close</Text>
-        </TouchableOpacity>
-      </Overlay>
+    <View style={container}>
+      <LoadingOverlay loading={loading} />
+      <MessageOverlay
+        value={error.value}
+        setValue={setError}
+        message={error.message}
+      />
       <FacebookSocialButton
         buttonViewStyle={{
           alignSelf: "center",
@@ -155,18 +114,8 @@ const Login = ({ navigation, loginAs }) => {
           backgroundColor: "#d7d7d7",
         }}
       />
-      <Text style={{ alignSelf: "center", marginTop: 10, marginBottom: 10 }}>
-        - or Log In With -
-      </Text>
-      <View
-        style={{
-          marginTop: 10,
-          marginBottom: 10,
-          justifyContent: "space-between",
-          height: 90,
-          alignItems: "center",
-        }}
-      >
+      <Text style={formStyles.blackTextCenter}>- or Log In With -</Text>
+      <View style={formStyles.mainSecond}>
         <View
           style={{
             flexDirection: "row",

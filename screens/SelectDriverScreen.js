@@ -14,7 +14,7 @@ import MessageOverlay from "../components/MessageOverlay";
 
 const SelectDriverScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { packageData } = route.params;
+  const { packageData, serviceFee, total } = route.params;
   const [loading, setLoading] = React.useState(true);
   const [zipDrivers, setZipDrivers] = React.useState(null);
   const [user, setUser] = React.useState({});
@@ -63,6 +63,8 @@ const SelectDriverScreen = ({ route }) => {
       navigation.navigate("PaymentScreen", {
         driverData: selectedDriver,
         packageData: packageData,
+        serviceFee: serviceFee,
+        total: total,
       });
     } else {
       setError({
