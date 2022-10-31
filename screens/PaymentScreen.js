@@ -13,15 +13,25 @@ import ModalSelector from "react-native-modal-selector";
 // import RNPickerSelect from "react-native-picker-select";
 import { countries } from "../utils/Countries";
 import { useNavigation } from "@react-navigation/native";
-import MessageOverlay from "../components/MessageOverlay";
 import { Picker } from "@react-native-picker/picker";
 import { formStyles } from "../components/styles/FormStyle";
 import { ActionSheetIOS } from "react-native";
-import LoadingOverlay from "../components/LoadingOverlay";
+
+import { getPostCall } from "../utils/API";
+import { getLocalStorage, getToken } from "../utils/LocalStorage";
+import {
+  LoadingOverlay,
+  MessageOverlay,
+  SuccessOverlay,
+} from "../components/Overlays";
 
 const PaymentScreen = ({ route }) => {
   const navigation = useNavigation();
+
   const { driverData, packageData, serviceFee, total } = route.params;
+  const [user, setUser] = React.useState({});
+  const [token, setToken] = React.useState();
+
   const [loading, setLoading] = React.useState(false);
   const [countriesIOS, setCountriesIOS] = React.useState([
     "Cancel",
@@ -29,7 +39,6 @@ const PaymentScreen = ({ route }) => {
       return value.label;
     }),
   ]);
-
   const [data, setData] = React.useState({
     firstName: "",
     lastName: "",
@@ -54,15 +63,30 @@ const PaymentScreen = ({ route }) => {
     value: false,
     message: "",
   });
-
+  const [success, setSuccess] = React.useState({
+    value: false,
+    message: "",
+  });
+  React.useEffect(() => {
+    getUser();
+  }, []);
+  const getUser = async () => {
+    const _user = await getLocalStorage("user");
+    const _token = await getToken("user");
+    setUser(_user);
+    setToken(_token);
+  };
+  console.log(user.id);
   const handleData = (name, value) => {
     setData({
       ...data,
       [name]: value,
     });
   };
+  console.log(token);
 
   const handelConfirm = () => {
+    setLoading(true);
     if (
       data.firstName != "" &&
       data.lastName != "" &&
@@ -82,24 +106,68 @@ const PaymentScreen = ({ route }) => {
         cardInfo.validExpiryDate == "Valid" &&
         cardInfo.validNumber == "Valid"
       ) {
-        navigation.navigate("SelectDriver");
-      } else if (
-        cardInfo.validCVC == "Invalid" ||
-        cardInfo.validExpiryDate == "Invalid" ||
-        cardInfo.validNumber == "Invalid"
-      ) {
+        const dataObj = {
+          packageId: packageData.id,
+          driverId: driverData.id,
+          userId: user.id,
+          amount: total,
+          zipCode: user.zipCodeId,
+          userData: {
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            paymentMethod: data,
+          },
+          driverData: {
+            available: false,
+            email: driverData.email,
+            first_name: driverData.first_name,
+            last_name: driverData.last_name,
+          },
+          packageData: packageData,
+          paymentMethod: data,
+        };
+
+        getPostCall(
+          "booking/addBooking",
+          "POST",
+          JSON.stringify(dataObj),
+          token
+        )
+          .then((e) => {
+            setLoading(false);
+
+            setSuccess({
+              value: true,
+              message: "Successfully Booked",
+            });
+            setTimeout(() => {
+              navigation.navigate("Main Service");
+            }, 1000);
+          })
+          .catch((e) => {
+            setLoading(false);
+            setError({
+              value: true,
+              message: "Error occured",
+            });
+          });
+      } else {
+        setLoading(false);
         setError({
           value: true,
           message: "Please enter valid card details",
         });
       }
     } else {
+      setLoading(false);
       setError({
         value: true,
         message: "Please fill all the fields",
       });
     }
   };
+
   console.log(data);
   const onCountryPress = () => {
     ActionSheetIOS.showActionSheetWithOptions(
@@ -136,6 +204,7 @@ const PaymentScreen = ({ route }) => {
         setValue={setError}
         message={error.message}
       />
+      <SuccessOverlay value={success.value} message={success.message}/>
 
       <View
         style={{
@@ -207,94 +276,81 @@ const PaymentScreen = ({ route }) => {
               }}
             />
           </View>
-          <View
+
+          <TextInput
+            placeholder="Street Address"
+            autoComplete="street-address"
+            placeholderTextColor="#9EA0A4"
+            onChangeText={(e) => handleData("address", e)}
             style={{
-              marginVertical: 10,
               width: "100%",
+
+              marginVertical: 10,
+              height: 40,
+              borderWidth: 1,
+              borderColor: "#d7d7d7",
+              paddingLeft: 10,
+              paddingRight: 10,
+              backgroundColor: "white",
+              borderRadius: 5,
             }}
-          >
-            <TextInput
-              placeholder="Street Address"
-              autoComplete="street-address"
-              placeholderTextColor="#9EA0A4"
-              onChangeText={(e) => handleData("address", e)}
-              style={{
-                height: 40,
-                borderWidth: 1,
-                borderColor: "#d7d7d7",
-                paddingLeft: 10,
-                paddingRight: 10,
-                backgroundColor: "white",
-                borderRadius: 5,
-              }}
-            />
-          </View>
-          <View
+          />
+
+          <TextInput
+            placeholder="Apartment, suite, etc"
+            autoComplete="postal-address-extended"
+            placeholderTextColor="#9EA0A4"
+            onChangeText={(e) => handleData("address2", e)}
             style={{
-              marginVertical: 10,
               width: "100%",
+
+              marginVertical: 10,
+              height: 40,
+              borderWidth: 1,
+              borderColor: "#d7d7d7",
+              paddingLeft: 10,
+              paddingRight: 10,
+              backgroundColor: "white",
+              borderRadius: 5,
             }}
-          >
-            <TextInput
-              placeholder="Apartment, suite, etc"
-              autoComplete="postal-address-extended"
-              placeholderTextColor="#9EA0A4"
-              onChangeText={(e) => handleData("address2", e)}
-              style={{
-                height: 40,
-                borderWidth: 1,
-                borderColor: "#d7d7d7",
-                paddingLeft: 10,
-                paddingRight: 10,
-                backgroundColor: "white",
-                borderRadius: 5,
-              }}
-            />
-          </View>
-          <View
+          />
+
+          <TextInput
+            placeholder="City"
+            autoComplete="postal-address-locality"
+            placeholderTextColor="#9EA0A4"
+            onChangeText={(e) => handleData("city", e)}
             style={{
               marginVertical: 10,
               width: "48%",
+              height: 40,
+              borderWidth: 1,
+              borderColor: "#d7d7d7",
+              paddingLeft: 10,
+              paddingRight: 10,
+              backgroundColor: "white",
+              borderRadius: 5,
             }}
-          >
-            <TextInput
-              placeholder="City"
-              autoComplete="postal-address-locality"
-              placeholderTextColor="#9EA0A4"
-              onChangeText={(e) => handleData("city", e)}
-              style={{
-                height: 40,
-                borderWidth: 1,
-                borderColor: "#d7d7d7",
-                paddingLeft: 10,
-                paddingRight: 10,
-                backgroundColor: "white",
-                borderRadius: 5,
-              }}
-            />
-          </View>
-          <View
+          />
+
+          <TextInput
+            placeholder="State"
+            autoComplete="postal-address-region"
+            placeholderTextColor="#9EA0A4"
+            onChangeText={(e) => handleData("state", e)}
             style={{
+              height: 40,
               marginVertical: 10,
               width: "48%",
+              borderWidth: 1,
+              borderColor: "#d7d7d7",
+              paddingLeft: 10,
+              paddingRight: 10,
+              backgroundColor: "white",
+              borderRadius: 5,
             }}
-          >
-            <TextInput
-              placeholder="State"
-              autoComplete="postal-address-region"
-              placeholderTextColor="#9EA0A4"
-              onChangeText={(e) => handleData("state", e)}
-              style={{
-                height: 40,
-                borderWidth: 1,
-                borderColor: "#d7d7d7",
-                paddingLeft: 10,
-                paddingRight: 10,
-                backgroundColor: "white",
-                borderRadius: 5,
-              }}
-            />
-          </View>
+          />
+
           <View
             style={{
               marginVertical: 10,
@@ -309,17 +365,6 @@ const PaymentScreen = ({ route }) => {
               justifyContent: "center",
             }}
           >
-            {/* <RNPickerSelect
-              placeholder={{
-                label: "Select the Country",
-                inputLabel: "Country",
-                color: "#9EA0A4",
-              }}
-              value={data.country}
-              style={{ width: "100%" }}
-              onValueChange={(value) => handleData("country", value)}
-              items={countries}
-            /> */}
             {Platform.OS === "ios" ? (
               <TouchableOpacity onPress={onCountryPress}>
                 {data.country != "" ? (
@@ -351,29 +396,25 @@ const PaymentScreen = ({ route }) => {
               </Picker>
             )}
           </View>
-          <View
+
+          <TextInput
+            placeholder="Zip code"
+            autoComplete="postal-address-extended-postal-code"
+            keyboardType="number-pad"
+            placeholderTextColor="#9EA0A4"
+            onChangeText={(e) => handleData("zip", e)}
             style={{
               marginVertical: 10,
               width: "48%",
+              height: 40,
+              borderWidth: 1,
+              borderColor: "#d7d7d7",
+              paddingLeft: 10,
+              paddingRight: 10,
+              backgroundColor: "white",
+              borderRadius: 5,
             }}
-          >
-            <TextInput
-              placeholder="Zip code"
-              autoComplete="postal-address-extended-postal-code"
-              keyboardType="number-pad"
-              placeholderTextColor="#9EA0A4"
-              onChangeText={(e) => handleData("zip", e)}
-              style={{
-                height: 40,
-                borderWidth: 1,
-                borderColor: "#d7d7d7",
-                paddingLeft: 10,
-                paddingRight: 10,
-                backgroundColor: "white",
-                borderRadius: 5,
-              }}
-            />
-          </View>
+          />
         </View>
         <CardField
           placeholders={{

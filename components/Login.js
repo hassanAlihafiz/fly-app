@@ -1,32 +1,22 @@
-import React, { useEffect } from "react";
-import {
-  KeyboardAvoidingView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import {
-  heightPercentageToDP,
-  widthPercentageToDP as wp,
-} from "react-native-responsive-screen";
+import React from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { FacebookSocialButton } from "react-native-social-buttons";
 import { GoogleSocialButton } from "react-native-social-buttons/src/buttons/GoogleSocialButton";
 import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
-import { Alert } from "react-native";
-import { Overlay } from "@rneui/base";
-import { ActivityIndicator } from "react-native";
 import { setLocalStorage } from "../utils/LocalStorage";
-import { DevSettings } from "react-native";
 import { container, formStyles } from "./styles/FormStyle";
-import LoadingOverlay from "./LoadingOverlay";
-import MessageOverlay from "./MessageOverlay";
+import { LoadingOverlay, MessageOverlay, SuccessOverlay } from "./Overlays";
 
 const Login = ({ navigation, loginAs }) => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState({
+    value: false,
+    message: "",
+  });
+  const [success, setSuccess] = React.useState({
     value: false,
     message: "",
   });
@@ -58,23 +48,29 @@ const Login = ({ navigation, loginAs }) => {
       };
       axios(config)
         .then((response) => {
-          setError({
+          setSuccess({
             value: true,
             message: "Login Successful",
           });
-          setLocalStorage("user", JSON.stringify(response?.data));
+          setTimeout(() => {
+            setSuccess({
+              value: false,
+              message: "",
+            });
+          }, 2000);
           if (response.data.userType === "customer" && loginAs === "customer") {
+            setLocalStorage("user", JSON.stringify(response?.data));
             navigation.navigate("HomeScreen");
             setLoading(false);
           } else if (
             response.data.userType === "driver" &&
             loginAs === "driver"
           ) {
+            setLocalStorage("user", JSON.stringify(response?.data));
             navigation.navigate("DriverScreen");
             setLoading(false);
           }
         })
-
         .catch((error) => {
           console.log(error);
           setLoading(false);
@@ -87,7 +83,6 @@ const Login = ({ navigation, loginAs }) => {
   };
 
   return (
-    // <KeyboardAvoidingView behavior="padding">
     <View style={container}>
       <LoadingOverlay loading={loading} />
       <MessageOverlay
@@ -95,6 +90,7 @@ const Login = ({ navigation, loginAs }) => {
         setValue={setError}
         message={error.message}
       />
+      <SuccessOverlay value={success.value} message={success.message} />
       <FacebookSocialButton
         buttonViewStyle={{
           alignSelf: "center",

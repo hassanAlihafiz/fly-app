@@ -5,12 +5,11 @@ import { ScrollView, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 
 import { getCall } from "../utils/API";
-import { getLocalStorage, getToken } from "../utils/LocalStorage";
+import { getLocalStorage } from "../utils/LocalStorage";
 import { AntDesign } from "@expo/vector-icons";
-import { KeyboardAvoidingScrollView } from "react-native-keyboard-avoiding-scroll-view";
 import { ActivityIndicator } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import MessageOverlay from "../components/MessageOverlay";
+import { MessageOverlay } from "../components/Overlays";
 
 const SelectDriverScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -43,10 +42,9 @@ const SelectDriverScreen = ({ route }) => {
     getCall("driver/getDrivers", "GET", user.token)
       .then((e) => {
         const db = [];
-        console.log("all", e.data);
+
         e?.data?.map((value) => {
           if (value.zipCodeId === user.zipCodeId) {
-            console.log(value);
             db.push(value);
           }
         });
@@ -90,6 +88,7 @@ const SelectDriverScreen = ({ route }) => {
         setValue={setError}
         message={error.message}
       />
+
       <View
         style={{
           flexDirection: "row",

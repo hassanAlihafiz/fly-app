@@ -29,9 +29,9 @@ import { DevSettings } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
 import { PickerIOS } from "@react-native-picker/picker";
-import LoadingOverlay from "./LoadingOverlay";
-import MessageOverlay from "./MessageOverlay";
+
 import { container, formStyles } from "./styles/FormStyle";
+import { LoadingOverlay, MessageOverlay, SuccessOverlay } from "./Overlays";
 
 const Signup = ({ navigation, loginAs }) => {
   const [loading, setLoading] = React.useState(true);
@@ -39,6 +39,10 @@ const Signup = ({ navigation, loginAs }) => {
   const [zipData, setZipData] = React.useState([]);
   const [zipIOSData, setZipIOSData] = React.useState([]);
   const [error, setError] = React.useState({
+    value: false,
+    message: "",
+  });
+  const [success, setSuccess] = React.useState({
     value: false,
     message: "",
   });
@@ -102,7 +106,7 @@ const Signup = ({ navigation, loginAs }) => {
       getPostCall("users/register", "POST", JSON.stringify(data), "")
         .then((e) => {
           setLoader(false);
-          setError({
+          setSuccess({
             value: true,
             message: `User Successfully Registered`,
           });
@@ -157,6 +161,7 @@ const Signup = ({ navigation, loginAs }) => {
             message={error.message}
           />
 
+          <SuccessOverlay value={true} message={success.message} />
           <FacebookSocialButton
             buttonViewStyle={{
               alignSelf: "center",
@@ -222,7 +227,7 @@ const Signup = ({ navigation, loginAs }) => {
                 style={formStyles.pickerIOS}
               >
                 {data.zipCodeId != "" ? (
-                  <Text style={blackText}>{data.zipCodeId}</Text>
+                  <Text style={formStyles.blackText}>{data.zipCodeId}</Text>
                 ) : (
                   <Text style={{ color: formStyles.placeholderTextColor }}>
                     Zipcode
