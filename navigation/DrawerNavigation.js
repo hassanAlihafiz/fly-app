@@ -18,6 +18,7 @@ import {
   useNavigationState,
 } from "@react-navigation/native";
 import SelectDriverScreen from "../screens/SelectDriverScreen";
+import PickDropMap from "../components/PickDropMap";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -30,6 +31,11 @@ const HomeStack = () => {
       }}
     >
       <Stack.Screen name="FirstHome" component={HomeScreen} />
+      <Stack.Screen name="Main Service" component={ServiceOfferedScreen} />
+      <Stack.Screen name="Checkout" component={Checkout} />
+      <Stack.Screen name="PickDropMap" component={PickDropMap} />
+      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+      <Stack.Screen name="SelectDriver" component={SelectDriverScreen} />
     </Stack.Navigator>
   );
 };
@@ -76,7 +82,7 @@ const DrawerTab = () => {
           ),
         }}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Service Offered"
         component={ServiceOffered}
         options={{
@@ -100,7 +106,7 @@ const DrawerTab = () => {
             />
           ),
         }}
-      />
+      /> */}
       <Drawer.Screen
         name="  Stripe"
         component={StripeScreen}
@@ -187,21 +193,6 @@ const SettingStack = () => {
       }}
     >
       <Stack.Screen name="Main Setting" component={SettingScreen} />
-    </Stack.Navigator>
-  );
-};
-
-const ServiceOffered = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="Main Service" component={ServiceOfferedScreen} />
-      <Stack.Screen name="Checkout" component={Checkout} />
-      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
-      <Stack.Screen name="SelectDriver" component={SelectDriverScreen} />
     </Stack.Navigator>
   );
 };

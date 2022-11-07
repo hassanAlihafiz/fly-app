@@ -10,35 +10,11 @@ import PackageCard from "../components/PackageCard";
 import { getLocalStorage, getToken } from "../utils/LocalStorage";
 import { getCall } from "../utils/API";
 import { ActivityIndicator } from "react-native";
+import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-const goldPackage = ["Exterior wash", "Rim clean", "Towel Dried"];
-const platinumPackage = [
-  "Exterior wash",
-  "Rim clean",
-  "Tire shine",
-  "Undercarriage bath",
-  "Towel Dried",
-];
-const deluxPackage = [
-  "Exterior wash",
-  "Vacuumed",
-  "Window clean",
-  "Rim clean",
-  "Tire shine",
-  "Undercarriage bath",
-  "Towel Dried",
-];
-const vipPackage = [
-  "Exterior wash",
-  "Vacuumed",
-  "Window clean",
-  "Rim clean",
-  "Tire shine",
-  "Rain - x",
-  "Body gloss",
-  "Towel Dried",
-];
-const ServiceOffered = ({ navigation }) => {
+const ServiceOffered = ({ route, navigation }) => {
+  const carType = route?.params;
+
   const [loading, setLoading] = React.useState(true);
   const [packages, setPackages] = React.useState([]);
   const [token, setToken] = React.useState(null);
@@ -68,36 +44,128 @@ const ServiceOffered = ({ navigation }) => {
         console.log(e);
       });
   };
-
+  console.log(route?.params);
   return (
-    <View style={{ marginBottom: 20 }} showsVerticalScrollIndicator={false}>
-      <Text
+    <View
+      style={{
+        flex: 1,
+
+        backgroundColor: "white",
+      }}
+    >
+      <TouchableOpacity
+        style={{ marginLeft: 20, marginTop: 20 }}
+        onPress={() => navigation.goBack()}
+      >
+        <Ionicons name="ios-arrow-back" size={24} color="black" />
+      </TouchableOpacity>
+      <View
         style={{
-          paddingLeft: 20,
-          marginTop: 10,
-          color: "black",
-          fontWeight: "bold",
-          fontSize: 22,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginHorizontal: 20,
         }}
       >
-        Packages
-      </Text>
-      {loading ? (
-        <ActivityIndicator size="large" />
-      ) : (
-        <ScrollView
-          contentContainerStyle={{
-            marginHorizontal: 5,
-            marginTop: 5,
-            marginBottom: 5,
+        <Text
+          style={{
+            marginVertical: 10,
+            fontSize: 20,
+            fontWeight: "bold",
           }}
-          showsHorizontalScrollIndicator={false}
         >
-          {packages.map((value, key) => {
-            return <PackageCard packageData={value} key={key} />;
-          })}
-        </ScrollView>
-      )}
+          Packages
+        </Text>
+        <MaterialIcons name="local-car-wash" size={24} color="black" />
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {loading ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <>
+            <Text
+              style={{
+                marginTop: 10,
+                color: "black",
+                fontWeight: "bold",
+                fontSize: 22,
+                marginHorizontal: 20,
+                marginHorizontal: 20,
+              }}
+            >
+              Car Wash
+            </Text>
+            <ScrollView
+              horizontal
+              contentContainerStyle={{
+                marginLeft: 10,
+
+                marginTop: 5,
+                marginBottom: 5,
+              }}
+              showsHorizontalScrollIndicator={false}
+            >
+              {packages
+                .filter((arr) => arr.type == "Car Wash")
+                .map((value, key) => {
+                  return <PackageCard packageData={value} key={key} />;
+                })}
+            </ScrollView>
+            <Text
+              style={{
+                marginTop: 10,
+                color: "black",
+                fontWeight: "bold",
+                fontSize: 22,
+                marginHorizontal: 20,
+              }}
+            >
+              Gas
+            </Text>
+            <ScrollView
+              horizontal
+              contentContainerStyle={{
+                marginLeft: 10,
+                marginTop: 5,
+                marginBottom: 5,
+              }}
+              showsHorizontalScrollIndicator={false}
+            >
+              {packages
+                .filter((arr) => arr.type == "Gas")
+                .map((value, key) => {
+                  return <PackageCard packageData={value} key={key} />;
+                })}
+            </ScrollView>
+            <Text
+              style={{
+                marginTop: 10,
+                color: "black",
+                fontWeight: "bold",
+                fontSize: 22,
+                marginHorizontal: 20,
+              }}
+            >
+              Others
+            </Text>
+            <ScrollView
+              horizontal
+              contentContainerStyle={{
+                marginLeft: 10,
+                marginTop: 5,
+                marginBottom: 5,
+              }}
+              showsHorizontalScrollIndicator={false}
+            >
+              {packages
+                .filter((arr) => arr.type == "Others")
+                .map((value, key) => {
+                  return <PackageCard packageData={value} key={key} />;
+                })}
+            </ScrollView>
+          </>
+        )}
+      </ScrollView>
     </View>
   );
 };

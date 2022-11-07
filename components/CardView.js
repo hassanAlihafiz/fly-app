@@ -7,10 +7,15 @@ import {
 } from "react-native";
 import React, { Component } from "react";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { useNavigation } from "@react-navigation/native";
 
 const CardView = ({ name, img }) => {
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity style={styles.mainContainer}>
+    <TouchableOpacity
+      style={styles.mainContainer}
+      onPress={() => navigation.navigate("Main Service", { carType: name })}
+    >
       <ImageBackground
         source={img}
         style={{

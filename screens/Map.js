@@ -1,5 +1,9 @@
 import * as React from "react";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, {
+  Marker,
+  PROVIDER_GOOGLE,
+  AnimatedRegion,
+} from "react-native-maps";
 import {
   StyleSheet,
   Text,
@@ -27,13 +31,15 @@ export default function MapScreen() {
       >
         <Marker
           draggable
+          centerOffset={(0, 0)}
+          // onDrag={(e, n) => console.log("location", e.nativeEvent, n)}
           coordinate={{
             latitude: 37.78825,
             longitude: -122.4324,
           }}
-          onSelect={(e) => console.log("onSelect")}
-          onDragEnd={(e) => {}}
-          onDragStart={(e) => console.log("onDragStart")}
+          onSelect={(e) => console.log("onSelect", e.nativeEvent)}
+          onDragEnd={(e) => console.log("onDragEnd", e.nativeEvent)}
+          onDragStart={(e) => console.log("onDragStart", e.nativeEvent)}
         >
           <TouchableOpacity style={{ height: 80 }}>
             <Entypo name="location-pin" size={50} color="red" />

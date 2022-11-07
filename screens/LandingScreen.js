@@ -6,11 +6,10 @@ import { getLocalStorage } from "../utils/LocalStorage";
 
 const Landing = () => {
   const navigation = useNavigation();
-
   React.useEffect(() => {
     async function get() {
       const user = await getLocalStorage("user");
-
+      console.log("User", user);
       if (user != null && user.userType === "customer") {
         navigation.navigate("HomeScreen");
       } else if (user != null && user.userType === "driver") {

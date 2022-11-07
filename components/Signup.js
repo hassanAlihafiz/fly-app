@@ -110,9 +110,17 @@ const Signup = ({ navigation, loginAs }) => {
             value: true,
             message: `User Successfully Registered`,
           });
-
+          setTimeout(() => {
+            setSuccess({
+              value: false,
+              message: "",
+            });
+          }, 2000);
           handleData("token", e?.data?.token);
-          setLocalStorage("user", JSON.stringify(data));
+          setLocalStorage(
+            "user",
+            JSON.stringify({ ...data, token: e?.data?.token })
+          );
           if (loginAs === "customer") {
             navigation.navigate("HomeScreen");
           } else if (loginAs === "driver") {
@@ -148,6 +156,8 @@ const Signup = ({ navigation, loginAs }) => {
     );
   };
 
+  console.log(success);
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={container}>
       {loading ? (
@@ -161,7 +171,7 @@ const Signup = ({ navigation, loginAs }) => {
             message={error.message}
           />
 
-          <SuccessOverlay value={true} message={success.message} />
+          <SuccessOverlay value={loader} message={success.message} />
           <FacebookSocialButton
             buttonViewStyle={{
               alignSelf: "center",

@@ -11,7 +11,7 @@ import { container, formStyles } from "./styles/FormStyle";
 import { LoadingOverlay, MessageOverlay, SuccessOverlay } from "./Overlays";
 
 const Login = ({ navigation, loginAs }) => {
-  const [loading, setLoading] = React.useState(false);
+  const [loader, setLoader] = React.useState(false);
   const [error, setError] = React.useState({
     value: false,
     message: "",
@@ -30,13 +30,13 @@ const Login = ({ navigation, loginAs }) => {
   console.log(data);
 
   const handleLogin = async () => {
-    setLoading(true);
+    setLoader(true);
     if (data.email == "" || data.password == "") {
       setError({
         value: true,
         message: "Email and password fields can not be empty",
       });
-      setLoading(false);
+      setLoader(false);
     } else {
       var config = {
         method: "post",
@@ -61,19 +61,19 @@ const Login = ({ navigation, loginAs }) => {
           if (response.data.userType === "customer" && loginAs === "customer") {
             setLocalStorage("user", JSON.stringify(response?.data));
             navigation.navigate("HomeScreen");
-            setLoading(false);
+            setLoader(false);
           } else if (
             response.data.userType === "driver" &&
             loginAs === "driver"
           ) {
             setLocalStorage("user", JSON.stringify(response?.data));
             navigation.navigate("DriverScreen");
-            setLoading(false);
+            setLoader(false);
           }
         })
         .catch((error) => {
           console.log(error);
-          setLoading(false);
+          setLoader(false);
           setError({
             value: true,
             message: "Invalid Credentials",
@@ -84,7 +84,7 @@ const Login = ({ navigation, loginAs }) => {
 
   return (
     <View style={container}>
-      <LoadingOverlay loading={loading} />
+      <LoadingOverlay loading={loader} />
       <MessageOverlay
         value={error.value}
         setValue={setError}

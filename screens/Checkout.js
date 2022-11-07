@@ -40,14 +40,14 @@ const Checkout = ({ route, navigation }) => {
           marginHorizontal: 20,
         }}
         onPress={() =>
-          navigation.navigate("SelectDriver", {
+          navigation.navigate("PickDropMap", {
             packageData: packageData,
             serviceFee: serviceFee,
             total: total,
           })
         }
       >
-        <Text style={{ color: "white" }}>Checkout</Text>
+        <Text style={{ color: "white" }}>Proceed</Text>
       </TouchableOpacity>
     </View>
   );

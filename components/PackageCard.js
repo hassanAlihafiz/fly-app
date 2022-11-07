@@ -25,7 +25,12 @@ const PackageCard = ({ packageData }) => {
         }}
         blurRadius={2}
       >
-        <View>
+        <View
+          style={{
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
           <Text
             style={{
               textAlign: "center",
@@ -56,27 +61,29 @@ const PackageCard = ({ packageData }) => {
           >
             GOLD WASH +
           </Text>
-          {packageData.details.map((value) => {
-            return (
-              <View key={value} style={{ flexDirection: "row" }}>
-                <Text
-                  style={{ fontSize: 17, fontWeight: "bold", color: "white" }}
-                >
-                  {"\u2022"}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    flex: 1,
-                    paddingLeft: 5,
-                    color: "white",
-                  }}
-                >
-                  {value}
-                </Text>
-              </View>
-            );
-          })}
+          <View>
+            {packageData.details.splice(0, 3).map((value) => {
+              return (
+                <View key={value} style={{ flexDirection: "row" }}>
+                  <Text
+                    style={{ fontSize: 17, fontWeight: "bold", color: "white" }}
+                  >
+                    {"\u2022"}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      flex: 1,
+                      paddingLeft: 5,
+                      color: "white",
+                    }}
+                  >
+                    {value}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
         </View>
         <TouchableOpacity
           style={{

@@ -116,6 +116,8 @@ const SelectDriverScreen = ({ route }) => {
       >
         {loading ? (
           <ActivityIndicator size="large" />
+        ) : zipDrivers.length == 0 ? (
+          <Text>No Driver in your location</Text>
         ) : (
           zipDrivers.map((value, key) => {
             return (
