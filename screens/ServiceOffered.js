@@ -44,6 +44,7 @@ const ServiceOffered = ({ route, navigation }) => {
         console.log(e);
       });
   };
+
   console.log(route?.params);
   return (
     <View
@@ -98,7 +99,7 @@ const ServiceOffered = ({ route, navigation }) => {
             <ScrollView
               horizontal
               contentContainerStyle={{
-                marginLeft: 10,
+                marginHorizontal: 10,
 
                 marginTop: 5,
                 marginBottom: 5,
@@ -108,9 +109,16 @@ const ServiceOffered = ({ route, navigation }) => {
               {packages
                 .filter((arr) => arr.type == "Car Wash")
                 .map((value, key) => {
-                  return <PackageCard packageData={value} key={key} />;
+                  return (
+                    <PackageCard
+                      packageData={value}
+                      key={key}
+                      carType={carType}
+                    />
+                  );
                 })}
             </ScrollView>
+
             <Text
               style={{
                 marginTop: 10,
@@ -122,21 +130,43 @@ const ServiceOffered = ({ route, navigation }) => {
             >
               Gas
             </Text>
-            <ScrollView
-              horizontal
-              contentContainerStyle={{
-                marginLeft: 10,
-                marginTop: 5,
-                marginBottom: 5,
-              }}
-              showsHorizontalScrollIndicator={false}
-            >
-              {packages
-                .filter((arr) => arr.type == "Gas")
-                .map((value, key) => {
-                  return <PackageCard packageData={value} key={key} />;
-                })}
-            </ScrollView>
+            {packages.filter((arr) => arr.type == "Gas").length == 0 ? (
+              <Text
+                style={{
+                  marginTop: 10,
+                  color: "black",
+                  fontWeight: "bold",
+                  fontSize: 15,
+                  marginHorizontal: 20,
+                }}
+              >
+                No Active package of this category
+              </Text>
+            ) : (
+              <ScrollView
+                horizontal
+                contentContainerStyle={{
+                  marginLeft: 10,
+
+                  marginTop: 5,
+                  marginBottom: 5,
+                }}
+                showsHorizontalScrollIndicator={false}
+              >
+                {packages
+                  .filter((arr) => arr.type == "Gas")
+                  .map((value, key) => {
+                    return (
+                      <PackageCard
+                        packageData={value}
+                        key={key}
+                        carType={carType}
+                      />
+                    );
+                  })}
+              </ScrollView>
+            )}
+
             <Text
               style={{
                 marginTop: 10,
@@ -148,21 +178,43 @@ const ServiceOffered = ({ route, navigation }) => {
             >
               Others
             </Text>
-            <ScrollView
-              horizontal
-              contentContainerStyle={{
-                marginLeft: 10,
-                marginTop: 5,
-                marginBottom: 5,
-              }}
-              showsHorizontalScrollIndicator={false}
-            >
-              {packages
-                .filter((arr) => arr.type == "Others")
-                .map((value, key) => {
-                  return <PackageCard packageData={value} key={key} />;
-                })}
-            </ScrollView>
+            {packages.filter((arr) => arr.type == "Others").length == 0 ? (
+              <Text
+                style={{
+                  marginTop: 10,
+                  color: "black",
+                  fontWeight: "bold",
+                  fontSize: 15,
+                  marginHorizontal: 20,
+                }}
+              >
+                No Active package of this category
+              </Text>
+            ) : (
+              <>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={{
+                    marginLeft: 10,
+                    marginTop: 5,
+                    marginBottom: 5,
+                  }}
+                  showsHorizontalScrollIndicator={false}
+                >
+                  {packages
+                    .filter((arr) => arr.type == "Others")
+                    .map((value, key) => {
+                      return (
+                        <PackageCard
+                          packageData={value}
+                          key={key}
+                          carType={carType}
+                        />
+                      );
+                    })}
+                </ScrollView>
+              </>
+            )}
           </>
         )}
       </ScrollView>

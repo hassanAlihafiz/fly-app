@@ -6,108 +6,114 @@ import {
   widthPercentageToDP,
 } from "react-native-responsive-screen";
 
-const PackageCard = ({ packageData }) => {
+const PackageCard = ({ packageData, carType }) => {
   const navigation = useNavigation();
   return (
-    <View
-      style={{
+    <ImageBackground
+      source={
+        packageData.type == "Gas"
+          ? require("../assets/gas-station.jpg")
+          : require("../assets/images.jpg")
+      }
+      imageStyle={{
         borderRadius: 20,
-        marginHorizontal: 10,
-        marginVertical: 10,
       }}
+      style={{
+        margin: 10,
+        padding: 20,
+        marginBottom: 60,
+
+        width: widthPercentageToDP(80),
+        height: "100%",
+      }}
+      blurRadius={2}
     >
-      <ImageBackground
-        source={require("../assets/images.jpg")}
-        style={{
-          borderRadius: 20,
-          padding: 10,
-          width: widthPercentageToDP(93),
-        }}
-        blurRadius={2}
-      >
-        <View
+      <View>
+        <Text
           style={{
-            flexDirection: "column",
-            justifyContent: "space-between",
+            fontWeight: "500",
+            textAlign: "center",
+            fontSize: 30,
+            marginVertical: 3,
+            color: "white",
           }}
         >
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 30,
-              marginVertical: 3,
-              color: "white",
-            }}
-          >
-            {packageData.name}
-          </Text>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 30,
-              color: "#E20F10",
-              marginVertical: 3,
-            }}
-          >
-            ${packageData.Price}
-          </Text>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 17,
-              color: "#326996",
-              fontWeight: "bold",
-            }}
-          >
-            GOLD WASH +
-          </Text>
-          <View>
-            {packageData.details.splice(0, 3).map((value) => {
-              return (
-                <View key={value} style={{ flexDirection: "row" }}>
-                  <Text
-                    style={{ fontSize: 17, fontWeight: "bold", color: "white" }}
-                  >
-                    {"\u2022"}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      flex: 1,
-                      paddingLeft: 5,
-                      color: "white",
-                    }}
-                  >
-                    {value}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
-        </View>
-        <TouchableOpacity
-          style={{
-            height: 30,
-            backgroundColor: "#43ce51",
-            justifyContent: "center",
-            alignSelf: "center",
-            width: "30%",
-            borderRadius: 10,
-            marginVertical: 10,
-          }}
-          onPress={() =>
-            navigation.navigate("Checkout", {
-              packageData: packageData,
-              imgUrl: require("../assets/images.jpg"),
-            })
+          {packageData.name}
+        </Text>
+        <Text
+          style={
+            packageData.type == "Gas"
+              ? {
+                  textAlign: "center",
+                  fontSize: 30,
+                  color: "#E20F10",
+                  marginVertical: 3,
+                }
+              : {
+                  textAlign: "center",
+                  fontSize: 30,
+                  color: "#E20F10",
+                  marginVertical: 3,
+                }
           }
         >
-          <Text style={{ color: "white", alignSelf: "center" }}>
-            {"$" + packageData.Price}
-          </Text>
-        </TouchableOpacity>
-      </ImageBackground>
-    </View>
+          ${packageData.Price}
+        </Text>
+
+        <View>
+          {packageData.details.map((value) => {
+            return (
+              <View key={value} style={{ flexDirection: "row" }}>
+                <Text
+                  style={{ fontSize: 17, fontWeight: "bold", color: "white" }}
+                >
+                  {"\u2022"}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    flex: 1,
+                    paddingLeft: 5,
+                    color: "white",
+                  }}
+                >
+                  {value}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
+      </View>
+      {/* <View> */}
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          bottom: 40,
+          height: 30,
+          backgroundColor: "#43ce51",
+          justifyContent: "center",
+          alignSelf: "center",
+          width: "30%",
+          borderRadius: 10,
+          marginVertical: 10,
+        }}
+        onPress={() =>
+          navigation.navigate("Checkout", {
+            packageData: packageData,
+            carType: carType,
+            imgUrl:
+              packageData.type == "Gas"
+                ? require("../assets/gas-station.jpg")
+                : require("../assets/images.jpg"),
+          })
+        }
+      >
+        <Text style={{ color: "white", alignSelf: "center" }}>
+          {"$" + packageData.Price}
+        </Text>
+      </TouchableOpacity>
+      {/* </View> */}
+    </ImageBackground>
   );
 };
 

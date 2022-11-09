@@ -107,7 +107,7 @@ const DrawerTab = () => {
           ),
         }}
       /> */}
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="  Stripe"
         component={StripeScreen}
         options={{
@@ -131,7 +131,7 @@ const DrawerTab = () => {
             />
           ),
         }}
-      />
+      /> */}
       <Drawer.Screen
         name="Settings"
         component={SettingStack}

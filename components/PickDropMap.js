@@ -67,7 +67,7 @@ const PickDropMap = () => {
   //   return;
   // };
 
-  console.log(maploading);
+  console.log(maploading); 
 
   return (
     <View>

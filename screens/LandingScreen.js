@@ -3,19 +3,42 @@ import React, { Component } from "react";
 
 import { useNavigation } from "@react-navigation/native";
 import { getLocalStorage } from "../utils/LocalStorage";
+import { getPostCall } from "../utils/API";
+import { LoadingOverlay } from "../components/Overlays";
 
 const Landing = () => {
   const navigation = useNavigation();
-  React.useEffect(() => {
-    async function get() {
-      const user = await getLocalStorage("user");
-      console.log("User", user);
-      if (user != null && user.userType === "customer") {
-        navigation.navigate("HomeScreen");
-      } else if (user != null && user.userType === "driver") {
-        navigation.navigate("DriverScreen");
-      }
+  const [bool, setBool] = React.useState(false);
+  const [loader, setLoader] = React.useState(true);
+  const get = async () => {
+    const user = await getLocalStorage("user");
+    console.log("User", user);
+    if (user != null) {
+      const body = {
+        token: user?.token,
+      };
+
+      getPostCall("verifyToken/verifyAuth", "POST", JSON.stringify(body), "")
+        .then((e) => {
+          console.log(e?.data);
+          if (e?.data.success) {
+            if (user.userType === "customer") {
+              navigation.navigate("HomeScreen");
+              setLoader(false);
+            }
+          } else if (user.userType === "driver") {
+            navigation.navigate("DriverScreen");
+            setLoader(false);
+          }
+        })
+        .catch((e) => {
+          console.log(e.response.data.success);
+          setLoader(false);
+        });
     }
+  };
+
+  React.useEffect(() => {
     get();
   }, []);
 
@@ -28,6 +51,7 @@ const Landing = () => {
         alignItems: "center",
       }}
     >
+      <LoadingOverlay loading={loader} />
       <Image
         source={require("../assets/LandingPage.png")}
         style={{
