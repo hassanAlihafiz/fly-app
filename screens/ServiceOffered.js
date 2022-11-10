@@ -33,7 +33,7 @@ const ServiceOffered = ({ route, navigation }) => {
     const _token = await getToken("user");
     setToken(_token);
   };
-
+  
   const getPackages = () => {
     getCall("packages/getPackages", "GET", token)
       .then((e) => {

@@ -23,12 +23,11 @@ const Home = ({ navigation }) => {
     }
     await Location.getCurrentPositionAsync({})
       .then((e) => {
-        setLocalStorage("UserCoords", {
-          latitude: e.coords.latitude,
-          longitude: e.coords.longitude,
-          latitudeDelta: 0.1,
-          longitudeDelta: 0.1,
-        });
+        const obj = {
+          latitude: e.coords.latitude.toString(),
+          longitude: e.coords.longitude.toString(),
+        };
+        setLocalStorage("UserCoords", obj);
 
         setMaploading(false);
       })
