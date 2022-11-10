@@ -19,6 +19,7 @@ import {
 } from "@react-navigation/native";
 import SelectDriverScreen from "../screens/SelectDriverScreen";
 import PickDropMap from "../components/PickDropMap";
+import SelectGasStationScreens from "../screens/SelectGasStationScreen";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -35,6 +36,7 @@ const HomeStack = () => {
       <Stack.Screen name="Checkout" component={Checkout} />
       <Stack.Screen name="PickDropMap" component={PickDropMap} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+      <Stack.Screen name="SelectStations" component={SelectGasStationScreens} />
       <Stack.Screen name="SelectDriver" component={SelectDriverScreen} />
     </Stack.Navigator>
   );

@@ -61,7 +61,7 @@ const Checkout = ({ route, navigation }) => {
           message: "Select at least 1 gallon",
         });
       } else {
-        navigation.navigate("PickDropMap", {
+        navigation.navigate("SelectStations", {
           packageData: packageData,
           serviceFee: serviceFee,
           total: total,
@@ -69,7 +69,7 @@ const Checkout = ({ route, navigation }) => {
         });
       }
     } else {
-      navigation.navigate("PickDropMap", {
+      navigation.navigate("SelectDriver", {
         packageData: packageData,
         serviceFee: serviceFee,
         total: total,
