@@ -35,6 +35,8 @@ const Landing = () => {
           console.log(e.response.data.success);
           setLoader(false);
         });
+    } else {
+      setLoader(false);
     }
   };
 

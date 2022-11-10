@@ -51,13 +51,12 @@ const SelectGasStationScreens = ({ route }) => {
 
   const handleSelect = () => {
     if (selected != "") {
-      navigation.navigate("SelectDriver", {
+      navigation.navigate("PickDropMap", {
         gasStation: selected,
         packageData: packageData,
         serviceFee: serviceFee,
         total: total,
       });
-      
     } else {
       setError({
         value: true,
@@ -65,7 +64,6 @@ const SelectGasStationScreens = ({ route }) => {
       });
     }
   };
-  console.log(gasStations);
 
   return (
     <View
@@ -75,7 +73,7 @@ const SelectGasStationScreens = ({ route }) => {
         backgroundColor: "white",
       }}
     >
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity onPress={() => navigation.pop()}>
         <Ionicons name="ios-arrow-back" size={24} color="black" />
       </TouchableOpacity>
       <MessageOverlay
@@ -112,7 +110,7 @@ const SelectGasStationScreens = ({ route }) => {
         {loading ? (
           <ActivityIndicator size="large" />
         ) : gasStations.length == 0 ? (
-          <Text>No Driver in your location</Text>
+          <Text>No Stations Found</Text>
         ) : (
           gasStations.map((value, key) => {
             return (
@@ -188,7 +186,7 @@ const SelectGasStationScreens = ({ route }) => {
             color: "white",
           }}
         >
-          Select Driver
+          Select Gas Station
         </Text>
       </TouchableOpacity>
     </View>

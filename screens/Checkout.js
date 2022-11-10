@@ -6,7 +6,6 @@ import { MessageOverlay } from "../components/Overlays";
 
 const Checkout = ({ route, navigation }) => {
   const { packageData, imgUrl, carType } = route.params;
-
   const [gallons, setGallons] = React.useState("1");
   const [subTotal, setSubTotal] = React.useState(
     parseFloat(packageData.Price).toFixed(2)
@@ -22,6 +21,7 @@ const Checkout = ({ route, navigation }) => {
     message: "",
   });
 
+  
   React.useEffect(() => {
     handleCalculations();
   }, [gallons]);

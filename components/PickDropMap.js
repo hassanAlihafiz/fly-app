@@ -12,7 +12,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import MapView, {
-  Marker,
+  MarkerAnimated,
   PROVIDER_GOOGLE,
   AnimatedRegion,
 } from "react-native-maps";
@@ -21,97 +21,98 @@ import {
   widthPercentageToDP,
 } from "react-native-responsive-screen";
 import { FontAwesome5 } from "@expo/vector-icons";
-import * as Location from "expo-location";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { getLocalStorage } from "../utils/LocalStorage";
+import { LoadingOverlay } from "./Overlays";
 
 const PickDropMap = () => {
   const navigation = useNavigation();
-  const [maploading, setMaploading] = React.useState(true);
+  const [loader, setLoader] = React.useState(true);
   const [locationSearch, setLocationSearch] = React.useState(false);
-
   const [locationState, setLocationState] = React.useState({
     latitude: 0,
     longitude: 0,
-    latitudeDelta: 1,
-    longitudeDelta: 1,
+    latitudeDelta: 0,
+    longitudeDelta: 0,
   });
 
-  // React.useEffect(() => {
-  //   if (maploading == true) {
-  //     getLocation();
-  //   }
-  // }, []);
+  React.useEffect(() => {
+    if (loader == true) getUserCoords();
+  }, []);
 
-  // const getLocation = async () => {
-  //   let { status } = await Location.requestForegroundPermissionsAsync();
-  //   if (status !== "granted") {
-  //     alert("Permission to access location was denied");
-  //     setMaploading(false);
-  //     return;
-  //   }
-  //   await Location.getCurrentPositionAsync({})
-  //     .then((e) => {
-  //       setLocationState({
-  //         latitude: e.coords.latitude,
-  //         longitude: e.coords.longitude,
-  //         latitudeDelta: 0.1,
-  //         longitudeDelta: 0.1,
-  //       });
-  //       setMaploading(false);
-  //     })
+  const getUserCoords = async () => {
+    const _location = await getLocalStorage("UserCoords");
+    console.log(_location);
 
-  //     .catch((e) => {
-  //       console.log(e);
-  //       setMaploading(false);
-  //     });
-  //   return;
-  // };
-
-  console.log(maploading); 
-
+    if (_location != null) {
+      setLocationState({
+        ...locationState,
+        latitude: _location.latitude,
+        longitude: _location.longitude,
+      });
+      setTimeout(() => {
+        setLoader(false);
+      }, 2000);
+    } else {
+      setLoader(false);
+    }
+  };
+  console.log(locationState);
   return (
     <View>
-      {/* {maploading ? (
-        <ActivityIndicator />
-      ) : ( */}
-      <MapView
-        showsUserLocation
-        followsUserLocation
-        mapPadding={{ bottom: 70 }}
-        rotateEnabled={false}
-        showsMyLocationButton
-        loadingEnabled={true}
-        provider="google"
-        style={{ height: "100%", width: "100%" }}
-        userInterfaceStyle={"dark"}
-        userLocationPriority={"high"}
-        showsPointsOfInterest={false}
-        showsIndoors={false}
-        showsBuildings={false}
-        // initialRegion={{
-        //   latitude: 0,
-        //   longitude: 0,
-        // }}
-        region={locationState}
-        onRegionChange={(e) => setLocationState(e)}
-      >
-        <View
-          pointerEvents="none"
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 100,
-            left: 0,
-            right: -1,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "transparent",
+      {loader ? (
+        <LoadingOverlay loading />
+      ) : (
+        <MapView
+          showsUserLocation
+          followsUserLocation
+          mapPadding={{ bottom: 70 }}
+          rotateEnabled={false}
+          showsMyLocationButton
+          provider="google"
+          style={{ height: "100%", width: "100%" }}
+          userInterfaceStyle={"dark"}
+          userLocationPriority={"high"}
+          showsPointsOfInterest={false}
+          showsIndoors={false}
+          showsBuildings={false}
+          // initialRegion={{
+          //   latitude: 0,
+          //   longitude: 0,
+          // }}
+
+          region={{
+            latitude: locationState.latitude,
+            longitude: locationState.longitude,
+            latitudeDelta: locationState.latitudeDelta,
+            longitudeDelta: locationState.longitudeDelta,
+          }}
+          onRegionChangeComplete={(e) => {
+            setLocationState({
+              latitude: e.latitude,
+              longitude: e.longitude,
+              latitudeDelta: e.latitudeDelta,
+              longitudeDelta: e.longitudeDelta,
+            });
           }}
         >
-          <FontAwesome5 name="map-marker-alt" size={30} color="red" />
-        </View>
-      </MapView>
-      {/* )} */}
+          <View
+            pointerEvents="none"
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 100,
+              left: 0,
+              right: -1,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "transparent",
+            }}
+          >
+            <FontAwesome5 name="map-marker-alt" size={30} color="red" />
+          </View>
+        </MapView>
+      )}
       <View
         style={{
           display: "flex",
@@ -124,7 +125,7 @@ const PickDropMap = () => {
           zIndex: 2,
         }}
       >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.pop()}>
           <Ionicons name="ios-arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <View
