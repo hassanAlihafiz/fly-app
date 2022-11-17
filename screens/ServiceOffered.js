@@ -33,7 +33,7 @@ const ServiceOffered = ({ route, navigation }) => {
     const _token = await getToken("user");
     setToken(_token);
   };
-  
+
   const getPackages = () => {
     getCall("packages/getPackages", "GET", token)
       .then((e) => {
@@ -45,7 +45,7 @@ const ServiceOffered = ({ route, navigation }) => {
       });
   };
 
-  console.log(route?.params);
+  console.log(packages.filter((arr) => arr.type == "Others"));
   return (
     <View
       style={{
@@ -136,7 +136,7 @@ const ServiceOffered = ({ route, navigation }) => {
                   marginTop: 10,
                   color: "black",
                   fontWeight: "bold",
-                  fontSize: 15,
+                  fontSize: 15,                     
                   marginHorizontal: 20,
                 }}
               >
@@ -147,7 +147,6 @@ const ServiceOffered = ({ route, navigation }) => {
                 horizontal
                 contentContainerStyle={{
                   marginLeft: 10,
-
                   marginTop: 5,
                   marginBottom: 5,
                 }}

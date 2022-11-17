@@ -1,5 +1,5 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { StackRouter, useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
   StyleSheet,
@@ -25,36 +25,62 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { getLocalStorage } from "../utils/LocalStorage";
 import { LoadingOverlay } from "./Overlays";
 
-const PickDropMap = () => {
+const PickDropMap = ({ route }) => {
+  const { packageData, serviceFee, total, gasStation, carType, numOfGal } =
+    route.params;
+
   const navigation = useNavigation();
   const [loader, setLoader] = React.useState(true);
   const [locationSearch, setLocationSearch] = React.useState(false);
   const [locationState, setLocationState] = React.useState({
     latitude: 0,
     longitude: 0,
-    latitudeDelta: 0,
-    longitudeDelta: 0,
   });
 
   React.useEffect(() => {
-    if (loader == true) getUserCoords();
+    if (loader == true) {
+      getUserCoords();
+    }
   }, []);
-
+  console.log(locationState);
   const getUserCoords = async () => {
     const _location = await getLocalStorage("UserCoords");
-    console.log(_location);
-
+    console.log("Loc", _location);
     if (_location != null) {
       setLocationState({
         ...locationState,
         latitude: _location.latitude,
         longitude: _location.longitude,
       });
+      console.log("Yes", parseFloat(_location?.latitude));
       setTimeout(() => {
         setLoader(false);
       }, 2000);
     } else {
       setLoader(false);
+    }
+  };
+  const handleSubmit = () => {
+    if (packageData.type == "Gas") {
+      navigation.navigate("SelectDriver", {
+        packageData: packageData,
+        gasStation: gasStation,
+        serviceFee: serviceFee,
+        carType: carType,
+        total: total,
+        numOfGal: numOfGal,
+        lat: locationState.latitude,
+        lng: locationState.longitude,
+      });
+    } else {
+      navigation.navigate("SelectWashStations", {
+        packageData: packageData,
+        serviceFee: serviceFee,
+        total: total,
+        carType: carType,
+        lat: locationState.latitude,
+        lng: locationState.longitude,
+      });
     }
   };
   console.log(locationState);
@@ -64,6 +90,7 @@ const PickDropMap = () => {
         <LoadingOverlay loading />
       ) : (
         <MapView
+          // ref={(e) => console.log("onchange", e)}
           showsUserLocation
           followsUserLocation
           mapPadding={{ bottom: 70 }}
@@ -87,14 +114,14 @@ const PickDropMap = () => {
             latitudeDelta: locationState.latitudeDelta,
             longitudeDelta: locationState.longitudeDelta,
           }}
-          onRegionChangeComplete={(e) => {
-            setLocationState({
-              latitude: e.latitude,
-              longitude: e.longitude,
-              latitudeDelta: e.latitudeDelta,
-              longitudeDelta: e.longitudeDelta,
-            });
-          }}
+          // onRegionChange={(e) => {
+          //   setLocationState({
+          //     latitude: e.latitude,
+          //     longitude: e.longitude,
+          //     latitudeDelta: e.latitudeDelta,
+          //     longitudeDelta: e.longitudeDelta,
+          //   });
+          // }}
         >
           <View
             pointerEvents="none"
@@ -148,6 +175,7 @@ const PickDropMap = () => {
         </View>
         <GooglePlacesAutocomplete
           GooglePlacesDetailsQuery={{ fields: "geometry" }}
+          enableHighAccuracyLocation
           fetchDetails={true}
           placeholder="Search"
           onPress={(data, details = null) => {
@@ -158,9 +186,17 @@ const PickDropMap = () => {
             });
           }}
           query={{
-            key: "AIzaSyDM3Vmg235XgvY4E_HFQO9hGU4dvUznOCo",
+            key: "AIzaSyBIHr09mmQOV8a0LybJlTt39_8U4_1NokY",
             language: "en",
-            // types: "gas_station",
+            types: "car_wash",
+            radius: "15000",
+          }}
+          nearbyPlacesAPI="GooglePlacesSearch"
+          GooglePlacesSearchQuery={{
+            rankby: "distance",
+            type: "car_wash",
+            radius: "15000",
+            openNow: true,
           }}
           textInputProps={{
             InputComp: TextInput,
@@ -209,12 +245,7 @@ const PickDropMap = () => {
 
           borderRadius: 10,
         }}
-        onPress={() =>
-          navigation.navigate("SelectDriver", {
-            // packageData: packageData,
-            // imgUrl: require("../assets/images.jpg"),
-          })
-        }
+        onPress={handleSubmit}
       >
         <Text style={{ color: "white", alignSelf: "center" }}>
           Confirm pickup

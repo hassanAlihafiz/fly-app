@@ -15,6 +15,7 @@ const Home = ({ navigation }) => {
   }, []);
 
   const getLocation = async () => {
+    console.log("Calling")
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       alert("Permission to access location was denied");
@@ -23,12 +24,12 @@ const Home = ({ navigation }) => {
     }
     await Location.getCurrentPositionAsync({})
       .then((e) => {
-        const obj = {
+        const obj =JSON.stringify({
           latitude: e.coords.latitude.toString(),
           longitude: e.coords.longitude.toString(),
-        };
+        });
         setLocalStorage("UserCoords", obj);
-
+       
         setMaploading(false);
       })
 

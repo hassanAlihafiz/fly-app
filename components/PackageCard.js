@@ -41,21 +41,12 @@ const PackageCard = ({ packageData, carType }) => {
           {packageData.name}
         </Text>
         <Text
-          style={
-            packageData.type == "Gas"
-              ? {
-                  textAlign: "center",
-                  fontSize: 30,
-                  color: "#E20F10",
-                  marginVertical: 3,
-                }
-              : {
-                  textAlign: "center",
-                  fontSize: 30,
-                  color: "#E20F10",
-                  marginVertical: 3,
-                }
-          }
+          style={{
+            textAlign: "center",
+            fontSize: 30,
+            color: "#E20F10",
+            marginVertical: 3,
+          }}
         >
           ${packageData.Price}
         </Text>

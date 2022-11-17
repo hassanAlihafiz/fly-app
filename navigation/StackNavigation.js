@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import LandingScreen from "../screens/LandingScreen";
 import LoginScreen from "../screens/LoginScreen";
+import NearbyWashStation from "../screens/NearbyWashStation";
 import { getLocalStorage } from "../utils/LocalStorage";
 import DrawerTab from "./DrawerNavigation";
 import DriverDrawerTab from "./DriverDrawer";
@@ -21,7 +22,6 @@ const StackNavigation = () => {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="HomeScreen" component={DrawerTab} />
       <Stack.Screen name="DriverScreen" component={DriverDrawerTab} />
-      
     </Stack.Navigator>
   );
 };

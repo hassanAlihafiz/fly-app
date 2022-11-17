@@ -1,21 +1,23 @@
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 import React from "react";
-import { Image, ScrollView, Text, TouchableOpacity } from "react-native";
-import { View } from "react-native";
-
-import { getCall } from "../utils/API";
-import { getLocalStorage } from "../utils/LocalStorage";
-import { ActivityIndicator } from "react-native";
+import { Image } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { MessageOverlay } from "../components/Overlays";
 
-const SelectGasStationScreens = ({ route }) => {
-  const navigation = useNavigation();
-  const { packageData, serviceFee, total, carType, numOfGal } = route.params;
+const NearbyWashStation = ({ route }) => {
+  const { packageData, serviceFee, total, lat, lng, carType } = route.params;
 
+  const navigation = useNavigation();
   const [loading, setLoading] = React.useState(true);
-  const [gasStations, setGasStations] = React.useState(null);
-  const [user, setUser] = React.useState({});
+  const [nearbyStations, setNearbyStations] = React.useState([]);
   const [selected, setSelected] = React.useState("");
   const [error, setError] = React.useState({
     value: false,
@@ -23,46 +25,41 @@ const SelectGasStationScreens = ({ route }) => {
   });
 
   React.useEffect(() => {
-    getUser();
+    getNearbyStations();
   }, []);
 
-  React.useEffect(() => {
-    if (Object.keys(user).length != 0) {
-      getGasStations();
-    }
-  }, [user]);
-
-  const getUser = async () => {
-    const _user = await getLocalStorage("user");
-    setUser(_user);
-  };
-
-  const getGasStations = () => {
-    getCall("gasStation/getGasStation", "GET", user.token)
+  const getNearbyStations = async () => {
+    await axios
+      .get(
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+          lat.toString() +
+          "," +
+          lng.toString() +
+          "&radius=10000&type=car_wash&key=" +
+          "AIzaSyBIHr09mmQOV8a0LybJlTt39_8U4_1NokY"
+      )
       .then((e) => {
-        setGasStations(e?.data);
-        setLoading(false);
+        // console.log(e.data.results);
+        setNearbyStations(e.data.results);
       })
-      .catch((e) => {
-        alert(e);
-        console.log(e);
-      });
+      .then(() => setLoading(false));
   };
 
   const handleSelect = () => {
     if (selected != "") {
-      navigation.navigate("PickDropMap", {
-        gasStation: selected,
-        packageData: packageData,
-        serviceFee: serviceFee,
-        total: total,
-        carType: carType,
-        numOfGal: numOfGal,
+      navigation.navigate("SelectDriver", {
+        washStation: selected,
+        packageData,
+        serviceFee,
+        total,
+        carType,
+        lat,
+        lng,
       });
     } else {
       setError({
         value: true,
-        message: "Please select a gas station",
+        message: "Please select a wash station",
       });
     }
   };
@@ -75,15 +72,14 @@ const SelectGasStationScreens = ({ route }) => {
         backgroundColor: "white",
       }}
     >
-      <TouchableOpacity onPress={() => navigation.pop()}>
-        <Ionicons name="ios-arrow-back" size={24} color="black" />
-      </TouchableOpacity>
       <MessageOverlay
         value={error.value}
         setValue={setError}
         message={error.message}
       />
-
+      <TouchableOpacity onPress={() => navigation.pop()}>
+        <Ionicons name="ios-arrow-back" size={24} color="black" />
+      </TouchableOpacity>
       <View
         style={{
           flexDirection: "row",
@@ -98,9 +94,9 @@ const SelectGasStationScreens = ({ route }) => {
             fontWeight: "bold",
           }}
         >
-          Select Gas Stations
+          Select Wash Stations
         </Text>
-        <FontAwesome5 name="gas-pump" size={24} color="black" />
+        <MaterialIcons name="local-car-wash" size={24} color="black" />
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -110,11 +106,9 @@ const SelectGasStationScreens = ({ route }) => {
         }}
       >
         {loading ? (
-          <ActivityIndicator size="large" />
-        ) : gasStations.length == 0 ? (
-          <Text>No Stations Found</Text>
+          <ActivityIndicator />
         ) : (
-          gasStations.map((value, key) => {
+          nearbyStations.map((value, key) => {
             return (
               <View
                 key={key}
@@ -128,10 +122,11 @@ const SelectGasStationScreens = ({ route }) => {
                   style={{
                     padding: 20,
                     flexDirection: "row",
-
+                    backgroundColor:
+                      selected.place_id == value.place_id ? "#CCC" : "white",
                     alignItems: "center",
                     borderRadius: 10,
-                    backgroundColor: selected.id == value.id ? "#CCC" : "white",
+
                     shadowColor: "#000",
                     shadowOffset: {
                       width: 1,
@@ -149,19 +144,14 @@ const SelectGasStationScreens = ({ route }) => {
                       width: 50,
                       borderRadius: 10,
                     }}
-                    source={{
-                      uri: value.imgUrl,
-                    }}
+                    source={{ uri: value.icon }}
                   />
-                  <Text
-                    style={{ color: "black", marginLeft: 40, fontSize: 19 }}
-                  >
-                    {value.name}
-                  </Text>
-
-                  <Text key={key} style={{ color: "black" }}>
-                    {value.email}
-                  </Text>
+                  <View style={{ marginLeft: 40 }}>
+                    <Text style={{ color: "black", fontSize: 19 }}>
+                      {value.name}
+                    </Text>
+                    {/* <Text>Distance</Text> */}
+                  </View>
                 </TouchableOpacity>
               </View>
             );
@@ -188,11 +178,11 @@ const SelectGasStationScreens = ({ route }) => {
             color: "white",
           }}
         >
-          Select Gas Station
+          Select Wash Station
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default SelectGasStationScreens;
+export default NearbyWashStation;

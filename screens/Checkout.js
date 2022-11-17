@@ -21,7 +21,6 @@ const Checkout = ({ route, navigation }) => {
     message: "",
   });
 
-  
   React.useEffect(() => {
     handleCalculations();
   }, [gallons]);
@@ -66,13 +65,15 @@ const Checkout = ({ route, navigation }) => {
           serviceFee: serviceFee,
           total: total,
           numOfGal: gallons,
+          carType: carType.carType,
         });
       }
     } else {
-      navigation.navigate("SelectDriver", {
+      navigation.navigate("PickDropMap", {
         packageData: packageData,
         serviceFee: serviceFee,
         total: total,
+        carType: carType.carType,
       });
     }
   };

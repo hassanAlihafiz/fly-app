@@ -28,7 +28,29 @@ import {
 const PaymentScreen = ({ route }) => {
   const navigation = useNavigation();
 
-  const { driverData, packageData, serviceFee, total } = route.params;
+  const {
+    packageData,
+    gasStation,
+    serviceFee,
+    carType,
+    total,
+    numOfGal,
+    lat,
+    lng,
+    selectedDriver,
+    washStation,
+  } = route.params;
+
+  console.log("PD", packageData);
+  console.log(gasStation);
+  console.log(serviceFee);
+  console.log("ct", carType);
+  console.log("t", total);
+  console.log("nog", numOfGal);
+  console.log(lat);
+  console.log(lng);
+  console.log(selectedDriver);
+
   const [user, setUser] = React.useState({});
   const [token, setToken] = React.useState();
 
@@ -76,14 +98,13 @@ const PaymentScreen = ({ route }) => {
     setUser(_user);
     setToken(_token);
   };
-  console.log(user.id);
+
   const handleData = (name, value) => {
     setData({
       ...data,
       [name]: value,
     });
   };
-  console.log(token);
 
   const handelConfirm = () => {
     setLoading(true);
@@ -106,27 +127,69 @@ const PaymentScreen = ({ route }) => {
         cardInfo.validExpiryDate == "Valid" &&
         cardInfo.validNumber == "Valid"
       ) {
-        const dataObj = {
-          packageId: packageData.id,
-          driverId: driverData.id,
-          userId: user.id,
-          amount: total,
-          zipCode: user.zipCodeId,
-          userData: {
-            email: user.email,
-            first_name: user.first_name,
-            last_name: user.last_name,
+        let dataObj;
+
+        if (packageData.type == "Gas") {
+          dataObj = {
+            packageId: packageData.id,
+            driverId: selectedDriver.id,
+            userId: user.id,
+            amount: total,
+            zipCode: user.zipCodeId,
+            userData: {
+              email: user.email,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              paymentMethod: data,
+              location: {
+                lat: lat,
+                lng: lng,
+              },
+            },
+            driverData: {
+              available: false,
+              email: selectedDriver.email,
+              first_name: selectedDriver.first_name,
+              last_name: selectedDriver.last_name,
+            },
+            packageData: packageData,
             paymentMethod: data,
-          },
-          driverData: {
-            available: false,
-            email: driverData.email,
-            first_name: driverData.first_name,
-            last_name: driverData.last_name,
-          },
-          packageData: packageData,
-          paymentMethod: data,
-        };
+            gasStation: gasStation,
+            numOfGal: numOfGal,
+            washStation: null,
+            bookType: packageData.type,
+          };
+        } else {
+          dataObj = {
+            packageId: packageData.id,
+            driverId: selectedDriver.id,
+            userId: user.id,
+            amount: total,
+            zipCode: user.zipCodeId,
+            userData: {
+              email: user.email,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              paymentMethod: data,
+              location: {
+                lat: lat,
+                lng: lng,
+              },
+            },
+            driverData: {
+              available: false,
+              email: selectedDriver.email,
+              first_name: selectedDriver.first_name,
+              last_name: selectedDriver.last_name,
+            },
+            packageData: packageData,
+            paymentMethod: data,
+            gasStation: null,
+            numOfGal: null,
+            washStation: washStation,
+            bookType: packageData.type,
+          };
+        }
 
         getPostCall(
           "booking/addBooking",
@@ -204,7 +267,7 @@ const PaymentScreen = ({ route }) => {
         setValue={setError}
         message={error.message}
       />
-      <SuccessOverlay value={success.value} message={success.message}/>
+      <SuccessOverlay value={success.value} message={success.message} />
 
       <View
         style={{

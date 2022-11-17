@@ -13,7 +13,18 @@ import { MessageOverlay } from "../components/Overlays";
 
 const SelectDriverScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { packageData, serviceFee, total } = route.params;
+  const {
+    packageData,
+    gasStation,
+    serviceFee,
+    carType,
+    total,
+    numOfGal,
+    lat,
+    lng,
+    washStation,
+  } = route.params;
+
   const [loading, setLoading] = React.useState(true);
   const [zipDrivers, setZipDrivers] = React.useState(null);
   const [user, setUser] = React.useState({});
@@ -28,7 +39,7 @@ const SelectDriverScreen = ({ route }) => {
   }, []);
 
   React.useEffect(() => {
-    if (user != null) {
+    if (Object.keys(user).length != 0) {
       getZipDrivers();
     }
   }, [user]);
@@ -42,7 +53,6 @@ const SelectDriverScreen = ({ route }) => {
     getCall("driver/getDrivers", "GET", user.token)
       .then((e) => {
         const db = [];
-
         e?.data?.map((value) => {
           if (value.zipCodeId === user.zipCodeId) {
             db.push(value);
@@ -59,10 +69,16 @@ const SelectDriverScreen = ({ route }) => {
   const handleSelect = () => {
     if (selectedDriver != "") {
       navigation.navigate("PaymentScreen", {
-        driverData: selectedDriver,
-        packageData: packageData,
-        serviceFee: serviceFee,
-        total: total,
+        packageData,
+        gasStation,
+        serviceFee,
+        carType,
+        total,
+        numOfGal,
+        lat,
+        lng,
+        washStation,
+        selectedDriver,
       });
     } else {
       setError({
