@@ -1,4 +1,4 @@
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { StackRouter, useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
@@ -33,8 +33,8 @@ const PickDropMap = ({ route }) => {
   const [loader, setLoader] = React.useState(true);
   const [locationSearch, setLocationSearch] = React.useState(false);
   const [locationState, setLocationState] = React.useState({
-    latitude: 0,
-    longitude: 0,
+    latitude: locationState?.latitude,
+    longitude: locationState?.longitude,
   });
 
   React.useEffect(() => {
@@ -83,7 +83,7 @@ const PickDropMap = ({ route }) => {
       });
     }
   };
-  console.log(locationState);
+
   return (
     <View>
       {loader ? (
@@ -108,20 +108,20 @@ const PickDropMap = ({ route }) => {
           //   longitude: 0,
           // }}
 
-          region={{
+          initialRegion={{
             latitude: locationState.latitude,
             longitude: locationState.longitude,
             latitudeDelta: locationState.latitudeDelta,
             longitudeDelta: locationState.longitudeDelta,
           }}
-          // onRegionChange={(e) => {
-          //   setLocationState({
-          //     latitude: e.latitude,
-          //     longitude: e.longitude,
-          //     latitudeDelta: e.latitudeDelta,
-          //     longitudeDelta: e.longitudeDelta,
-          //   });
-          // }}
+          onRegionChange={(e) => {
+            setLocationState({
+              latitude: e.latitude,
+              longitude: e.longitude,
+              latitudeDelta: e.latitudeDelta,
+              longitudeDelta: e.longitudeDelta,
+            });
+          }}
         >
           <View
             pointerEvents="none"
@@ -171,7 +171,7 @@ const PickDropMap = ({ route }) => {
           >
             Pickup Location
           </Text>
-          <MaterialIcons name="local-car-wash" size={24} color="black" />
+          <FontAwesome name="location-arrow" size={24} color="black" />
         </View>
         <GooglePlacesAutocomplete
           GooglePlacesDetailsQuery={{ fields: "geometry" }}
@@ -188,13 +188,13 @@ const PickDropMap = ({ route }) => {
           query={{
             key: "AIzaSyBIHr09mmQOV8a0LybJlTt39_8U4_1NokY",
             language: "en",
-            types: "car_wash",
+            types: packageData.type === "Gas" ? "gas_station" : "car_wash",
             radius: "15000",
           }}
           nearbyPlacesAPI="GooglePlacesSearch"
           GooglePlacesSearchQuery={{
             rankby: "distance",
-            type: "car_wash",
+            type: packageData.type === "Gas" ? "gas_station" : "car_wash",
             radius: "15000",
             openNow: true,
           }}
@@ -212,23 +212,6 @@ const PickDropMap = ({ route }) => {
             },
           }}
         />
-
-        {/* <TextInput
-          placeholder="Enter pickup location"
-          autoComplete="name"
-          placeholderTextColor="#9EA0A4"
-          // onChangeText={(e) => handleData("firstName", e)}
-            
-          style={{
-            height: 40,
-            borderWidth: 1,
-            borderColor: "#d7d7d7",
-            paddingLeft: 10,
-            paddingRight: 10,
-            backgroundColor: "white",
-            borderRadius: 5,
-          }}
-        /> */}
       </View>
       <TouchableOpacity
         style={{

@@ -130,7 +130,7 @@ const Cart = ({
             />
           </View>
         ) : null}
-        <View>
+        <View style={data.type != "Gas" ? { marginTop: 20 } : null}>
           <View
             style={{
               flexDirection: "row",

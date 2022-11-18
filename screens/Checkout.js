@@ -28,7 +28,9 @@ const Checkout = ({ route, navigation }) => {
   const handleCalculations = () => {
     const extraFee = 5;
     if (packageData.type == "Gas") {
-      const _sub = parseFloat(packageData.Price) * parseFloat(gallons);
+      const _sub = parseFloat(
+        parseFloat(packageData.Price) * parseFloat(gallons)
+      ).toFixed(2);
       const _fee = parseFloat(_sub * 0.12).toFixed(2);
       const _total =
         carType.carType === "MPV" || carType.carType === "SUV"

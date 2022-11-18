@@ -77,7 +77,7 @@ const ServiceOffered = ({ route, navigation }) => {
         >
           Packages
         </Text>
-        <MaterialIcons name="local-car-wash" size={24} color="black" />
+        <MaterialIcons name="local-offer" size={24} color="black" />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         {loading ? (
@@ -136,7 +136,7 @@ const ServiceOffered = ({ route, navigation }) => {
                   marginTop: 10,
                   color: "black",
                   fontWeight: "bold",
-                  fontSize: 15,                     
+                  fontSize: 15,
                   marginHorizontal: 20,
                 }}
               >

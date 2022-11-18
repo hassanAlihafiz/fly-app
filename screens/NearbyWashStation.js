@@ -146,7 +146,7 @@ const NearbyWashStation = ({ route }) => {
                     }}
                     source={{ uri: value.icon }}
                   />
-                  <View style={{ marginLeft: 40 }}>
+                  <View style={{ marginLeft: 20 }}>
                     <Text style={{ color: "black", fontSize: 19 }}>
                       {value.name}
                     </Text>
