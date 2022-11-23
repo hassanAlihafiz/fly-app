@@ -19,26 +19,26 @@ const DateView = ({ name, img, color }) => {
           justifyContent: "center",
         }}
       > */}
-        <View
+      <View
+        style={{
+          backgroundColor: color,
+          height: hp(20),
+          width: "100%",
+          justifyContent: "center",
+        }}
+      >
+        <Text
           style={{
-            backgroundColor: color,
-            height: hp(20),
-            width: "100%",
-            justifyContent: "center",
+            alignSelf: "center",
+            color: "#FFFFFF",
+            fontSize: 30,
+            backgroundColor: "transparent",
+            opacity: 0.8,
           }}
         >
-          <Text
-            style={{
-              alignSelf: "center",
-              color: "#FFFFFF",
-              fontSize: 30,
-              backgroundColor: "transparent",
-              opacity: 0.8,
-            }}
-          >
-            {name}
-          </Text>
-        </View>
+          {name}
+        </Text>
+      </View>
       {/* </ImageBackground> */}
     </TouchableOpacity>
   );

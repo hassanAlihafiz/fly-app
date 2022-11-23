@@ -20,22 +20,28 @@ const Landing = () => {
 
       getPostCall("verifyToken/verifyAuth", "POST", JSON.stringify(body), "")
         .then((e) => {
-          console.log(e?.data);
+          console.log("verify", e?.data);
           if (e?.data.success) {
+            console.log(user.userType === "driver");
             if (user.userType === "customer") {
+              console.log("user is customer");
               navigation.navigate("HomeScreen");
               setLoader(false);
+            } else if (user.userType === "driver") {
+              console.log("user is driver");
+              navigation.navigate("DriverScreen");
+              setLoader(false);
             }
-          } else if (user.userType === "driver") {
-            navigation.navigate("DriverScreen");
-            setLoader(false);
           }
         })
         .catch((e) => {
+          console.log("im catch");
+
           console.log(e.response.data.success);
           setLoader(false);
         });
     } else {
+      console.log("Im false");
       setLoader(false);
     }
   };
