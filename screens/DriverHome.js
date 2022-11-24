@@ -47,73 +47,81 @@ const DriverHome = ({ navigation }) => {
     requestPermissions;
   }, []);
 
-  var refreshInterval = null;
+  let refreshInterval = 0;
 
   React.useEffect(() => {
-    if (isEnabled == true) {
-      setLoading(true);
-      refreshInterval = setInterval(() => {
-        setLoading(true);
-        startForegroundUpdate();
-      }, 5000);
-      startBackgroundUpdate();
-    } else if (isEnabled == false) {
-      clearInterval(refreshInterval);
+    console.log("Enable", isEnabled);
+    let interval = 0;
+    if (isEnabled === false) {
+      
+      console.log("INTerveal", "off");
+      setIsEnabled(false);
       setStatus("Offline");
       stopForegroundUpdate();
       stopBackgroundUpdate();
+    } else {
+      interval = setInterval(() => {
+        setLoading(true);
+        startForegroundUpdate();
+        startBackgroundUpdate();
+        console.log("interval");
+      }, 5000);
     }
+    return () => clearInterval(interval);
   }, [isEnabled]);
 
   const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState);
+    setIsEnabled(!isEnabled);
   };
 
   const startForegroundUpdate = async () => {
     // Check if foreground permission is granted
-    const { granted } = await Location.getForegroundPermissionsAsync();
-    if (!granted) {
-      console.log("location tracking denied");
-      return;
-    }
-
-    // Make sure that foreground location tracking is not running
-    foregroundSubscription?.remove();
-
-    // Start watching position in real-time
-
-    foregroundSubscription = await Location.watchPositionAsync(
-      {
-        // For better logs, we set the accuracy to the most sensitive option
-        accuracy: Location.Accuracy.BestForNavigation,
-      },
-      (location) => {
-        setLocState({
-          lat: location.coords.latitude,
-          lng: location.coords.longitude,
-        });
-        console.log("CORRDS", location.coords);
-        setDriverOnline(location);
-        // setPosition(location.coords);
+    console.log("Fore Start", isEnabled);
+    if (isEnabled) {
+      const { granted } = await Location.getForegroundPermissionsAsync();
+      if (!granted) {
+        console.log("location tracking denied");
+        return;
       }
-    );
+
+      // Make sure that foreground location tracking is not running
+      foregroundSubscription?.remove();
+
+      // Start watching position in real-time
+
+      foregroundSubscription = await Location.watchPositionAsync(
+        {
+          // For better logs, we set the accuracy to the most sensitive option
+          accuracy: Location.Accuracy.BestForNavigation,
+        },
+        (location) => {
+          setLocState({
+            lat: location.coords.latitude,
+            lng: location.coords.longitude,
+          });
+          // console.log("CORRDS", location.coords);
+          setDriverOnline(location);
+          // setPosition(location.coords);
+        }
+      );
+    }
   };
   const stopForegroundUpdate = () => {
     foregroundSubscription?.remove();
-    console.log("tracking stopped");
+    // console.log("tracking stopped");
   };
   const startBackgroundUpdate = async () => {
     // Don't track position if permission is not granted
     const { granted } = await Location.getBackgroundPermissionsAsync();
     if (!granted) {
-      console.log("location tracking denied");
+      // console.log("location tracking denied");
       return;
     }
 
     // Make sure the task is defined otherwise do not start tracking
     const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME);
     if (!isTaskDefined) {
-      console.log("Task is not defined");
+      // console.log("Task is not defined");
       return;
     }
 
@@ -148,6 +156,7 @@ const DriverHome = ({ navigation }) => {
     }
   };
 
+  console.log("Checking", isEnabled);
   const setDriverOnline = async (_loc) => {
     const user = await getLocalStorage("user");
     const data = {
