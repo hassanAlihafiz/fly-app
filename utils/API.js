@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-let backendUrl="https://fly-backend.herokuapp.com/"
+let backendUrl = "https://fly-backend.herokuapp.com/";
 export async function getPostCall(url, method, data, authToken) {
   return new Promise((resolve, reject) => {
     try {
@@ -8,8 +8,7 @@ export async function getPostCall(url, method, data, authToken) {
         method: method,
         url: backendUrl + url,
         headers: {
-
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
         },
         data: data,
@@ -26,16 +25,17 @@ export async function getPostCall(url, method, data, authToken) {
     }
   });
 }
-export async function getCall(url, method, authToken) {
+export async function getCall(url, method, authToken, data) {
   return new Promise((resolve, reject) => {
     try {
       var config = {
         method: method,
         url: backendUrl + url,
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: authToken==="" ?"" :`Bearer ${authToken}`,
+          "Content-Type": "application/json",
+          Authorization: authToken === "" ? "" : `Bearer ${authToken}`,
         },
+        data: data,
       };
       axios(config)
         .then((e) => {

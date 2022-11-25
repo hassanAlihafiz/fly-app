@@ -10,6 +10,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { ActivityIndicator } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { MessageOverlay } from "../components/Overlays";
+import { getDistance, isPointWithinRadius } from "geolib";
 
 const SelectDriverScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -48,16 +49,36 @@ const SelectDriverScreen = ({ route }) => {
     const _user = await getLocalStorage("user");
     setUser(_user);
   };
-
+  console.log(
+    isPointWithinRadius(
+      { latitude: 24.858482932069435, longitude: 67.06088024784917 },
+      { latitude: 24.858479703009476, longitude: 67.0608801394701 },
+      10000
+    )
+  );
   const getZipDrivers = () => {
     getCall("driver/getDrivers", "GET", user.token)
       .then((e) => {
         const db = [];
-        e?.data?.map((value) => {
-          if (value.zipCodeId === user.zipCodeId) {
-            db.push(value);
+
+        e?.data?.map((driver) => {
+          if (driver.status == true && driver.available == true) {
+            const nearbyDriver = isPointWithinRadius(
+              { latitude: Number(lat), longitude: Number(lng) },
+              { latitude: Number(driver.lat), longitude: Number(driver.lng) },
+              5000
+            );
+            if (nearbyDriver == true) {
+              db.push(driver);
+            }
           }
         });
+
+        // e?.data?.map((value) => {
+        //   if (value.zipCodeId === user.zipCodeId) {
+        //     db.push(value);
+        //   }
+        // });
         setZipDrivers(db);
         setLoading(false);
       })

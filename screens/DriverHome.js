@@ -1,6 +1,6 @@
 import { ActivityIndicator, Switch, Text, View } from "react-native";
 import React, { Component } from "react";
-import { ScrollView } from "react-native-gesture-handler";
+import { Directions, ScrollView } from "react-native-gesture-handler";
 import CardView from "../components/CardView";
 import moment from "moment";
 import DateView from "../components/DateView ";
@@ -8,6 +8,9 @@ import { getLocalStorage, setLocalStorage } from "../utils/LocalStorage";
 import { getPostCall } from "../utils/API";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
+import DriverHomeStatusCard from "../components/DriverHomeStatusCard";
+import { widthPercentageToDP } from "react-native-responsive-screen";
+import DriverHomeBooking from "../components/DriverHomeBooking";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -37,6 +40,11 @@ const DriverHome = ({ navigation }) => {
     lat: 0,
     lng: 0,
   });
+  const [bookingData, setBookingData] = React.useState(null);
+
+  const toggleSwitch = () => {
+    setIsEnabled(!isEnabled);
+  };
 
   React.useEffect(() => {
     const requestPermissions = async () => {
@@ -46,37 +54,81 @@ const DriverHome = ({ navigation }) => {
     };
     requestPermissions;
   }, []);
-
-  let refreshInterval = 0;
-
   React.useEffect(() => {
-    console.log("Enable", isEnabled);
+    if (isEnabled == true) {
+      getBooking();
+    }
+  }, [loading]);
+  React.useEffect(() => {
     let interval = 0;
     if (isEnabled === false) {
-      
-      console.log("INTerveal", "off");
-      setIsEnabled(false);
-      setStatus("Offline");
-      stopForegroundUpdate();
-      stopBackgroundUpdate();
+      disableLocation();
     } else {
+      setDriverOnline();
+      setLoading(true);
       interval = setInterval(() => {
-        setLoading(true);
-        startForegroundUpdate();
-        startBackgroundUpdate();
-        console.log("interval");
+        updateLocation();
       }, 5000);
     }
     return () => clearInterval(interval);
   }, [isEnabled]);
 
-  const toggleSwitch = () => {
-    setIsEnabled(!isEnabled);
+  const disableLocation = () => {
+    setIsEnabled(false);
+    setStatus("Offline");
+    setDriverOffline();
+    stopForegroundUpdate();
+    stopBackgroundUpdate();
   };
+  const updateLocation = () => {
+    setLoading(true);
+    startForegroundUpdate();
+    startBackgroundUpdate();
+  };
+  const setDriverOnline = async () => {
+    const user = await getLocalStorage("user");
+    await getPostCall(
+      "status/driverOnline",
+      "POST",
+      JSON.stringify({ id: user?.id }),
+      user?.token
+    )
+      .then((e) => {
+        console.log("status updated on db");
+        setStatus("Online");
+      })
+      .catch((e) => {
+        console.log("error", e);
+        setLoading(false);
+        setStatus("Error");
+        setIsEnabled(false);
+      });
+  };
+  const setUpdatedLocation = async (_loc) => {
+    const user = await getLocalStorage("user");
+    const data = {
+      id: user?.id,
+      lat: _loc.coords.latitude,
+      lng: _loc.coords.longitude,
+    };
+    console.log("lat", _loc.coords.latitude);
+    console.log("lng", _loc.coords.longitude);
 
+    await getPostCall(
+      "status/liveLocation",
+      "POST",
+      JSON.stringify(data),
+      user?.token
+    )
+      .then((e) => {
+        console.log("location updates in db");
+        setLoading(false);
+      })
+      .catch((e) => console.log("error updating location in db"));
+  };
   const startForegroundUpdate = async () => {
     // Check if foreground permission is granted
-    console.log("Fore Start", isEnabled);
+
     if (isEnabled) {
       const { granted } = await Location.getForegroundPermissionsAsync();
       if (!granted) {
@@ -100,7 +152,7 @@ const DriverHome = ({ navigation }) => {
             lng: location.coords.longitude,
           });
           // console.log("CORRDS", location.coords);
-          setDriverOnline(location);
+          setUpdatedLocation(location);
           // setPosition(location.coords);
         }
       );
@@ -155,132 +207,59 @@ const DriverHome = ({ navigation }) => {
       console.log("Location tacking stopped");
     }
   };
-
-  console.log("Checking", isEnabled);
-  const setDriverOnline = async (_loc) => {
+  const setDriverOffline = async () => {
     const user = await getLocalStorage("user");
-    const data = {
-      id: user?.id,
-      lat: _loc.coords.latitude + 10,
-      lng: _loc.coords.longitude,
-    };
-    console.log("lat", _loc.coords.latitude);
-
     await getPostCall(
-      "status/driverOnline",
+      "status/driverOffline",
       "POST",
       JSON.stringify({ id: user?.id }),
       user?.token
     )
       .then((e) => {
-        console.log("status updated on db");
-        setLoading(false);
-        setStatus("Online");
+        console.log("status offline updated on db");
       })
       .catch((e) => {
         console.log("error", e);
-        setLoading(false);
-        setStatus("Error");
-        setIsEnabled(false);
       });
+  };
+  const getBooking = async () => {
+    const user = await getLocalStorage("user");
     await getPostCall(
-      "status/liveLocation",
+      "booking/getBooking",
       "POST",
-      JSON.stringify(data),
+      JSON.stringify({ id: user?.id }),
       user?.token
     )
-      .then((e) => console.log("location updates in db"))
-      .catch((e) => console.log("error updating location in db"));
-  };
-
-  const getLocationAsync = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    const user = await getLocalStorage("user");
-    console.log(status);
-    if (status !== "granted") {
-      alert("Permission to access location was denied");
-      return;
-    }
-
-    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-      enableHighAccuracy: true,
-      distanceInterval: 1,
-      timeInterval: 5000,
-    });
-    await Location.watchPositionAsync(
-      {
-        enableHighAccuracy: true,
-        distanceInterval: 1,
-        timeInterval: 10000,
-      },
-      (e) => {
-        console.log(e);
-      },
-      (error) => console.log(error)
-    );
+      .then((e) => setBookingData(e.data))
+      .catch((e) => console.log("catch", e));
   };
 
   return (
-    <ScrollView style={{ margin: 10 }}>
+    <View>
       <DateView name={moment().format("ddd, DD MMM YYYY z")} color="black" />
       {/* <CardView name="Hello Dev" img={require("../assets/sedan.jpeg")} /> */}
       <View
         style={{
-          borderRadius: 10,
-
-          width: "100%",
-          backgroundColor: "white",
-          padding: 20,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 1,
-            height: 2,
-          },
-          shadowOpacity: 0.13,
-          shadowRadius: 4,
-
-          elevation: 20,
+          padding: 10,
+          // height: widthPercentageToDP("100%"),
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontSize: 15 }}>Status: </Text>
-          <Text style={{ fontSize: 15 }}>{status}</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontSize: 15 }}>Go online</Text>
-          <Switch
-            disabled={loading}
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-          />
-        </View>
-
-        {isEnabled ? (
-          loading ? (
-            <View>
-              <ActivityIndicator />
-            </View>
-          ) : (
-            <View>
-              <Text>Lat: {locState?.lat}</Text>
-              <Text>Lng: {locState?.lng}</Text>
-            </View>
-          )
+        <DriverHomeStatusCard
+          loading={loading}
+          status={status}
+          isEnabled={isEnabled}
+          toggleSwitch={toggleSwitch}
+          lat={locState?.lat}
+          lng={locState?.lng}
+        />
+        {isEnabled && bookingData != null ? (
+          <DriverHomeBooking enable={isEnabled} data={bookingData} />
         ) : null}
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
