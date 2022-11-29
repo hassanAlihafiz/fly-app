@@ -1,13 +1,12 @@
+import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Text, View } from "react-native";
 
 export default DriverHomeBooking = ({ data }) => {
-  console.log(
-    "Hewy",
-    moment.unix(data?.dateCreated._seconds).format("MM/DD/YYYY")
-  );
+  const navigation = useNavigation();
+
   return (
     <View
       style={{
@@ -30,7 +29,8 @@ export default DriverHomeBooking = ({ data }) => {
     >
       <View style={{ marginBottom: 10 }}>
         <Text>
-          Order Time: {moment.unix(data?.dateCreated._seconds).format("MM/DD/YYYY HH:MM")}
+          Order Time:{" "}
+          {moment.unix(data?.dateCreated._seconds).format("MM/DD/YYYY HH:MM")}
         </Text>
         <Text>
           Customer Name:{" "}
@@ -73,6 +73,9 @@ export default DriverHomeBooking = ({ data }) => {
             justifyContent: "center",
             alignItems: "center",
           }}
+          onPress={() =>
+            navigation.navigate("TripScreen", { bookingData: data })
+          }
         >
           <Text style={{ color: "white" }}>Accept</Text>
         </TouchableOpacity>

@@ -106,6 +106,7 @@ const DriverHome = ({ navigation }) => {
   };
   const setUpdatedLocation = async (_loc) => {
     const user = await getLocalStorage("user");
+    await setLocalStorage("driver_coords", JSON.stringify(_loc));
     const data = {
       id: user?.id,
       lat: _loc.coords.latitude,
@@ -230,7 +231,11 @@ const DriverHome = ({ navigation }) => {
       JSON.stringify({ id: user?.id }),
       user?.token
     )
-      .then((e) => setBookingData(e.data))
+      .then((e) => {
+        if (e.data.length != 0) {
+          setBookingData(e.data);
+        }
+      })
       .catch((e) => console.log("catch", e));
   };
 

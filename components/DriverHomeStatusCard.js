@@ -14,7 +14,7 @@ export default DriverHomeStatusCard = ({
     <View
       style={{
         borderRadius: 10,
-
+        height: isEnabled ? 140 : null,
         width: "100%",
         backgroundColor: "white",
         padding: 20,
@@ -27,45 +27,47 @@ export default DriverHomeStatusCard = ({
         shadowRadius: 4,
 
         elevation: 20,
+        justifyContent: "space-between",
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ fontSize: 15 }}>Status: </Text>
-        <Text style={{ fontSize: 15 }}>{status}</Text>
+      <View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 15 }}>Status: </Text>
+          <Text style={{ fontSize: 15 }}>{status}</Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 15 }}>Go online</Text>
+          <Switch
+            disabled={loading}
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+        </View>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ fontSize: 15 }}>Go online</Text>
-        <Switch
-          disabled={loading}
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-        />
-      </View>
-
-      {isEnabled ? (
-        loading ? (
-          <View>
+      <View>
+        {isEnabled ? (
+          loading ? (
             <ActivityIndicator />
-          </View>
-        ) : (
-          <View>
-            <Text>Lat: {lat}</Text>
-            <Text>Lng: {lng}</Text>
-          </View>
-        )
-      ) : null}
+          ) : (
+            <>
+              <Text>Lat: {lat}</Text>
+              <Text>Lng: {lng}</Text>
+            </>
+          )
+        ) : null}
+      </View>
     </View>
   );
 };

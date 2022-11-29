@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import { MessageOverlay } from "../components/Overlays";
 
+const GOOGLE_API_KEY = "AIzaSyBIHr09mmQOV8a0LybJlTt39_8U4_1NokY";
+
 const NearbyWashStation = ({ route }) => {
   const { packageData, serviceFee, total, lat, lng, carType } = route.params;
 
@@ -36,7 +38,7 @@ const NearbyWashStation = ({ route }) => {
           "," +
           lng.toString() +
           "&radius=10000&type=car_wash&key=" +
-          "AIzaSyBIHr09mmQOV8a0LybJlTt39_8U4_1NokY"
+          GOOGLE_API_KEY
       )
       .then((e) => {
         // console.log(e.data.results);
