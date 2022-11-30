@@ -234,6 +234,8 @@ const DriverHome = ({ navigation }) => {
       .then((e) => {
         if (e.data.length != 0) {
           setBookingData(e.data);
+        } else {
+          setBookingData(null);
         }
       })
       .catch((e) => console.log("catch", e));
