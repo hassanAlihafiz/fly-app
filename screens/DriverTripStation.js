@@ -1,23 +1,17 @@
 import {
   AntDesign,
+  FontAwesome,
   Ionicons,
   MaterialCommunityIcons,
-  MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
 import React from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator } from "react-native";
+import { Text } from "react-native";
+import { Dimensions, TouchableOpacity, View } from "react-native";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import BackButton from "../components/common/BackButton";
-import GreenButton from "../components/common/GreenButton";
 import { getLocalStorage } from "../utils/LocalStorage";
 
 const GOOGLE_API_KEY = "AIzaSyBIHr09mmQOV8a0LybJlTt39_8U4_1NokY";
@@ -64,21 +58,24 @@ const mapStyle = [
   },
 ];
 
-const DriveTripScreen = ({ route }) => {
+export default DriverTripStation = ({ route }) => {
   const navigation = useNavigation();
+  const { bookingData } = route.params;
   const [loading, setLoading] = React.useState(true);
   const [arrived, setArrived] = React.useState(false);
   const [duration, setDuration] = React.useState("");
   const [distance, setDistance] = React.useState("");
+
+  const coords = bookingData?.washStation?.geometry?.location;
   const map = React.useRef(null);
-  const { bookingData } = route.params;
+
   const [driverLocation, setDriverLocation] = React.useState({
     latitude: 0,
     longitude: 0,
   });
   const [coordinates, setCoordinates] = React.useState({
-    latitude: Number(bookingData.userData.location.lat),
-    longitude: Number(bookingData.userData.location.lng),
+    latitude: Number(coords.lat),
+    longitude: Number(coords.lng),
   });
 
   React.useEffect(() => {
@@ -102,105 +99,54 @@ const DriveTripScreen = ({ route }) => {
     setLoading(false);
   };
 
-  // const getArrivalDistance = async () => {
-  //   await axios
-  //     .get(
-  //       "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
-  //         driverLocation.latitude +
-  //         "," +
-  //         driverLocation.longitude +
-  //         "&destinations=" +
-  //         coordinates.latitude +
-  //         "," +
-  //         coordinates.longitude +
-  //         "&units=imperial&key=" +
-  //         GOOGLE_API_KEY
-  //     )
-  //     .then((e) => {
-  //       const dis = e?.data?.rows[0]?.elements[0].distance?.value;
-  //       const disText = e?.data?.rows[0]?.elements[0].distance?.text;
-  //       const dur = e?.data?.rows[0]?.elements[0].duration?.text;
-  //       if (dis <= 500) {
-  //         setArrived(true);
-  //       }
-  //       setDistance(disText);
-  //       setDuration(dur);
-  //       setLoading(false);
-  //     })
-  //     .catch((e) => console.log(e));
-  // };
-
   return (
-    <View style={{ height: "100%" }}>
-      {!loading ? (
-        <MapView
-          // showsUserLocation
-          // showsMyLocationButton
-          // followsUserLocation
-          ref={(e) => (map.current = e)}
-          style={{ height: "100%", width: "100%" }}
-          mapPadding={{ bottom: 100, top: 200 }}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={{
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
+    <View>
+      <MapView
+        ref={(e) => (map.current = e)}
+        provider={PROVIDER_GOOGLE}
+        style={{ height: "100%", width: "100%" }}
+        mapPadding={{ bottom: 100, top: 200 }}
+        initialRegion={{
+          latitude: driverLocation.latitude,
+          longitude: driverLocation.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        }}
+        customMapStyle={mapStyle}
+      >
+        <MapViewDirections
+          origin={driverLocation}
+          destination={coordinates}
+          apikey={GOOGLE_API_KEY}
+          strokeWidth={3}
+          strokeColor="#111111"
+          onReady={(result) => {
+            setDistance(result.distance);
+            setDuration(Math.round(result.duration));
+
+            if (result.distance <= 300) {
+              setArrived(true);
+            } else {
+              setArrived(false);
+            }
+
+            map.current.fitToCoordinates(result.coordinates, {
+              edgePadding: {
+                right: width / 20,
+                bottom: height / 20,
+                left: width / 20,
+                top: height / 20,
+              },
+            });
           }}
-          customMapStyle={mapStyle}
-        >
-          <MapViewDirections
-            origin={driverLocation}
-            destination={coordinates}
-            apikey={GOOGLE_API_KEY}
-            strokeWidth={3}
-            strokeColor="#111111"
-            onReady={(result) => {
-              setDistance(result.distance);
-              setDuration(Math.round(result.duration));
-
-              if (result.distance <= 300) {
-                setArrived(true);
-              } else {
-                setArrived(false);
-              }
-
-              map.current.fitToCoordinates(result.coordinates, {
-                edgePadding: {
-                  right: width / 20,
-                  bottom: height / 20,
-                  left: width / 20,
-                  top: height / 20,
-                },
-              });
-            }}
-          />
-
-          <Marker
-            identifier="mk1"
-            coordinate={driverLocation}
-            pinColor={"blue"}
-          />
-          <Marker
-            identifier="mk2"
-            coordinate={coordinates}
-            title="Destination"
-            description="Destination"
-          >
-            {/* <MaterialCommunityIcons
-              name="map-marker-account"
-              size={40}
-              color="red"
-            /> */}
-            <MaterialCommunityIcons
-              name="map-marker-check"
-              size={40}
-              color="green"
-            />
-            {/* <MaterialIcons name="location-history" size={40} color="red" /> */}
-          </Marker>
-        </MapView>
-      ) : null}
+        />
+        <Marker
+          identifier="mk1"
+          coordinate={driverLocation}
+          pinColor={"blue"}
+        />
+        <Marker identifier="mk2" coordinate={coordinates} pinColor={"blue"} />
+      </MapView>
       <View
         style={{
           display: "flex",
@@ -224,7 +170,7 @@ const DriveTripScreen = ({ route }) => {
           <Text
             style={{ marginVertical: 10, fontSize: 20, fontWeight: "bold" }}
           >
-            Car Pickup
+            Go to {bookingData.packageData.type} Station
           </Text>
           <MaterialCommunityIcons
             name="navigation-variant"
@@ -288,39 +234,6 @@ const DriveTripScreen = ({ route }) => {
           </>
         )}
       </View>
-      {/* <TouchableOpacity
-        style={{
-          position: "absolute",
-          bottom: 0,
-          height: 50,
-          marginVertical: 20,
-          marginHorizontal: 20,
-
-          backgroundColor: arrived ? "#43ce51" : "gray",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "90%",
-
-          borderRadius: 10,
-        }}
-        disabled={!arrived}
-        onPress={() => navigation.navigate("PickCarScreen")}
-      >
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <Text style={{ color: "white", alignSelf: "center" }}>Arrived</Text>
-        )}
-      </TouchableOpacity> */}
-      <GreenButton
-        text="Arrived"
-        width="90%"
-        loading={loading}
-        disabled={!arrived || loading}
-        onPress={() => navigation.navigate("PickCarScreen", { bookingData })}
-      />
     </View>
   );
 };
-
-export default DriveTripScreen;

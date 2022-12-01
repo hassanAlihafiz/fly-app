@@ -42,7 +42,7 @@ const PickDropMap = ({ route }) => {
       getUserCoords();
     }
   }, []);
-  console.log(locationState);
+
   const getUserCoords = async () => {
     const _location = await getLocalStorage("UserCoords");
     console.log("Loc", _location);
@@ -179,22 +179,24 @@ const PickDropMap = ({ route }) => {
           fetchDetails={true}
           placeholder="Search"
           onPress={(data, details = null) => {
+            setLoader(true);
             console.log(details.geometry.location);
             setLocationState({
               latitude: details?.geometry?.location.lat,
               longitude: details?.geometry?.location.lng,
             });
+            setLoader(false);
           }}
           query={{
             key: "AIzaSyBIHr09mmQOV8a0LybJlTt39_8U4_1NokY",
             language: "en",
-            types: packageData.type === "Gas" ? "gas_station" : "car_wash",
+            // types: packageData.type === "Gas" ? "gas_station" : "car_wash",
             radius: "15000",
           }}
           nearbyPlacesAPI="GooglePlacesSearch"
           GooglePlacesSearchQuery={{
             rankby: "distance",
-            type: packageData.type === "Gas" ? "gas_station" : "car_wash",
+            // type: packageDta.type === "Gas" ? "gas_station" : "car_wash",
             radius: "15000",
             openNow: true,
           }}

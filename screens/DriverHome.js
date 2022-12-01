@@ -112,8 +112,6 @@ const DriverHome = ({ navigation }) => {
       lat: _loc.coords.latitude,
       lng: _loc.coords.longitude,
     };
-    console.log("lat", _loc.coords.latitude);
-    console.log("lng", _loc.coords.longitude);
 
     await getPostCall(
       "status/liveLocation",
@@ -122,7 +120,6 @@ const DriverHome = ({ navigation }) => {
       user?.token
     )
       .then((e) => {
-        console.log("location updates in db");
         setLoading(false);
       })
       .catch((e) => console.log("error updating location in db"));

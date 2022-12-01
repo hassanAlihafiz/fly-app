@@ -2,11 +2,10 @@ import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import { Text, View } from "react-native";
+import { Text, View, Image } from "react-native";
 
 export default DriverHomeBooking = ({ data }) => {
   const navigation = useNavigation();
-
   return (
     <View
       style={{
@@ -27,23 +26,50 @@ export default DriverHomeBooking = ({ data }) => {
         marginBottom: 5,
       }}
     >
-      <View style={{ marginBottom: 10 }}>
-        <Text>
-          Order Time:{" "}
-          {moment.unix(data?.dateCreated._seconds).format("MM/DD/YYYY HH:MM")}
-        </Text>
-        <Text>
-          Customer Name:{" "}
-          {data?.userData?.first_name + " " + data?.userData?.last_name}
-        </Text>
-      </View>
-
-      <View style={{ marginBottom: 10 }}>
-        <Text>Package Name: {data?.packageData?.name}</Text>
-        <Text>Package Type: {data?.packageData?.type}</Text>
-      </View>
-      <View style={{ marginBottom: 10 }}>
-        <Text>Amount: $ {data?.amount}</Text>
+      <View
+        style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
+      >
+        <View style={{ flex: 1 }}>
+          <View style={{ marginBottom: 10 }}>
+            <Text>
+              {moment
+                .unix(data?.dateCreated._seconds)
+                .format("MM/DD/YYYY HH:MM")}
+            </Text>
+            <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+              {data?.userData?.first_name + " " + data?.userData?.last_name}
+            </Text>
+          </View>
+          <View style={{ marginBottom: 10 }}>
+            <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+              {data?.packageData?.name}
+            </Text>
+            <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+              {data?.packageData?.type}
+            </Text>
+          </View>
+          <View style={{ marginBottom: 10 }}>
+            <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+              $ {data?.amount}
+            </Text>
+          </View>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Image
+            source={
+              data.carType == "SEDAN"
+                ? require("../assets/sedan.jpeg")
+                : data.carType == "HATCHBACK"
+                ? require("../assets/hackBook.jpeg")
+                : data.carType == "MPV"
+                ? require("../assets/mpv.jpeg")
+                : data.carType == "SUV"
+                ? require("../assets/suv.jpeg")
+                : null
+            }
+            style={{ height: 130, width: "100%", borderRadius: 10 }}
+          />
+        </View>
       </View>
       <View
         style={{
@@ -77,7 +103,7 @@ export default DriverHomeBooking = ({ data }) => {
             navigation.navigate("TripScreen", { bookingData: data })
           }
         >
-          <Text style={{ color: "white" }}>Accept</Text>
+          <Text style={{ color: "white" }}>Pick up</Text>
         </TouchableOpacity>
       </View>
     </View>

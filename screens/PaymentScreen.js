@@ -136,6 +136,7 @@ const PaymentScreen = ({ route }) => {
             userId: user.id,
             amount: total,
             zipCode: user.zipCodeId,
+            carType: carType,
             userData: {
               email: user.email,
               first_name: user.first_name,
@@ -166,6 +167,7 @@ const PaymentScreen = ({ route }) => {
             userId: user.id,
             amount: total,
             zipCode: user.zipCodeId,
+            carType: carType,
             userData: {
               email: user.email,
               first_name: user.first_name,
