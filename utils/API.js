@@ -1,6 +1,8 @@
 import axios from "axios";
 
-let backendUrl = "https://fly-backend.herokuapp.com/";
+// let backendUrl = "https://fly-backend.herokuapp.com/";
+let backendUrl = "192.168.18.7:3000/";
+
 export async function getPostCall(url, method, data, authToken) {
   return new Promise((resolve, reject) => {
     try {

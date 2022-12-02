@@ -288,37 +288,16 @@ const DriveTripScreen = ({ route }) => {
           </>
         )}
       </View>
-      {/* <TouchableOpacity
-        style={{
-          position: "absolute",
-          bottom: 0,
-          height: 50,
-          marginVertical: 20,
-          marginHorizontal: 20,
 
-          backgroundColor: arrived ? "#43ce51" : "gray",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "90%",
-
-          borderRadius: 10,
-        }}
-        disabled={!arrived}
-        onPress={() => navigation.navigate("PickCarScreen")}
-      >
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <Text style={{ color: "white", alignSelf: "center" }}>Arrived</Text>
-        )}
-      </TouchableOpacity> */}
-      <GreenButton
-        text="Arrived"
-        width="90%"
-        loading={loading}
-        disabled={!arrived || loading}
-        onPress={() => navigation.navigate("PickCarScreen", { bookingData })}
-      />
+      {arrived == true ? (
+        <GreenButton
+          text="Arrived"
+          width="90%"
+          loading={loading}
+          disabled={!arrived || loading}
+          onPress={() => navigation.navigate("PickCarScreen", { bookingData })}
+        />
+      ) : null}
     </View>
   );
 };

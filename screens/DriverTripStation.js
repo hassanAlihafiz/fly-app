@@ -12,6 +12,7 @@ import { Dimensions, TouchableOpacity, View } from "react-native";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import BackButton from "../components/common/BackButton";
+import GreenButton from "../components/common/GreenButton";
 import { getLocalStorage } from "../utils/LocalStorage";
 
 const GOOGLE_API_KEY = "AIzaSyBIHr09mmQOV8a0LybJlTt39_8U4_1NokY";
@@ -101,52 +102,54 @@ export default DriverTripStation = ({ route }) => {
 
   return (
     <View>
-      <MapView
-        ref={(e) => (map.current = e)}
-        provider={PROVIDER_GOOGLE}
-        style={{ height: "100%", width: "100%" }}
-        mapPadding={{ bottom: 100, top: 200 }}
-        initialRegion={{
-          latitude: driverLocation.latitude,
-          longitude: driverLocation.longitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
-        }}
-        customMapStyle={mapStyle}
-      >
-        <MapViewDirections
-          origin={driverLocation}
-          destination={coordinates}
-          apikey={GOOGLE_API_KEY}
-          strokeWidth={3}
-          strokeColor="#111111"
-          onReady={(result) => {
-            setDistance(result.distance);
-            setDuration(Math.round(result.duration));
-
-            if (result.distance <= 300) {
-              setArrived(true);
-            } else {
-              setArrived(false);
-            }
-
-            map.current.fitToCoordinates(result.coordinates, {
-              edgePadding: {
-                right: width / 20,
-                bottom: height / 20,
-                left: width / 20,
-                top: height / 20,
-              },
-            });
+      {!loading ? (
+        <MapView
+          ref={(e) => (map.current = e)}
+          provider={PROVIDER_GOOGLE}
+          style={{ height: "100%", width: "100%" }}
+          mapPadding={{ bottom: 100, top: 200 }}
+          initialRegion={{
+            latitude: driverLocation.latitude,
+            longitude: driverLocation.longitude,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
           }}
-        />
-        <Marker
-          identifier="mk1"
-          coordinate={driverLocation}
-          pinColor={"blue"}
-        />
-        <Marker identifier="mk2" coordinate={coordinates} pinColor={"blue"} />
-      </MapView>
+          customMapStyle={mapStyle}
+        >
+          <MapViewDirections
+            origin={driverLocation}
+            destination={coordinates}
+            apikey={GOOGLE_API_KEY}
+            strokeWidth={3}
+            strokeColor="#111111"
+            onReady={(result) => {
+              setDistance(result.distance);
+              setDuration(Math.round(result.duration));
+
+              if (result.distance <= 300) {
+                setArrived(true);
+              } else {
+                setArrived(false);
+              }
+
+              map.current.fitToCoordinates(result.coordinates, {
+                edgePadding: {
+                  right: width / 20,
+                  bottom: height / 20,
+                  left: width / 20,
+                  top: height / 20,
+                },
+              });
+            }}
+          />
+          <Marker
+            identifier="mk1"
+            coordinate={driverLocation}
+            pinColor={"blue"}
+          />
+          <Marker identifier="mk2" coordinate={coordinates} pinColor={"blue"} />
+        </MapView>
+      ) : null}
       <View
         style={{
           display: "flex",
@@ -234,6 +237,15 @@ export default DriverTripStation = ({ route }) => {
           </>
         )}
       </View>
+      {arrived == true ? (
+        <GreenButton
+          text="Arrived"
+          width="90%"
+          loading={loading}
+          disabled={!arrived || loading}
+          onPress={() => navigation.navigate("PickCarScreen", { bookingData })}
+        />
+      ) : null}
     </View>
   );
 };
