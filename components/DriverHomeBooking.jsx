@@ -1,31 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import React from "react";
+import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { Text, View, Image } from "react-native";
 
 export default DriverHomeBooking = ({ data }) => {
   const navigation = useNavigation();
   return (
-    <View
-      style={{
-        borderRadius: 10,
-        width: "100%",
-        backgroundColor: "white",
-        padding: 20,
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 1,
-          height: 2,
-        },
-        shadowOpacity: 0.13,
-        shadowRadius: 4,
-
-        elevation: 20,
-        marginTop: 5,
-        marginBottom: 5,
-      }}
-    >
+    <View style={styles.main}>
       <View
         style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
       >
@@ -109,3 +92,22 @@ export default DriverHomeBooking = ({ data }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  main: {
+    borderRadius: 10,
+    width: "100%",
+    backgroundColor: "white",
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 1,
+      height: 2,
+    },
+    shadowOpacity: 0.13,
+    shadowRadius: 4,
+    elevation: 20,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+});

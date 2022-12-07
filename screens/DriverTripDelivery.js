@@ -3,16 +3,15 @@ import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
 import DirectionsMap from "../components/common/DirectionsMap";
 import DriverMapCard from "../components/common/DriverMapCard";
-import GreenButton from "../components/common/GreenButton";
 import { getLocalStorage } from "../utils/LocalStorage";
 
-export default DriverTripStation = ({ route }) => {
+const DriverTripDelivery = ({ route }) => {
   const navigation = useNavigation();
   const { bookingData } = route.params;
-  const coords = bookingData?.washStation?.geometry?.location;
+
   const coordinates = {
-    latitude: Number(coords?.lat),
-    longitude: Number(coords?.lng),
+    latitude: Number(bookingData.userData.location.lat),
+    longitude: Number(bookingData.userData.location.lng),
   };
   const [loading, setLoading] = React.useState(true);
   const [arrived, setArrived] = React.useState(false);
@@ -48,16 +47,14 @@ export default DriverTripStation = ({ route }) => {
         setDistance={setDistance}
         setDuration={setDuration}
         setArrived={setArrived}
-        radius={0.8}
+        radius={0.5}
       />
-
       <DriverMapCard
         loading={loading}
-        text={`Go to ${bookingData.packageData.type} Station`}
+        text="Return to Customer"
         distance={distance}
         duration={duration}
       />
-
       {arrived == true ? (
         <GreenButton
           text="Arrived"
@@ -65,10 +62,12 @@ export default DriverTripStation = ({ route }) => {
           loading={loading}
           disabled={!arrived || loading}
           onPress={() =>
-            navigation.navigate("AtStationScreen", { bookingData })
+            navigation.navigate("DriverCustomerConfirm", { bookingData })
           }
         />
       ) : null}
     </View>
   );
 };
+
+export default DriverTripDelivery;

@@ -1,7 +1,8 @@
 import axios from "axios";
 
 // let backendUrl = "https://fly-backend.herokuapp.com/";
-let backendUrl = "192.168.18.7:3000/";
+let backendUrl = "https://sunny-jetty-368714.ue.r.appspot.com/";
+// let backendUrl = "192.168.18.7:3000/";
 
 export async function getPostCall(url, method, data, authToken) {
   return new Promise((resolve, reject) => {

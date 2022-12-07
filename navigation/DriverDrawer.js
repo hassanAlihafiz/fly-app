@@ -21,6 +21,9 @@ import DriverProfile from "../screens/DriverProfile";
 import DriveTripScreen from "../screens/DriveTripScreen";
 import CarPickedScreen from "../screens/CarPickedScreen";
 import DriverTripStation from "../screens/DriverTripStation";
+import AtStationScreen from "../screens/AtStationScreen";
+import DriverTripDelivery from "../screens/DriverTripDelivery";
+import DriverCustomerConfirm from "../screens/DriverCustomerConfirm";
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +38,12 @@ const HomeStack = () => {
       <Stack.Screen name="TripScreen" component={DriveTripScreen} />
       <Stack.Screen name="PickCarScreen" component={CarPickedScreen} />
       <Stack.Screen name="TripStationScreen" component={DriverTripStation} />
+      <Stack.Screen name="AtStationScreen" component={AtStationScreen} />
+      <Stack.Screen name="TripDeliveryScreen" component={DriverTripDelivery} />
+      <Stack.Screen
+        name="DriverCustomerConfirm"
+        component={DriverCustomerConfirm}
+      />
     </Stack.Navigator>
   );
 };

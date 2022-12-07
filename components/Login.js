@@ -40,7 +40,7 @@ const Login = ({ navigation, loginAs }) => {
     } else {
       var config = {
         method: "post",
-        url: "https://fly-backend.herokuapp.com/users/login",
+        url: "https://sunny-jetty-368714.ue.r.appspot.com/users/login",
         headers: {
           "Content-Type": "application/json",
         },
