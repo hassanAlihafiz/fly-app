@@ -16,13 +16,17 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": ["location", "fetch"]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FF0000"
-      }
+      },
+      "permissions": ["ACCESS_BACKGROUND_LOCATION"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

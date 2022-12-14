@@ -8,12 +8,25 @@ import Login from "../screens/LoginScreen";
 import StripeScreen from "../screens/StripeScreen";
 import SettingScreen from "../screens/Settings";
 import ServiceOfferedScreen from "../screens/ServiceOffered";
-import { Entypo, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import {
+  Entypo,
+  FontAwesome,
+  FontAwesome5,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import DriverHome from "../screens/DriverHome";
 import Completed from "../screens/Completed";
 import DriverProfile from "../screens/DriverProfile";
+import DriveTripScreen from "../screens/DriveTripScreen";
+import CarPickedScreen from "../screens/CarPickedScreen";
+import DriverTripStation from "../screens/DriverTripStation";
+import AtStationScreen from "../screens/AtStationScreen";
+import DriverTripDelivery from "../screens/DriverTripDelivery";
+import DriverCustomerConfirm from "../screens/DriverCustomerConfirm";
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
+
 const HomeStack = () => {
   return (
     <Stack.Navigator
@@ -22,6 +35,15 @@ const HomeStack = () => {
       }}
     >
       <Stack.Screen name="FirstHome" component={DriverHome} />
+      <Stack.Screen name="TripScreen" component={DriveTripScreen} />
+      <Stack.Screen name="PickCarScreen" component={CarPickedScreen} />
+      <Stack.Screen name="TripStationScreen" component={DriverTripStation} />
+      <Stack.Screen name="AtStationScreen" component={AtStationScreen} />
+      <Stack.Screen name="TripDeliveryScreen" component={DriverTripDelivery} />
+      <Stack.Screen
+        name="DriverCustomerConfirm"
+        component={DriverCustomerConfirm}
+      />
     </Stack.Navigator>
   );
 };
@@ -37,6 +59,10 @@ const DriverDrawerTab = () => {
         drawerType: "slide",
         drawerActiveTintColor: "black",
         drawerInactiveTintColor: "grey",
+        drawerItemStyle: {
+          height: 50,
+          justifyContent: "center",
+        },
       }}
     >
       <Drawer.Screen
@@ -50,7 +76,6 @@ const DriverDrawerTab = () => {
           },
           drawerLabelStyle: {
             borderBottomWidth: 1,
-            height: 30,
             borderBottomColor: "grey",
           },
           drawerIcon: ({ focused, color }) => (
@@ -62,45 +87,46 @@ const DriverDrawerTab = () => {
           ),
         }}
       />
-       <Drawer.Screen
+      <Drawer.Screen
         name="Completed"
         component={Completed}
         options={{
+          headerStyle: {
+            height: 80,
+          },
           drawerLabelStyle: {
             borderBottomWidth: 1,
-            height: 30,
             borderBottomColor: "grey",
           },
           drawerIcon: ({ focused }) => (
-            <Entypo
-              name="tools"
-              size={24}
-              color="black"
+            <MaterialCommunityIcons
+              name="sticker-check"
+              size={22}
               style={{ color: focused ? "black" : "grey" }}
             />
           ),
         }}
       />
-       <Drawer.Screen
-        name="Profile"
+      <Drawer.Screen
+        name="  Profile"
         component={DriverProfile}
         options={{
+          headerStyle: {
+            height: 80,
+          },
           drawerLabelStyle: {
             borderBottomWidth: 1,
-            height: 30,
             borderBottomColor: "grey",
           },
           drawerIcon: ({ focused }) => (
-            <Entypo
-              name="tools"
+            <FontAwesome
+              name="user"
               size={24}
-              color="black"
               style={{ color: focused ? "black" : "grey" }}
             />
           ),
         }}
       />
-     
     </Drawer.Navigator>
   );
 };

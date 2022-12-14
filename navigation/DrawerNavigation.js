@@ -10,8 +10,21 @@ import SettingScreen from "../screens/Settings";
 import ServiceOfferedScreen from "../screens/ServiceOffered";
 import { Entypo, Feather, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Map from "../screens/Map";
+import Checkout from "../screens/Checkout";
+import PaymentScreen from "../screens/PaymentScreen";
+import React from "react";
+import {
+  useNavigationContainerRef,
+  useNavigationState,
+} from "@react-navigation/native";
+import SelectDriverScreen from "../screens/SelectDriverScreen";
+import PickDropMap from "../components/PickDropMap";
+import SelectGasStationScreens from "../screens/SelectGasStationScreen";
+import NearbyWashStation from "../screens/NearbyWashStation";
+
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
+
 const HomeStack = () => {
   return (
     <Stack.Navigator
@@ -20,6 +33,13 @@ const HomeStack = () => {
       }}
     >
       <Stack.Screen name="FirstHome" component={HomeScreen} />
+      <Stack.Screen name="Main Service" component={ServiceOfferedScreen} />
+      <Stack.Screen name="Checkout" component={Checkout} />
+      <Stack.Screen name="PickDropMap" component={PickDropMap} />
+      <Stack.Screen name="SelectStations" component={SelectGasStationScreens} />
+      <Stack.Screen name="SelectWashStations" component={NearbyWashStation} />
+      <Stack.Screen name="SelectDriver" component={SelectDriverScreen} />
+      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
     </Stack.Navigator>
   );
 };
@@ -29,12 +49,17 @@ const DrawerTab = () => {
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
+        swipeEnabled: true,
         drawerStyle: {
           width: "70%",
         },
         drawerType: "slide",
         drawerActiveTintColor: "black",
         drawerInactiveTintColor: "grey",
+        drawerItemStyle: {
+          height: 50,
+          justifyContent: "center",
+        },
       }}
     >
       <Drawer.Screen
@@ -43,12 +68,13 @@ const DrawerTab = () => {
         options={{
           headerTitle: "Fly",
           headerTitleAlign: "center",
+
           headerStyle: {
             height: 80,
           },
           drawerLabelStyle: {
             borderBottomWidth: 1,
-            height: 30,
+
             borderBottomColor: "grey",
           },
           drawerIcon: ({ focused, color }) => (
@@ -60,49 +86,56 @@ const DrawerTab = () => {
           ),
         }}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Service Offered"
         component={ServiceOffered}
         options={{
-          drawerLabelStyle: {
-            borderBottomWidth: 1,
-            height: 30,
-            borderBottomColor: "grey",
-          },
-          drawerIcon: ({ focused }) => (
-            <Entypo
-              name="tools"
-              size={24}
-              color="black"
-              style={{ color: focused ? "black" : "grey" }}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="Stripe"
-        component={StripeScreen}
-        options={{
-          headerTitle: "Stripe",
+          headerTitle: "Service Offered",
           headerTitleAlign: "center",
+
           headerStyle: {
             height: 80,
           },
           drawerLabelStyle: {
             borderBottomWidth: 1,
-            height: 30,
+
             borderBottomColor: "grey",
           },
           drawerIcon: ({ focused }) => (
-            <FontAwesome5
-              name="stripe-s"
-              size={24}
+            <Entypo
+              name="tools"
+              size={22}
               color="black"
               style={{ color: focused ? "black" : "grey" }}
             />
           ),
         }}
-      />
+      /> */}
+      {/* <Drawer.Screen
+        name="  Stripe"
+        component={StripeScreen}
+        options={{
+          headerTitle: "Stripe",
+          headerTitleAlign: "center",
+
+          headerStyle: {
+            height: 80,
+          },
+          drawerLabelStyle: {
+            borderBottomWidth: 1,
+
+            borderBottomColor: "grey",
+          },
+          drawerIcon: ({ focused }) => (
+            <FontAwesome5
+              name="stripe-s"
+              size={22}
+              color="black"
+              style={{ color: focused ? "black" : "grey" }}
+            />
+          ),
+        }}
+      /> */}
       <Drawer.Screen
         name="Settings"
         component={SettingStack}
@@ -115,7 +148,7 @@ const DrawerTab = () => {
           },
           drawerLabelStyle: {
             borderBottomWidth: 1,
-            height: 30,
+
             borderBottomColor: "grey",
           },
           drawerIcon: ({ focused }) => (
@@ -139,11 +172,15 @@ const DrawerTab = () => {
           },
           drawerLabelStyle: {
             borderBottomWidth: 1,
-            height: 30,
+
             borderBottomColor: "grey",
           },
           drawerIcon: ({ focused }) => (
-            <Feather name="map-pin" size={24} color="black" />
+            <Feather
+              name="map-pin"
+              size={22}
+              style={{ color: focused ? "black" : "grey" }}
+            />
           ),
         }}
       />
@@ -160,18 +197,6 @@ const SettingStack = () => {
       }}
     >
       <Stack.Screen name="Main Setting" component={SettingScreen} />
-    </Stack.Navigator>
-  );
-};
-
-const ServiceOffered = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="Main Service" component={ServiceOfferedScreen} />
     </Stack.Navigator>
   );
 };

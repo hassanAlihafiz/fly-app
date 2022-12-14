@@ -9,11 +9,11 @@ import AuthTabs from "../components/AuthTabs";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StatusBar } from "expo-status-bar";
 
-const Login = ({route, navigation }) => {
+const Login = ({ route, navigation }) => {
   // console.log(route.params.loginAs)
-   route.params.loginAs
+  route.params.loginAs;
   return (
-    <KeyboardAwareScrollView>
+    <KeyboardAwareScrollView scrollEnabled={false}>
       <View
         style={{
           flex: 1,
@@ -30,7 +30,6 @@ const Login = ({route, navigation }) => {
           }}
         >
           <Image
-            // style={styles.tinyLogo}
             style={{
               backgroundColor: "red",
               width: 200,
@@ -49,7 +48,7 @@ const Login = ({route, navigation }) => {
             width: wp("90%"),
           }}
         >
-          <AuthTabs props={route.params.loginAs}  navigation={navigation} />
+          <AuthTabs loginAs={route.params.loginAs} navigation={navigation} />
         </View>
       </View>
       <StatusBar style="auto" />

@@ -1,32 +1,96 @@
-import React, { useEffect } from "react";
-import {
-  KeyboardAvoidingView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import {
-  heightPercentageToDP,
-  widthPercentageToDP as wp,
-} from "react-native-responsive-screen";
+import React from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { FacebookSocialButton } from "react-native-social-buttons";
 import { GoogleSocialButton } from "react-native-social-buttons/src/buttons/GoogleSocialButton";
 import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import axios from "axios";
+import { setLocalStorage } from "../utils/LocalStorage";
+import { container, formStyles } from "./styles/FormStyle";
+import { LoadingOverlay, MessageOverlay, SuccessOverlay } from "./Overlays";
 
-const Login = ({navigation, props }) => {
-  const Login =()=>{
-    if(props == "customer"){
-      navigation.navigate("HomeScreen")
+const Login = ({ navigation, loginAs }) => {
+  const [loader, setLoader] = React.useState(false);
+  const [error, setError] = React.useState({
+    value: false,
+    message: "",
+  });
+  const [success, setSuccess] = React.useState({
+    value: false,
+    message: "",
+  });
+  const [data, setData] = React.useState({
+    email: "",
+    password: "",
+    userType: loginAs,
+  });
+
+  console.log(loginAs);
+  console.log(data);
+
+  const handleLogin = async () => {
+    setLoader(true);
+    if (data.email == "" || data.password == "") {
+      setError({
+        value: true,
+        message: "Email and password fields can not be empty",
+      });
+      setLoader(false);
+    } else {
+      var config = {
+        method: "post",
+        url: "https://sunny-jetty-368714.ue.r.appspot.com/users/login",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify(data),
+      };
+      axios(config)
+        .then((response) => {
+          setSuccess({
+            value: true,
+            message: "Login Successful",
+          });
+          setTimeout(() => {
+            setSuccess({
+              value: false,
+              message: "",
+            });
+          }, 2000);
+          if (response.data.userType === "customer" && loginAs === "customer") {
+            setLocalStorage("user", JSON.stringify(response?.data));
+            navigation.navigate("HomeScreen");
+            setLoader(false);
+          } else if (
+            response.data.userType === "driver" &&
+            loginAs === "driver"
+          ) {
+            setLocalStorage("user", JSON.stringify(response?.data));
+            navigation.navigate("DriverScreen");
+            setLoader(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoader(false);
+          setError({
+            value: true,
+            message: "Invalid Credentials",
+          });
+        });
     }
-    else{
-      navigation.navigate("DriverScreen")
-    }
-  }
+  };
+
   return (
-    // <KeyboardAvoidingView behavior="padding">
-    <View style={{ flex: 1, width: wp("90%"), backgroundColor: "white" }}>
+    <View style={container}>
+      <LoadingOverlay loading={loader} />
+      <MessageOverlay
+        value={error.value}
+        setValue={setError}
+        message={error.message}
+      />
+      <SuccessOverlay value={success.value} message={success.message} />
       <FacebookSocialButton
         buttonViewStyle={{
           alignSelf: "center",
@@ -46,18 +110,8 @@ const Login = ({navigation, props }) => {
           backgroundColor: "#d7d7d7",
         }}
       />
-      <Text style={{ alignSelf: "center", marginTop: 10, marginBottom: 10 }}>
-        - or Log In With -
-      </Text>
-      <View
-        style={{
-          marginTop: 10,
-          marginBottom: 10,
-          justifyContent: "space-between",
-          height: 90,
-          alignItems: "center",
-        }}
-      >
+      <Text style={formStyles.blackTextCenter}>- or Log In With -</Text>
+      <View style={formStyles.mainSecond}>
         <View
           style={{
             flexDirection: "row",
@@ -88,6 +142,13 @@ const Login = ({navigation, props }) => {
             />
           </View>
           <TextInput
+            value={data.email}
+            onChangeText={(e) =>
+              setData({
+                ...data,
+                email: e.toLowerCase(),
+              })
+            }
             keyboardType="email-address"
             placeholder="yours@example.com"
             autoComplete="email"
@@ -133,6 +194,13 @@ const Login = ({navigation, props }) => {
             />
           </View>
           <TextInput
+            value={data.password}
+            onChangeText={(e) =>
+              setData({
+                ...data,
+                password: e,
+              })
+            }
             keyboardType="visible-password"
             secureTextEntry={true}
             placeholder="yours password"
@@ -167,9 +235,7 @@ const Login = ({navigation, props }) => {
           marginTop: 10,
           marginBottom: 10,
         }}
-        onPress={
-          Login
-        }
+        onPress={handleLogin}
       >
         <Text
           style={{
