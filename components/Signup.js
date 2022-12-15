@@ -115,7 +115,6 @@ const Signup = ({ navigation, loginAs }) => {
             value: true,
             message: `User Successfully Registered`,
           });
-
           setTimeout(() => {
             setSuccess({
               value: false,

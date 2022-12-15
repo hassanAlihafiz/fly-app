@@ -95,7 +95,6 @@ const PaymentScreen = ({ route }) => {
     const _user = await getLocalStorage("user");
     const _token = await getToken("user");
     setUser(_user);
-
     setToken(_token);
   };
 

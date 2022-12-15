@@ -35,7 +35,6 @@ let foregroundSubscription = null;
 
 const DriverHome = ({ navigation }) => {
   const [loading, setLoading] = React.useState(false);
-
   const [isEnabled, setIsEnabled] = React.useState(false);
   const [status, setStatus] = React.useState("Offline");
   const [locState, setLocState] = React.useState({
