@@ -31,19 +31,21 @@ export default DirectionsMap = ({
 
   React.useEffect(() => {
     if (fitToBound == true) {
-      map.current.fitToCoordinates(coords, {
-        edgePadding: {
-          right: width / 20,
-          bottom: height / 20,
-          left: width / 20,
-          top: height / 20,
-        },
-        animated: true,
-      });
+
 
       if (Platform.OS == "android") {
         const center = geolib.getCenter(coords);
         setCenter(center);
+      } else {
+        map.current.fitToCoordinates(coords, {
+          edgePadding: {
+            right: width / 20,
+            bottom: height / 20,
+            left: width / 20,
+            top: height / 20,
+          },
+          animated: true,
+        });
       }
 
       // map.current.fitToSuppliedMarkers(["mk1", "mk2"], {
@@ -87,11 +89,11 @@ export default DirectionsMap = ({
       region={
         Platform.OS == "android"
           ? {
-              latitude: center.latitude,
-              longitude: center.longitude,
-              latitudeDelta: LATITUDE_DELTA,
-              longitudeDelta: LONGITUDE_DELTA,
-            }
+            latitude: center.latitude,
+            longitude: center.longitude,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          }
           : undefined
       }
       customMapStyle={loading ? null : mapStyle}
@@ -106,17 +108,17 @@ export default DirectionsMap = ({
           },
         });
       }}
-      // onMapReady={() => {
-      //   map.current.fitToSuppliedMarkers(["mk1", "mk2"], {
-      //     edgePadding: {
-      //       right: width / 20,
-      //       bottom: height / 20,
-      //       left: width / 20,
-      //       top: height / 20,
-      //     },
-      //     animated: true,
-      //   });
-      // }}
+    // onMapReady={() => {
+    //   map.current.fitToSuppliedMarkers(["mk1", "mk2"], {
+    //     edgePadding: {
+    //       right: width / 20,
+    //       bottom: height / 20,
+    //       left: width / 20,
+    //       top: height / 20,
+    //     },
+    //     animated: true,
+    //   });
+    // }}
     >
       <MapViewDirections
         origin={coords[0]}

@@ -20,6 +20,8 @@ import BackButton from "../components/common/BackButton";
 import DirectionsMap from "../components/common/DirectionsMap";
 import DriverMapCard from "../components/common/DriverMapCard";
 import GreenButton from "../components/common/GreenButton";
+import { LoadingOverlay } from "../components/Overlays";
+import { getPostCall } from "../utils/API";
 import { getLocalStorage } from "../utils/LocalStorage";
 
 const GOOGLE_API_KEY = "AIzaSyBIHr09mmQOV8a0LybJlTt39_8U4_1NokY";
@@ -31,14 +33,16 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const DriveTripScreen = ({ route }) => {
   const navigation = useNavigation();
+  const [loader, setLoader] = React.useState(false);
+
   const [loading, setLoading] = React.useState(true);
   const [arrived, setArrived] = React.useState(false);
   const [duration, setDuration] = React.useState("");
   const [distance, setDistance] = React.useState("");
   const [fitToBound, setFitToBound] = React.useState(false);
-
   const map = React.useRef(null);
   const { bookingData } = route.params;
+
   const coordinates = {
     latitude: Number(bookingData.userData.location.lat),
     longitude: Number(bookingData.userData.location.lng),
@@ -64,8 +68,29 @@ const DriveTripScreen = ({ route }) => {
     });
   };
 
+  const handleClick = async () => {
+    setLoader(true);
+    const user = await getLocalStorage("user");
+
+    await getPostCall(
+      "trip/arrivedForPickup",
+      "POST",
+      JSON.stringify({ id: bookingData?.id, noti_token: bookingData?.userData?.noti_token }),
+      user?.token
+    )
+      .then((e) => {
+        setLoader(false);
+        navigation.navigate("PickCarScreen", { bookingData });
+      })
+      .catch((e) => {
+        setLoader(false);
+        console.log("catch", e);
+      });
+  };
+
   return (
     <View style={{ height: "100%" }}>
+      <LoadingOverlay loading={loader} />
       <DirectionsMap
         loading={loading}
         coords={[driverLocation, coordinates]}
@@ -121,7 +146,7 @@ const DriveTripScreen = ({ route }) => {
           width="90%"
           loading={loading}
           disabled={!arrived || loading}
-          onPress={() => navigation.navigate("PickCarScreen", { bookingData })}
+          onPress={handleClick}
         />
       ) : null}
     </View>

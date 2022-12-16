@@ -26,9 +26,6 @@ const Login = ({ navigation, loginAs }) => {
     userType: loginAs,
   });
 
-  console.log(loginAs);
-  console.log(data);
-
   const handleLogin = async () => {
     setLoader(true);
     if (data.email == "" || data.password == "") {

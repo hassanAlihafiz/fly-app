@@ -12,6 +12,7 @@ import DriverHomeStatusCard from "../components/DriverHomeStatusCard";
 import { widthPercentageToDP } from "react-native-responsive-screen";
 import DriverHomeBooking from "../components/DriverHomeBooking";
 import { Linking } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -34,6 +35,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 let foregroundSubscription = null;
 
 const DriverHome = ({ navigation }) => {
+  const navigate = useNavigation();
   const [loading, setLoading] = React.useState(false);
   const [isEnabled, setIsEnabled] = React.useState(false);
   const [status, setStatus] = React.useState("Offline");

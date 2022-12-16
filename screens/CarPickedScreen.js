@@ -7,12 +7,37 @@ import { TouchableOpacity } from "react-native";
 import { View, Text } from "react-native";
 import BackButton from "../components/common/BackButton";
 import GreenButon from "../components/common/GreenButton";
+import { LoadingOverlay } from "../components/Overlays";
+import { getPostCall } from "../utils/API";
+import { getLocalStorage } from "../utils/LocalStorage";
 
 export default CarPickedScreen = ({ route }) => {
   const { bookingData } = route.params;
   const navigation = useNavigation();
+  const [loader, setLoader] = React.useState(false);
   const [approved, setApproved] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+
+  const handleClick = async () => {
+    setLoader(true);
+    const user = await getLocalStorage("user");
+
+    await getPostCall(
+      "trip/tripToStation",
+      "POST",
+      JSON.stringify({ id: bookingData?.id, noti_token: bookingData?.userData?.noti_token }),
+      user?.token
+    )
+      .then((e) => {
+        setLoader(false);
+        navigation.navigate("TripStationScreen", { bookingData });
+      })
+      .catch((e) => {
+        setLoader(false);
+        console.log("catch", e);
+      });
+  };
+
   return (
     <View
       style={{
@@ -21,6 +46,7 @@ export default CarPickedScreen = ({ route }) => {
         backgroundColor: "white",
       }}
     >
+      <LoadingOverlay loading={loader} />
       <View>
         <BackButton />
         <View
@@ -71,9 +97,7 @@ export default CarPickedScreen = ({ route }) => {
         disabled={approved || loading}
         loading={loading}
         width="100%"
-        onPress={() =>
-          navigation.navigate("TripStationScreen", { bookingData })
-        }
+        onPress={handleClick}
       />
     </View>
   );

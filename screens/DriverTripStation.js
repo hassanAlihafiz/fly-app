@@ -5,6 +5,8 @@ import DirectionsMap from "../components/common/DirectionsMap";
 import DriverMapCard from "../components/common/DriverMapCard";
 import GreenButton from "../components/common/GreenButton";
 import { getLocalStorage } from "../utils/LocalStorage";
+import { LoadingOverlay } from "../components/Overlays";
+import { getPostCall } from "../utils/API";
 
 export default DriverTripStation = ({ route }) => {
   const navigation = useNavigation();
@@ -14,6 +16,7 @@ export default DriverTripStation = ({ route }) => {
     latitude: Number(coords?.lat),
     longitude: Number(coords?.lng),
   };
+  const [loader, setLoader] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [arrived, setArrived] = React.useState(false);
   const [duration, setDuration] = React.useState("");
@@ -39,8 +42,30 @@ export default DriverTripStation = ({ route }) => {
     });
   };
 
+  const handleClick = async () => {
+    setLoader(true);
+    const user = await getLocalStorage("user");
+
+    await getPostCall(
+      "trip/AtStation",
+      "POST",
+      JSON.stringify({ id: bookingData?.id, noti_token: bookingData?.userData?.noti_token }),
+      user?.token
+    )
+      .then((e) => {
+        setLoader(false);
+        navigation.navigate("AtStationScreen", { bookingData });
+      })
+      .catch((e) => {
+        setLoader(false);
+        console.log("catch", e);
+      });
+  };
+
   return (
     <View>
+      <LoadingOverlay loading={loader} />
+
       <DirectionsMap
         loading={loading}
         coords={[driverLocation, coordinates]}
@@ -48,7 +73,7 @@ export default DriverTripStation = ({ route }) => {
         setDistance={setDistance}
         setDuration={setDuration}
         setArrived={setArrived}
-        radius={0.8}
+        radius={1}
       />
 
       <DriverMapCard
@@ -64,9 +89,7 @@ export default DriverTripStation = ({ route }) => {
           width="90%"
           loading={loading}
           disabled={!arrived || loading}
-          onPress={() =>
-            navigation.navigate("AtStationScreen", { bookingData })
-          }
+          onPress={handleClick}
         />
       ) : null}
     </View>

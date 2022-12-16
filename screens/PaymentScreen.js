@@ -43,6 +43,7 @@ const PaymentScreen = ({ route }) => {
   const [user, setUser] = React.useState({});
   const [token, setToken] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const [notiToken, setNotiToken] = React.useState("");
   const [countriesIOS, setCountriesIOS] = React.useState([
     "Cancel",
     ...countries.map((value) => {
@@ -94,8 +95,10 @@ const PaymentScreen = ({ route }) => {
   const getUser = async () => {
     const _user = await getLocalStorage("user");
     const _token = await getToken("user");
+    const noti_token = await getLocalStorage("noti_token");
     setUser(_user);
     setToken(_token);
+    setNotiToken(noti_token);
   };
 
   const handleData = (name, value) => {
@@ -176,7 +179,7 @@ const PaymentScreen = ({ route }) => {
                 lat: lat,
                 lng: lng,
               },
-              noti_token: user.noti_token,
+              noti_token: notiToken,
             },
             driverData: {
               email: selectedDriver.email,

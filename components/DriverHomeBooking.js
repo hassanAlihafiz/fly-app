@@ -4,11 +4,54 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { Text, View, Image } from "react-native";
+import { getPostCall } from "../utils/API";
+import { getLocalStorage } from "../utils/LocalStorage";
+import { LoadingOverlay } from "./Overlays";
 
 export default DriverHomeBooking = ({ data, loading }) => {
   const navigation = useNavigation();
+  const [loader, setLoader] = React.useState(false);
+
+  React.useEffect(() => {
+    console.log(data?.bookingStatus);
+    if (data?.bookingStatus == "trip_started") {
+      navigation.navigate("TripScreen", { bookingData: data });
+    } else if (data?.bookingStatus == "arrived_for_pickup") {
+      navigation.navigate("PickCarScreen", { bookingData: data });
+    } else if (data?.bookingStatus == "trip_to_station") {
+      navigation.navigate("TripStationScreen", { bookingData: data });
+    } else if (data?.bookingStatus == "at_station") {
+      navigation.navigate("AtStationScreen", { bookingData: data });
+    } else if (data?.bookingStatus == "trip-delivery") {
+      navigation.navigate("TripDeliveryScreen", { bookingData: data });
+    } else if (data?.bookingStatus == "delivery") {
+      navigation.navigate("DriverCustomerConfirm", { bookingData: data });
+    }
+  }, []);
+
+  const handleClick = async () => {
+    setLoader(true);
+    const user = await getLocalStorage("user");
+
+    await getPostCall(
+      "trip/tripStarted",
+      "POST",
+      JSON.stringify({ id: data?.id, noti_token: data?.userData?.noti_token }),
+      user?.token
+    )
+      .then((e) => {
+        setLoader(false);
+        navigation.navigate("TripScreen", { bookingData: data });
+      })
+      .catch((e) => {
+        setLoader(false);
+        console.log("catch", e);
+      });
+  };
+
   return (
     <View style={styles.main}>
+      <LoadingOverlay loading={loader} />
       <View
         style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
       >
@@ -82,9 +125,7 @@ export default DriverHomeBooking = ({ data, loading }) => {
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={() =>
-            navigation.navigate("TripScreen", { bookingData: data })
-          }
+          onPress={handleClick}
         >
           <Text style={{ color: "white" }} disabled={loading}>
             Pick up
