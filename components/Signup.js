@@ -74,7 +74,7 @@ const Signup = ({ navigation, loginAs }) => {
   };
 
   const getZipCode = () => {
-    getCall("zipCode/getZipCodes", "GET", "")
+    getCall("zipCode/getZipCodes", "")
       .then((e) => {
         setZipData(e?.data);
         setZipIOSData([

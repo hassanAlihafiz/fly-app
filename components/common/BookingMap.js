@@ -11,7 +11,7 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = Platform.OS == "android" ? 0.0122 : 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-export default DirectionsMap = ({
+export default BookingMap = ({
   loading,
   coords,
   setLoading,
@@ -76,7 +76,7 @@ export default DirectionsMap = ({
       ref={(e) => (map.current = e)}
       style={mapCSS}
       rotateEnabled={false}
-      mapPadding={{ bottom: 70, top: 170, left: 20, right: 20 }}
+      mapPadding={{ top: 170, left: 20, right: 20 }}
       provider={PROVIDER_GOOGLE}
       initialRegion={{
         latitude: coords[0].latitude,
@@ -135,6 +135,14 @@ export default DirectionsMap = ({
           }
           setDistance(result.distance);
           setDuration(Math.round(result.duration));
+          map.current.fitToCoordinates(coords, {
+            edgePadding: {
+              right: width / 20,
+              bottom: height / 20,
+              left: width / 20,
+              top: height / 20,
+            },
+          });
           if (result.distance <= radius) {
             setArrived(true);
           } else {

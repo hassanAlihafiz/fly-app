@@ -6,9 +6,10 @@ import { GoogleSocialButton } from "react-native-social-buttons/src/buttons/Goog
 import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
-import { setLocalStorage } from "../utils/LocalStorage";
+import { getLocalStorage, setLocalStorage } from "../utils/LocalStorage";
 import { container, formStyles } from "./styles/FormStyle";
 import { LoadingOverlay, MessageOverlay, SuccessOverlay } from "./Overlays";
+import { getPostCall } from "../utils/API";
 
 const Login = ({ navigation, loginAs }) => {
   const [loader, setLoader] = React.useState(false);
@@ -27,6 +28,7 @@ const Login = ({ navigation, loginAs }) => {
   });
 
   const handleLogin = async () => {
+    const noti_token = await getLocalStorage("noti_token");
     setLoader(true);
     if (data.email == "" || data.password == "") {
       setError({
@@ -44,7 +46,7 @@ const Login = ({ navigation, loginAs }) => {
         data: JSON.stringify(data),
       };
       axios(config)
-        .then((response) => {
+        .then(async (response) => {
           setSuccess({
             value: true,
             message: "Login Successful",
@@ -57,6 +59,18 @@ const Login = ({ navigation, loginAs }) => {
           }, 2000);
           if (response.data.userType === "customer" && loginAs === "customer") {
             setLocalStorage("user", JSON.stringify(response?.data));
+            await getPostCall(
+              "notification/addNotiToken",
+              "POST",
+              JSON.stringify({
+                id: response?.data?.id,
+                noti_token: noti_token,
+                userType: "customer",
+              }),
+              response?.data?.token
+            )
+              .then((e) => console.log("noti token added to db"))
+              .catch((e) => console.log("error adding noti token to db"));
             navigation.navigate("HomeScreen");
             setLoader(false);
           } else if (
@@ -64,6 +78,18 @@ const Login = ({ navigation, loginAs }) => {
             loginAs === "driver"
           ) {
             setLocalStorage("user", JSON.stringify(response?.data));
+            await getPostCall(
+              "notification/addNotiToken",
+              "POST",
+              JSON.stringify({
+                id: response?.data?.id,
+                noti_token: noti_token,
+                userType: "driver",
+              }),
+              response?.data?.token
+            )
+              .then((e) => console.log("noti token added to db"))
+              .catch((e) => console.log("error adding noti token to db"));
             navigation.navigate("DriverScreen");
             setLoader(false);
           }

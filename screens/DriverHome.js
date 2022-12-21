@@ -48,7 +48,6 @@ const DriverHome = ({ navigation }) => {
   const toggleSwitch = () => {
     setIsEnabled(!isEnabled);
   };
-
   React.useEffect(() => {
     let interval = 0;
     if (isEnabled === false) {
@@ -83,13 +82,12 @@ const DriverHome = ({ navigation }) => {
     }
     return () => clearInterval(interval);
   }, [isEnabled]);
-
-  // React.useEffect(() => {
-  //   if (isEnabled == true) {
-  //     getBooking();
-  //   }
-  // }, [loading]);
-
+  React.useEffect(() => {
+    if (bookingData != null && bookingData?.bookingStatus != "completed") {
+      console.log(bookingData?.id);
+      updateLocationToBooking();
+    }
+  }, [locState]);
   const disableLocation = () => {
     setIsEnabled(false);
     setStatus("Offline");
@@ -101,6 +99,25 @@ const DriverHome = ({ navigation }) => {
     setLoading(true);
     startForegroundUpdate();
     startBackgroundUpdate();
+  };
+  const updateLocationToBooking = async () => {
+    const user = await getLocalStorage("user");
+    const data = {
+      id: bookingData?.id,
+      lat: locState.lat,
+      lng: locState.lng,
+    };
+
+    await getPostCall(
+      "booking/driverLocationToBooking",
+      "POST",
+      JSON.stringify(data),
+      user?.token
+    )
+      .then((e) => {
+        console.log("location updated to booking");
+      })
+      .catch((e) => console.log("error updating location in booking"));
   };
   const setDriverOnline = async () => {
     const user = await getLocalStorage("user");

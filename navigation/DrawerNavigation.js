@@ -2,81 +2,44 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Settings } from "react-native";
 import CustomDrawerContent from "../components/CustomDrawer";
-import HomeScreen from "../screens/HomeScreen";
 import LandingScreen from "../screens/LandingScreen";
 import Login from "../screens/LoginScreen";
 import StripeScreen from "../screens/StripeScreen";
-import SettingScreen from "../screens/Settings";
-import ServiceOfferedScreen from "../screens/ServiceOffered";
-import { Entypo, Feather, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import {
+  Entypo,
+  Feather,
+  FontAwesome5,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import Map from "../screens/Map";
-import Checkout from "../screens/Checkout";
-import PaymentScreen from "../screens/PaymentScreen";
 import React from "react";
 import {
   useNavigationContainerRef,
   useNavigationState,
 } from "@react-navigation/native";
-import SelectDriverScreen from "../screens/SelectDriverScreen";
-import PickDropMap from "../components/PickDropMap";
-import SelectGasStationScreens from "../screens/SelectGasStationScreen";
-import NearbyWashStation from "../screens/NearbyWashStation";
+import HomeStack from "./stack/HomeStack";
+import ServiceOffered from "../screens/ServiceOffered";
+import SettingStack from "./stack/SettingStack";
+import MyBookings from "../screens/MyBookings";
+import MyBookingStack from "./stack/MyBookingStack";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
-const HomeStack = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="FirstHome" component={HomeScreen} />
-      <Stack.Screen name="Main Service" component={ServiceOfferedScreen} />
-      <Stack.Screen name="Checkout" component={Checkout} />
-      <Stack.Screen name="PickDropMap" component={PickDropMap} />
-      <Stack.Screen name="SelectStations" component={SelectGasStationScreens} />
-      <Stack.Screen name="SelectWashStations" component={NearbyWashStation} />
-      <Stack.Screen name="SelectDriver" component={SelectDriverScreen} />
-      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
-    </Stack.Navigator>
-  );
-};
-
-const DrawerTab = () => {
+export default DrawerTab = () => {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={{
-        swipeEnabled: true,
-        drawerStyle: {
-          width: "70%",
-        },
-        drawerType: "slide",
-        drawerActiveTintColor: "black",
-        drawerInactiveTintColor: "grey",
-        drawerItemStyle: {
-          height: 50,
-          justifyContent: "center",
-        },
-      }}
+      screenOptions={DrawerNavigatorOptions}
     >
       <Drawer.Screen
         name="Home"
         component={HomeStack}
         options={{
           headerTitle: "Fly",
-          headerTitleAlign: "center",
+          DrawerScreenOptions,
 
-          headerStyle: {
-            height: 80,
-          },
-          drawerLabelStyle: {
-            borderBottomWidth: 1,
-
-            borderBottomColor: "grey",
-          },
           drawerIcon: ({ focused, color }) => (
             <Ionicons
               name="ios-home"
@@ -86,31 +49,23 @@ const DrawerTab = () => {
           ),
         }}
       />
-      {/* <Drawer.Screen
-        name="Service Offered"
-        component={ServiceOffered}
+      <Drawer.Screen
+        name="My Bookings"
+        component={MyBookingStack}
         options={{
-          headerTitle: "Service Offered",
-          headerTitleAlign: "center",
+          headerTitle: "My Bookings",
+          DrawerScreenOptions,
 
-          headerStyle: {
-            height: 80,
-          },
-          drawerLabelStyle: {
-            borderBottomWidth: 1,
-
-            borderBottomColor: "grey",
-          },
           drawerIcon: ({ focused }) => (
-            <Entypo
-              name="tools"
-              size={22}
+            <MaterialCommunityIcons
+              name="clipboard-check-multiple"
+              size={24}
               color="black"
               style={{ color: focused ? "black" : "grey" }}
             />
           ),
         }}
-      /> */}
+      />
       {/* <Drawer.Screen
         name="  Stripe"
         component={StripeScreen}
@@ -141,20 +96,11 @@ const DrawerTab = () => {
         component={SettingStack}
         options={{
           headerTitle: "Settings",
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontSize: 20,
-            fontWeight: "bold",
-          },
-          drawerLabelStyle: {
-            borderBottomWidth: 1,
-
-            borderBottomColor: "grey",
-          },
+          DrawerScreenOptions,
           drawerIcon: ({ focused }) => (
             <Ionicons
               name="ios-settings"
-              size={22}
+              size={24}
               style={{ color: focused ? "black" : "grey" }}
             />
           ),
@@ -165,20 +111,12 @@ const DrawerTab = () => {
         component={Map}
         options={{
           headerTitle: "Map",
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontSize: 20,
-            fontWeight: "bold",
-          },
-          drawerLabelStyle: {
-            borderBottomWidth: 1,
-
-            borderBottomColor: "grey",
-          },
+          DrawerScreenOptions,
           drawerIcon: ({ focused }) => (
-            <Feather
-              name="map-pin"
-              size={22}
+            <FontAwesome5
+              name="map-marked-alt"
+              size={24}
+              color="black"
               style={{ color: focused ? "black" : "grey" }}
             />
           ),
@@ -187,16 +125,30 @@ const DrawerTab = () => {
     </Drawer.Navigator>
   );
 };
-export default DrawerTab;
 
-const SettingStack = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="Main Setting" component={SettingScreen} />
-    </Stack.Navigator>
-  );
+const DrawerNavigatorOptions = {
+  swipeEnabled: true,
+  drawerStyle: {
+    width: "70%",
+  },
+  drawerType: "slide",
+  drawerActiveTintColor: "black",
+  drawerInactiveTintColor: "grey",
+  drawerItemStyle: {
+    height: 50,
+    justifyContent: "center",
+  },
+};
+
+const DrawerScreenOptions = {
+  headerTitleAlign: "center",
+
+  headerStyle: {
+    height: 80,
+  },
+  drawerLabelStyle: {
+    borderBottomWidth: 1,
+
+    borderBottomColor: "grey",
+  },
 };

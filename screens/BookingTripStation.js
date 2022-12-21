@@ -1,93 +1,76 @@
-import {
-  AntDesign,
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
 import React from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-
+import { Text, TouchableOpacity } from "react-native";
+import { View } from "react-native";
+import BookingMap from "../components/common/BookingMap";
 import DirectionsMap from "../components/common/DirectionsMap";
 import DriverMapCard from "../components/common/DriverMapCard";
-import GreenButton from "../components/common/GreenButton";
 import { LoadingOverlay } from "../components/Overlays";
-import { getPostCall } from "../utils/API";
-import { getLocalStorage } from "../utils/LocalStorage";
+import { getCall } from "../utils/API";
+import { getLocalStorage, setLocalStorage } from "../utils/LocalStorage";
 
-const DriveTripScreen = ({ route }) => {
-  const { bookingData } = route.params;
+export default function BookingTripStation() {
   const navigation = useNavigation();
-  const [loader, setLoader] = React.useState(false);
-
+  const [bookingData, setBookingData] = React.useState();
+  const [loader, setLoader] = React.useState(true);
   const [loading, setLoading] = React.useState(true);
   const [arrived, setArrived] = React.useState(false);
   const [duration, setDuration] = React.useState("");
   const [distance, setDistance] = React.useState("");
   const [fitToBound, setFitToBound] = React.useState(false);
-  const map = React.useRef(null);
-
-  const coordinates = {
-    latitude: Number(bookingData.userData.location.lat),
-    longitude: Number(bookingData.userData.location.lng),
-  };
+  const [customerLocation, setCustomerLocation] = React.useState({
+    latitude: 0,
+    longitude: 0,
+  });
   const [driverLocation, setDriverLocation] = React.useState({
     latitude: 0,
     longitude: 0,
   });
 
   React.useEffect(() => {
-    getdriverCoords();
+    getBooking();
+    setInterval(() => {
+      getBooking();
+    }, 5000);
   }, []);
 
   React.useEffect(() => {
-    getdriverCoords();
-  }, [driverLocation]);
+    if (bookingData?.bookingStatus == "at_station") {
+      navigation.navigate("MyBookingAtStationScreen");
+    }
+  }, [bookingData]);
 
-  const getdriverCoords = async () => {
-    const driverCoords = await getLocalStorage("driver_coords");
-    setDriverLocation({
-      latitude: driverCoords.coords.latitude,
-      longitude: driverCoords.coords.longitude,
-    });
-  };
-
-  const handleClick = async () => {
-    setLoader(true);
-    const user = await getLocalStorage("user");
-
-    await getPostCall(
-      "trip/arrivedForPickup",
-      "POST",
-      JSON.stringify({
-        id: bookingData?.id,
-        noti_token: bookingData?.userData?.noti_token,
-      }),
-      user?.token
-    )
+  const getBooking = async () => {
+    await getLocalStorage("booking_data")
       .then((e) => {
+        setBookingData(e);
+        const coords = e?.washStation?.geometry?.location;
+
+        if (
+          e?.driverData?.lat != undefined &&
+          e?.driverData?.lng != undefined
+        ) {
+          setDriverLocation({
+            latitude: e?.driverData?.lat,
+            longitude: e?.driverData?.lng,
+          });
+        }
+        setCustomerLocation({
+          latitude: Number(coords?.lat),
+          longitude: Number(coords?.lng),
+        });
         setLoader(false);
-        navigation.navigate("PickCarScreen", { bookingData });
       })
-      .catch((e) => {
-        setLoader(false);
-        console.log("catch", e);
-      });
+      .catch((e) => setLoader(false));
   };
 
   return (
-    <View style={{ height: "100%" }}>
+    <View>
       <LoadingOverlay loading={loader} />
-      <DirectionsMap
+      <BookingMap
         loading={loading}
-        coords={[driverLocation, coordinates]}
+        coords={[driverLocation, customerLocation]}
         setLoading={setLoading}
         setDistance={setDistance}
         setDuration={setDuration}
@@ -96,19 +79,17 @@ const DriveTripScreen = ({ route }) => {
         setFitToBound={setFitToBound}
         radius={1}
       />
-
       <DriverMapCard
         loading={loading}
-        text="Car Pickup"
+        text="Driver is on the way to station"
         duration={duration}
         distance={distance}
       />
-
       <TouchableOpacity
         style={{
           position: "absolute",
           right: 20,
-          bottom: 75,
+          bottom: 30,
           height: 60,
           width: 60,
           backgroundColor: "white",
@@ -134,17 +115,6 @@ const DriveTripScreen = ({ route }) => {
           style={{ position: "relative", zIndex: 4 }}
         />
       </TouchableOpacity>
-      {arrived == true ? (
-        <GreenButton
-          text="Arrived"
-          width="90%"
-          loading={loading}
-          disabled={!arrived || loading}
-          onPress={handleClick}
-        />
-      ) : null}
     </View>
   );
-};
-
-export default DriveTripScreen;
+}
