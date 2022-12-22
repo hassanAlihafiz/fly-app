@@ -91,12 +91,13 @@ const PickDropMap = ({ route }) => {
       ) : (
         <MapView
           // ref={(e) => console.log("onchange", e)}
+        
           showsUserLocation
           followsUserLocation
           mapPadding={{ bottom: 70 }}
           rotateEnabled={false}
           showsMyLocationButton
-          provider="google"
+          provider={PROVIDER_GOOGLE}
           style={{ height: "100%", width: "100%" }}
           userInterfaceStyle={"dark"}
           userLocationPriority={"high"}

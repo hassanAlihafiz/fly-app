@@ -6,15 +6,42 @@ import { Image, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import BackButton from "../components/common/BackButton";
 import GreenButton from "../components/common/GreenButton";
-import { ConfirmOverlay } from "../components/Overlays";
+import { ConfirmOverlay, LoadingOverlay } from "../components/Overlays";
+import { getPostCall } from "../utils/API";
+import { getLocalStorage } from "../utils/LocalStorage";
 
 const AtStationScreen = ({ route }) => {
   const navigation = useNavigation();
   const { bookingData } = route.params;
+  const [loader, setLoader] = React.useState(false);
   const [showOverlay, setShowOverlay] = React.useState(false);
 
   const toggleOverlay = () => {
     setShowOverlay(!showOverlay);
+  };
+
+  const handleClick = async () => {
+    setShowOverlay(false);
+    setLoader(true);
+    const user = await getLocalStorage("user");
+
+    await getPostCall(
+      "trip/tripDelivery",
+      "POST",
+      JSON.stringify({
+        id: bookingData?.id,
+        noti_token: bookingData?.userData?.noti_token,
+      }),
+      user?.token
+    )
+      .then((e) => {
+        navigation.navigate("TripDeliveryScreen", { bookingData });
+        setLoader(false);
+      })
+      .catch((e) => {
+        setLoader(false);
+        console.log("catch", e);
+      });
   };
 
   return (
@@ -25,6 +52,8 @@ const AtStationScreen = ({ route }) => {
         backgroundColor: "white",
       }}
     >
+      <LoadingOverlay loading={loader} />
+
       <View>
         <BackButton />
         <View
@@ -100,10 +129,7 @@ const AtStationScreen = ({ route }) => {
       <ConfirmOverlay
         show={showOverlay}
         onClose={toggleOverlay}
-        onOK={() => {
-          setShowOverlay(false);
-          navigation.navigate("TripDeliveryScreen", { bookingData });
-        }}
+        onOK={handleClick}
       />
     </View>
   );

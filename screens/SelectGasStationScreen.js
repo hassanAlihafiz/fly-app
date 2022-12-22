@@ -38,7 +38,7 @@ const SelectGasStationScreens = ({ route }) => {
   };
 
   const getGasStations = () => {
-    getCall("gasStation/getGasStation", "GET", user.token)
+    getCall("gasStation/getGasStation", user.token)
       .then((e) => {
         setGasStations(e?.data);
         setLoading(false);

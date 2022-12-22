@@ -15,10 +15,14 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
+
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch"]
+        "UIBackgroundModes": ["location", "fetch"],
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "App requires geolocation to improve the quality of the service",
+        "NSLocationAlwaysUsageDescription": "App requires geolocation to improve the quality of the service",
+        "NSLocationWhenInUseUsageDescription": "App requires geolocation to improve the quality of the service"
       }
     },
     "android": {
@@ -26,7 +30,8 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FF0000"
       },
-      "permissions": ["ACCESS_BACKGROUND_LOCATION"]
+      "permissions": ["ACCESS_BACKGROUND_LOCATION"],
+      "package": "com.david145.flyapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

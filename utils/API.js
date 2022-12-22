@@ -28,11 +28,11 @@ export async function getPostCall(url, method, data, authToken) {
     }
   });
 }
-export async function getCall(url, method, authToken, data) {
+export async function getCall(url, authToken, data) {
   return new Promise((resolve, reject) => {
     try {
       var config = {
-        method: method,
+        method: "GET",
         url: backendUrl + url,
         headers: {
           "Content-Type": "application/json",

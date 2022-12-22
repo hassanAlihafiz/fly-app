@@ -57,7 +57,7 @@ const SelectDriverScreen = ({ route }) => {
     )
   );
   const getZipDrivers = () => {
-    getCall("driver/getDrivers", "GET", user.token)
+    getCall("driver/getDrivers", user.token)
       .then((e) => {
         const db = [];
 

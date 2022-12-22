@@ -40,21 +40,10 @@ const PaymentScreen = ({ route }) => {
     selectedDriver,
     washStation,
   } = route.params;
-
-  console.log("PD", packageData);
-  console.log(gasStation);
-  console.log(serviceFee);
-  console.log("ct", carType);
-  console.log("t", total);
-  console.log("nog", numOfGal);
-  console.log(lat);
-  console.log(lng);
-  console.log(selectedDriver);
-
   const [user, setUser] = React.useState({});
   const [token, setToken] = React.useState();
-
   const [loading, setLoading] = React.useState(false);
+  const [notiToken, setNotiToken] = React.useState("");
   const [countriesIOS, setCountriesIOS] = React.useState([
     "Cancel",
     ...countries.map((value) => {
@@ -89,14 +78,27 @@ const PaymentScreen = ({ route }) => {
     value: false,
     message: "",
   });
+
+  console.log("PD", packageData);
+  console.log("station", gasStation);
+  console.log("fees", serviceFee);
+  console.log("ct", carType);
+  console.log("t", total);
+  console.log("nog", numOfGal);
+  console.log("location", lat, lng);
+  console.log("driver", selectedDriver);
+  console.log("user", user);
+
   React.useEffect(() => {
     getUser();
   }, []);
   const getUser = async () => {
     const _user = await getLocalStorage("user");
     const _token = await getToken("user");
+    const noti_token = await getLocalStorage("noti_token");
     setUser(_user);
     setToken(_token);
+    setNotiToken(noti_token);
   };
 
   const handleData = (name, value) => {
@@ -105,7 +107,7 @@ const PaymentScreen = ({ route }) => {
       [name]: value,
     });
   };
-
+  console.log(selectedDriver.noti_token);
   const handelConfirm = () => {
     setLoading(true);
     if (
@@ -177,12 +179,13 @@ const PaymentScreen = ({ route }) => {
                 lat: lat,
                 lng: lng,
               },
+              noti_token: notiToken,
             },
             driverData: {
-              available: false,
               email: selectedDriver.email,
               first_name: selectedDriver.first_name,
               last_name: selectedDriver.last_name,
+              noti_token: selectedDriver.noti_token,
             },
             packageData: packageData,
             paymentMethod: data,
@@ -207,7 +210,7 @@ const PaymentScreen = ({ route }) => {
               message: "Successfully Booked",
             });
             setTimeout(() => {
-              navigation.navigate("Main Service");
+              navigation.navigate("FirstHome");
             }, 1000);
           })
           .catch((e) => {

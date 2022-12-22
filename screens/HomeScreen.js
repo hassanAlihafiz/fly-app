@@ -2,51 +2,79 @@ import { Text, View } from "react-native";
 import React, { Component } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import CardView from "../components/CardView";
-import * as Location from "expo-location";
 import { setLocalStorage } from "../utils/LocalStorage";
+import * as BackgroundFetch from "expo-background-fetch";
+import * as TaskManager from "expo-task-manager";
 
-const Home = ({ navigation }) => {
-  const [maploading, setMaploading] = React.useState(true);
+const BACKGROUND_FETCH_TASK = "background-fetch";
 
+// 1. Define the task by providing a name and the function that should be executed
+// Note: This needs to be called in the global scope (e.g outside of your React components)
+TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+  const now = Date.now();
+
+  console.log(
+    `Got background fetch call at date: ${new Date(now).toISOString()}`
+  );
+
+  // Be sure to return the successful result type!
+  return BackgroundFetch.BackgroundFetchResult.NewData;
+});
+
+// 2. Register the task at some point in your app by providing the same name,
+// and some configuration options for how the background fetch should behave
+// Note: This does NOT need to be in the global scope and CAN be used in your React components!
+async function registerBackgroundFetchAsync() {
+  return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+    minimumInterval: 1, // 15 minutes
+    stopOnTerminate: false, // android only,
+    startOnBoot: true, // android only
+  });
+}
+
+const Home = () => {
   React.useEffect(() => {
-    if (maploading == true) {
-      getLocation();
-    }
+    const background = async () => {
+      const status = await BackgroundFetch.getStatusAsync();
+      const isRegistered = await TaskManager.isTaskRegisteredAsync(
+        BACKGROUND_FETCH_TASK
+      );
+      console.log("status", status);
+      console.log("register", isRegistered);
+
+      if (isRegistered) {
+        await registerBackgroundFetchAsync();
+      }
+
+      // setStatus(status);
+      // setIsRegistered(isRegistered);
+    };
+    background();
   }, []);
-
-  const getLocation = async () => {
-    console.log("Calling")
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      alert("Permission to access location was denied");
-      setMaploading(false);
-      return;
-    }
-    await Location.getCurrentPositionAsync({})
-      .then((e) => {
-        const obj =JSON.stringify({
-          latitude: e.coords.latitude.toString(),
-          longitude: e.coords.longitude.toString(),
-        });
-        setLocalStorage("UserCoords", obj);
-       
-        setMaploading(false);
-      })
-
-      .catch((e) => {
-        setMaploading(false);
-      });
-    return;
-  };
 
   return (
     <ScrollView>
-      <CardView name="HATCHBACK" img={require("../assets/hackBook.jpeg")} />
-      <CardView name="SEDAN" img={require("../assets/sedan.jpeg")} />
-      <CardView name="MPV" img={require("../assets/mpv.jpeg")} />
-      <CardView name="SUV" img={require("../assets/suv.jpeg")} />
+      {carTypes.map((value, key) => {
+        return <CardView key={key} name={value.name} img={value.img} />;
+      })}
     </ScrollView>
   );
 };
 
 export default Home;
+
+const carTypes = [
+  {
+    name: "HATCHBACK",
+    img: require("../assets/hackBook.jpeg"),
+  },
+  {
+    name: "SEDAN",
+    img: require("../assets/sedan.jpeg"),
+  },
+  {
+    name: "MPV",
+    img: require("../assets/mpv.jpeg"),
+  },
+  { name: "SUV", img: require("../assets/suv.jpeg") },
+];

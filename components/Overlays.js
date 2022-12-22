@@ -36,7 +36,7 @@ export const MessageOverlay = ({ value, message, setValue }) => {
   );
 };
 
-export const LoadingOverlay = ({ loading }) => {
+export const LoadingOverlay = ({ loading, text }) => {
   return (
     <Overlay
       isVisible={loading}
@@ -51,6 +51,7 @@ export const LoadingOverlay = ({ loading }) => {
       }}
     >
       <ActivityIndicator size="large" />
+      {text == undefined ? null : <Text style={overlayStyle.text}>{text}</Text>}
     </Overlay>
   );
 };

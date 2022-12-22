@@ -4,6 +4,8 @@ import { View } from "react-native";
 import DirectionsMap from "../components/common/DirectionsMap";
 import DriverMapCard from "../components/common/DriverMapCard";
 import { getLocalStorage } from "../utils/LocalStorage";
+import { LoadingOverlay } from "../components/Overlays";
+import { getPostCall } from "../utils/API";
 
 const DriverTripDelivery = ({ route }) => {
   const navigation = useNavigation();
@@ -13,6 +15,7 @@ const DriverTripDelivery = ({ route }) => {
     latitude: Number(bookingData.userData.location.lat),
     longitude: Number(bookingData.userData.location.lng),
   };
+  const [loader, setLoader] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [arrived, setArrived] = React.useState(false);
   const [duration, setDuration] = React.useState("");
@@ -38,8 +41,30 @@ const DriverTripDelivery = ({ route }) => {
     });
   };
 
+  const handleClick = async () => {
+    setLoader(true);
+    const user = await getLocalStorage("user");
+
+    await getPostCall(
+      "trip/delivery",
+      "POST",
+      JSON.stringify({ id: bookingData?.id, noti_token: bookingData?.userData?.noti_token }),
+      user?.token
+    )
+      .then((e) => {
+        setLoader(false);
+        navigation.navigate("DriverCustomerConfirm", { bookingData });
+      })
+      .catch((e) => {
+        setLoader(false);
+        console.log("catch", e);
+      });
+  };
+
   return (
     <View>
+      <LoadingOverlay loading={loader} />
+
       <DirectionsMap
         loading={loading}
         coords={[driverLocation, coordinates]}
@@ -61,9 +86,7 @@ const DriverTripDelivery = ({ route }) => {
           width="90%"
           loading={loading}
           disabled={!arrived || loading}
-          onPress={() =>
-            navigation.navigate("DriverCustomerConfirm", { bookingData })
-          }
+          onPress={handleClick}
         />
       ) : null}
     </View>

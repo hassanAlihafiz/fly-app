@@ -1,9 +1,7 @@
 import React from "react";
 import {
   ActionSheetIOS,
-  KeyboardAvoidingView,
   Platform,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -15,20 +13,17 @@ import {
 } from "react-native-responsive-screen";
 import { FacebookSocialButton } from "react-native-social-buttons";
 import { GoogleSocialButton } from "react-native-social-buttons/src/buttons/GoogleSocialButton";
-import { Feather } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
-import axios from "axios";
-// import RNPickerSelect from "react-native-picker-select";
 import { ActivityIndicator } from "react-native";
 import { getCall, getPostCall } from "../utils/API";
 import { Overlay } from "@rneui/base";
 
-import { LocalStorage, setLocalStorage } from "../utils/LocalStorage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { DevSettings } from "react-native";
+import {
+  getLocalStorage,
+  LocalStorage,
+  setLocalStorage,
+} from "../utils/LocalStorage";
 import { ScrollView } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
-import { PickerIOS } from "@react-native-picker/picker";
 
 import { container, formStyles } from "./styles/FormStyle";
 import { LoadingOverlay, MessageOverlay, SuccessOverlay } from "./Overlays";
@@ -54,16 +49,32 @@ const Signup = ({ navigation, loginAs }) => {
     userType: loginAs,
     zipCodeId: "",
     available: true,
+    status: false,
+    noti_token: "",
   });
 
-  console.log(zipIOSData);
+  const handleData = (name, value) => {
+    setData({
+      ...data,
+      [name]: value,
+    });
+  };
 
   React.useEffect(() => {
     getZipCode();
+    getNotiToken();
   }, []);
 
+  const getNotiToken = async () => {
+    const noti_token = await getLocalStorage("noti_token");
+    console.log("noti", noti_token);
+    if (noti_token != null) {
+      handleData("noti_token", noti_token);
+    }
+  };
+
   const getZipCode = () => {
-    getCall("zipCode/getZipCodes", "GET", "")
+    getCall("zipCode/getZipCodes", "")
       .then((e) => {
         setZipData(e?.data);
         setZipIOSData([
@@ -79,12 +90,6 @@ const Signup = ({ navigation, loginAs }) => {
       });
   };
 
-  const handleData = (name, value) => {
-    setData({
-      ...data,
-      [name]: value,
-    });
-  };
   console.log(JSON.stringify(data));
 
   const handleSignup = async () => {
@@ -119,7 +124,7 @@ const Signup = ({ navigation, loginAs }) => {
           handleData("token", e?.data?.token);
           setLocalStorage(
             "user",
-            JSON.stringify({ ...data, token: e?.data?.token })
+            JSON.stringify({ ...data, token: e?.data?.token, id: e?.data?.id })
           );
           if (loginAs === "customer") {
             navigation.navigate("HomeScreen");
@@ -218,7 +223,7 @@ const Signup = ({ navigation, loginAs }) => {
               placeholder="Email"
               placeholderTextColor={formStyles.placeholderTextColor}
               autoComplete="email"
-              onChangeText={(e) => handleData("email", e)}
+              onChangeText={(e) => handleData("email", e.toLowerCase())}
               style={formStyles.inputFull}
             />
 

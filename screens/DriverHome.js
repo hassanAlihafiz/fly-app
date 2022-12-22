@@ -1,4 +1,4 @@
-import { ActivityIndicator, Switch, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Switch, Text, View } from "react-native";
 import React, { Component } from "react";
 import { Directions, ScrollView } from "react-native-gesture-handler";
 import CardView from "../components/CardView";
@@ -11,6 +11,8 @@ import * as TaskManager from "expo-task-manager";
 import DriverHomeStatusCard from "../components/DriverHomeStatusCard";
 import { widthPercentageToDP } from "react-native-responsive-screen";
 import DriverHomeBooking from "../components/DriverHomeBooking";
+import { Linking } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -33,6 +35,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 let foregroundSubscription = null;
 
 const DriverHome = ({ navigation }) => {
+  const navigate = useNavigation();
   const [loading, setLoading] = React.useState(false);
   const [isEnabled, setIsEnabled] = React.useState(false);
   const [status, setStatus] = React.useState("Offline");
@@ -45,34 +48,46 @@ const DriverHome = ({ navigation }) => {
   const toggleSwitch = () => {
     setIsEnabled(!isEnabled);
   };
-
-  React.useEffect(() => {
-    const requestPermissions = async () => {
-      const foreground = await Location.requestForegroundPermissionsAsync();
-      if (foreground.granted)
-        await Location.requestBackgroundPermissionsAsync();
-    };
-    requestPermissions;
-  }, []);
-  React.useEffect(() => {
-    if (isEnabled == true) {
-      getBooking();
-    }
-  }, [loading]);
   React.useEffect(() => {
     let interval = 0;
     if (isEnabled === false) {
       disableLocation();
     } else {
-      setDriverOnline();
-      setLoading(true);
-      interval = setInterval(() => {
-        updateLocation();
-      }, 5000);
+      (async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert(
+            "Fly app wants to use your location",
+            "Location access is required to use his application",
+            [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "destructive",
+              },
+              { text: "Open Settings", onPress: () => Linking.openSettings() },
+            ]
+          );
+          setLoading(false);
+          setIsEnabled(false);
+          disableLocation();
+          return;
+        }
+        setDriverOnline();
+        setLoading(true);
+        interval = setInterval(() => {
+          updateLocation();
+        }, 5000);
+      })();
     }
     return () => clearInterval(interval);
   }, [isEnabled]);
-
+  React.useEffect(() => {
+    if (bookingData != null && bookingData?.bookingStatus != "completed") {
+      console.log(bookingData?.id);
+      updateLocationToBooking();
+    }
+  }, [locState]);
   const disableLocation = () => {
     setIsEnabled(false);
     setStatus("Offline");
@@ -85,8 +100,28 @@ const DriverHome = ({ navigation }) => {
     startForegroundUpdate();
     startBackgroundUpdate();
   };
+  const updateLocationToBooking = async () => {
+    const user = await getLocalStorage("user");
+    const data = {
+      id: bookingData?.id,
+      lat: locState.lat,
+      lng: locState.lng,
+    };
+
+    await getPostCall(
+      "booking/driverLocationToBooking",
+      "POST",
+      JSON.stringify(data),
+      user?.token
+    )
+      .then((e) => {
+        console.log("location updated to booking");
+      })
+      .catch((e) => console.log("error updating location in booking"));
+  };
   const setDriverOnline = async () => {
     const user = await getLocalStorage("user");
+    console.log("user", user);
     await getPostCall(
       "status/driverOnline",
       "POST",
@@ -127,34 +162,26 @@ const DriverHome = ({ navigation }) => {
   const startForegroundUpdate = async () => {
     // Check if foreground permission is granted
 
-    if (isEnabled) {
-      const { granted } = await Location.getForegroundPermissionsAsync();
-      if (!granted) {
-        console.log("location tracking denied");
-        return;
+    // Make sure that foreground location tracking is not running
+    foregroundSubscription?.remove();
+
+    // Start watching position in real-time
+    foregroundSubscription = await Location.watchPositionAsync(
+      {
+        // For better logs, we set the accuracy to the most sensitive option
+        accuracy: Location.Accuracy.BestForNavigation,
+      },
+      (location) => {
+        setLocState({
+          lat: location.coords.latitude,
+          lng: location.coords.longitude,
+        });
+        getBooking();
+        // console.log("CORRDS", location.coords);
+        setUpdatedLocation(location);
+        // setPosition(location.coords);
       }
-
-      // Make sure that foreground location tracking is not running
-      foregroundSubscription?.remove();
-
-      // Start watching position in real-time
-
-      foregroundSubscription = await Location.watchPositionAsync(
-        {
-          // For better logs, we set the accuracy to the most sensitive option
-          accuracy: Location.Accuracy.BestForNavigation,
-        },
-        (location) => {
-          setLocState({
-            lat: location.coords.latitude,
-            lng: location.coords.longitude,
-          });
-          // console.log("CORRDS", location.coords);
-          setUpdatedLocation(location);
-          // setPosition(location.coords);
-        }
-      );
-    }
+    );
   };
   const stopForegroundUpdate = () => {
     foregroundSubscription?.remove();
@@ -260,7 +287,11 @@ const DriverHome = ({ navigation }) => {
           lng={locState?.lng}
         />
         {isEnabled && bookingData != null ? (
-          <DriverHomeBooking enable={isEnabled} data={bookingData} />
+          <DriverHomeBooking
+            enable={isEnabled}
+            data={bookingData}
+            loading={loading}
+          />
         ) : null}
       </View>
     </View>

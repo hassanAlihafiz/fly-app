@@ -35,7 +35,7 @@ const ServiceOffered = ({ route, navigation }) => {
   };
 
   const getPackages = () => {
-    getCall("packages/getPackages", "GET", token)
+    getCall("packages/getPackages", token)
       .then((e) => {
         setPackages(e?.data);
         setLoading(false);
@@ -46,11 +46,11 @@ const ServiceOffered = ({ route, navigation }) => {
   };
 
   console.log(packages.filter((arr) => arr.type == "Others"));
+
   return (
     <View
       style={{
         flex: 1,
-
         backgroundColor: "white",
       }}
     >
