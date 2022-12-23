@@ -30,7 +30,7 @@ export default function BookingTripScreen() {
     getBooking();
     setInterval(() => {
       getBooking();
-    }, 5000);
+    }, 1000);
   }, []);
 
   React.useEffect(() => {
@@ -44,6 +44,7 @@ export default function BookingTripScreen() {
       .then((e) => {
         console.log(e);
         setBookingData(e);
+
         if (
           e?.driverData?.lat != undefined &&
           e?.driverData?.lng != undefined

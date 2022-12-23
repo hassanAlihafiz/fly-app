@@ -1,11 +1,73 @@
 import { FontAwesome } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Image } from "react-native";
 import { Text } from "react-native";
 import { View } from "react-native";
 import BackButton from "../components/common/BackButton";
+import GreenButton from "../components/common/GreenButton";
+import {
+  ConfirmOverlay,
+  LoadingOverlay,
+  MessageOverlay,
+  SuccessOverlay,
+} from "../components/Overlays";
+import { getPostCall } from "../utils/API";
+import { getLocalStorage } from "../utils/LocalStorage";
 
 export default BookingDeliveryScreen = () => {
+  const navigation = useNavigation();
+  const [loading, setLoading] = React.useState(false);
+  const [bookingData, setBookingData] = React.useState();
+  const [confirm, setConfirm] = React.useState(false);
+  const [onSumbit, setOnSubmit] = React.useState(false);
+
+  React.useEffect(() => {
+    getBooking();
+    setInterval(() => {
+      getBooking();
+    }, 1000);
+  }, []);
+
+  const getBooking = async () => {
+    await getLocalStorage("booking_data")
+      .then((e) => {
+        console.log(e);
+        setBookingData(e);
+      })
+      .catch((e) => setLoader(false));
+  };
+
+  const handleClick = async () => {
+    console.log("active");
+    setConfirm(false);
+    setLoading(true);
+    const user = await getLocalStorage("user");
+    console.log("user", user?.token);
+    console.log("booking id", bookingData?.id);
+    await getPostCall(
+      "trip/carReturnedToCustomer",
+      "POST",
+      JSON.stringify({
+        id: bookingData?.id,
+      }),
+      user?.token
+    )
+      .then((e) => {
+        setLoading(false);
+        console.log("success");
+        setOnSubmit(true);
+        setTimeout(() => {
+          setOnSubmit(false);
+          navigation.navigate("MyBookingsScreen");
+        }, 5000);
+      })
+      .catch((e) => {
+        setLoading(false);
+        console.log("catch", e);
+      });
+  };
+
   return (
     <View
       style={{
@@ -14,6 +76,16 @@ export default BookingDeliveryScreen = () => {
         backgroundColor: "white",
       }}
     >
+      <LoadingOverlay loading={loading} />
+      <ConfirmOverlay
+        value={confirm}
+        onClose={() => setConfirm(false)}
+        onOK={() => handleClick()}
+      />
+      <SuccessOverlay
+        value={onSumbit}
+        message="Thank you so much for being a part of FLY"
+      />
       <View>
         <BackButton />
         <View
@@ -26,7 +98,7 @@ export default BookingDeliveryScreen = () => {
           <Text
             style={{ marginVertical: 10, fontSize: 20, fontWeight: "bold" }}
           >
-            Deliver the Car
+            Receive the Car
           </Text>
           <FontAwesome name="handshake-o" size={24} color="black" />
         </View>
@@ -56,10 +128,16 @@ export default BookingDeliveryScreen = () => {
           style={{ height: 300, width: "100%" }}
         />
         <Text style={{ fontSize: 16, textAlign: "center" }}>
-          Please return the car to the customer and wait for the customer's
-          confirmation
+          Driver arrived at your location, please recieve your car.
         </Text>
       </View>
+      <GreenButton
+        text="Proceed"
+        // disabled={approved || loading}
+        // loading={loading}
+        width="100%"
+        onPress={() => setConfirm(true)}
+      />
     </View>
   );
 };

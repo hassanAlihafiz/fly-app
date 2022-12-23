@@ -32,7 +32,7 @@ export default function BookingTripStation() {
     getBooking();
     setInterval(() => {
       getBooking();
-    }, 5000);
+    }, 1000);
   }, []);
 
   React.useEffect(() => {

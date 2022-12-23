@@ -75,15 +75,19 @@ export default function App() {
       const { status: existingStatus } =
         await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
+
       if (existingStatus !== "granted") {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
+      } else {
+        console.log("access already granted");
       }
       if (finalStatus !== "granted") {
         disabledNotificationsAlert();
         return;
       }
       noti_token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log("notitoken", noti_token);
       setLocalStorage("noti_token", JSON.stringify(noti_token));
     } else {
       alert("Must use physical device for Push Notifications");

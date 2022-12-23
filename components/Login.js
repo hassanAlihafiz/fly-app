@@ -27,8 +27,10 @@ const Login = ({ navigation, loginAs }) => {
     userType: loginAs,
   });
 
+
   const handleLogin = async () => {
     const noti_token = await getLocalStorage("noti_token");
+
     setLoader(true);
     if (data.email == "" || data.password == "") {
       setError({
@@ -65,7 +67,7 @@ const Login = ({ navigation, loginAs }) => {
               JSON.stringify({
                 id: response?.data?.id,
                 noti_token: noti_token,
-                userType: "customer",
+                userType: response.data.userType,
               }),
               response?.data?.token
             )
@@ -84,7 +86,7 @@ const Login = ({ navigation, loginAs }) => {
               JSON.stringify({
                 id: response?.data?.id,
                 noti_token: noti_token,
-                userType: "driver",
+                userType: response.data.userType,
               }),
               response?.data?.token
             )

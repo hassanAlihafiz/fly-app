@@ -4,17 +4,25 @@ import React from "react";
 import { Image, Text, View } from "react-native";
 import BackButton from "../components/common/BackButton";
 import GreenButton from "../components/common/GreenButton";
-import { LoadingOverlay } from "../components/Overlays";
+import {
+  ConfirmOverlay,
+  LoadingOverlay,
+  MessageOverlay,
+} from "../components/Overlays";
+import { getPostCall } from "../utils/API";
 import { getLocalStorage } from "../utils/LocalStorage";
 
 export default function BookingArrivedPickupScreen() {
   const navigation = useNavigation();
+  const [loading, setLoading] = React.useState(false);
   const [bookingData, setBookingData] = React.useState();
+  const [confirm, setConfirm] = React.useState(false);
+
   React.useEffect(() => {
     getBooking();
     setInterval(() => {
       getBooking();
-    }, 5000);
+    }, 1000);
   }, []);
 
   React.useEffect(() => {
@@ -33,6 +41,31 @@ export default function BookingArrivedPickupScreen() {
       });
   };
 
+  const handleClick = async () => {
+    console.log("active");
+    setConfirm(false);
+    setLoading(true);
+    const user = await getLocalStorage("user");
+    console.log("user", user?.token);
+    console.log("booking id", bookingData?.id);
+    await getPostCall(
+      "trip/carHandedToDriver",
+      "POST",
+      JSON.stringify({
+        id: bookingData?.id,
+      }),
+      user?.token
+    )
+      .then((e) => {
+        setLoading(false);
+        console.log("success");
+      })
+      .catch((e) => {
+        setLoading(false);
+        console.log("catch", e);
+      });
+  };
+
   return (
     <View
       style={{
@@ -41,6 +74,12 @@ export default function BookingArrivedPickupScreen() {
         backgroundColor: "white",
       }}
     >
+      <LoadingOverlay loading={loading} />
+      <ConfirmOverlay
+        value={confirm}
+        onClose={() => setConfirm(false)}
+        onOK={() => handleClick()}
+      />
       <View>
         <View
           style={{
@@ -90,7 +129,7 @@ export default function BookingArrivedPickupScreen() {
         // disabled={approved || loading}
         // loading={loading}
         width="100%"
-        // onPress={handleClick}
+        onPress={() => setConfirm(true)}
       />
     </View>
   );

@@ -66,7 +66,7 @@ const Signup = ({ navigation, loginAs }) => {
   }, []);
 
   const getNotiToken = async () => {
-    const noti_token = await getLocalStorage("noti_token");
+    const noti_token = await getLocalStorage("noti_token");   
     console.log("noti", noti_token);
     if (noti_token != null) {
       handleData("noti_token", noti_token);

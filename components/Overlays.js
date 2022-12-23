@@ -76,10 +76,10 @@ export const SuccessOverlay = ({ value, message }) => {
   );
 };
 
-export const ConfirmOverlay = ({ show, onClose, onOK }) => {
+export const ConfirmOverlay = ({ value, onClose, onOK }) => {
   return (
     <Overlay
-      isVisible={show}
+      isVisible={value}
       overlayStyle={{
         margin: 20,
         padding: 20,

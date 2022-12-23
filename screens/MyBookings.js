@@ -1,6 +1,8 @@
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { Divider } from "@rneui/base";
 import React from "react";
+import { RefreshControl } from "react-native";
 import {
   ActivityIndicator,
   ScrollView,
@@ -13,12 +15,25 @@ import { getCall } from "../utils/API";
 import { getLocalStorage } from "../utils/LocalStorage";
 
 export default MyBookings = () => {
+  const navigation = useNavigation();
+
   const [bookings, setBookings] = React.useState([]);
   const [ongoingBooking, setOngoingBooking] = React.useState([]);
   const [completedBookings, setCompletedBookings] = React.useState([]);
   const [loader, setLoader] = React.useState(true);
   const [ongoingCollapse, setOngoingCollapse] = React.useState(false);
   const [completedCollapse, setCompletedCollapse] = React.useState(false);
+  const [refresh, setRefresh] = React.useState(false);
+
+  React.useEffect(() => {
+    const focused = navigation.addListener("focus", () => {
+      getBookingById();
+    });
+  }, [navigation]);
+
+  React.useEffect(() => {
+    getBookingById();
+  }, [refresh]);
 
   React.useEffect(() => {
     getBookingById();
@@ -26,7 +41,7 @@ export default MyBookings = () => {
 
   const getBookingById = async () => {
     const user = await getLocalStorage("user");
-    console.log(user);
+
     await getCall(`booking/getBookingByCustomerId?id=${user?.id}`, user?.token)
       .then((e) => {
         setBookings(e.data);
@@ -37,6 +52,7 @@ export default MyBookings = () => {
           e.data.filter((arr) => arr.bookingStatus == "completed")
         );
         setLoader(false);
+        setRefresh(false);
       })
       .catch((e) => {
         setLoader(false);
@@ -45,12 +61,18 @@ export default MyBookings = () => {
   };
 
   return (
-    <View
+    <ScrollView
       style={{
         flex: 1,
         backgroundColor: "white",
         padding: 20,
       }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refresh}
+          onRefresh={() => setRefresh(true)}
+        />
+      }
     >
       {loader ? (
         <ActivityIndicator />
@@ -174,7 +196,7 @@ export default MyBookings = () => {
           </View>
         </>
       )}
-    </View>
+    </ScrollView>
   );
 };
 

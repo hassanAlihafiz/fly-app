@@ -7,34 +7,60 @@ import { TouchableOpacity } from "react-native";
 import { View, Text } from "react-native";
 import BackButton from "../components/common/BackButton";
 import GreenButon from "../components/common/GreenButton";
-import { LoadingOverlay } from "../components/Overlays";
-import { getPostCall } from "../utils/API";
+import { LoadingOverlay, MessageOverlay } from "../components/Overlays";
+import { getCall, getPostCall } from "../utils/API";
 import { getLocalStorage } from "../utils/LocalStorage";
 
 export default CarPickedScreen = ({ route }) => {
   const { bookingData } = route.params;
   const navigation = useNavigation();
-  const [loader, setLoader] = React.useState(false);
-  const [approved, setApproved] = React.useState(false);
+
   const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState({
+    value: false,
+    message: "",
+  });
 
   const handleClick = async () => {
-    setLoader(true);
+    setLoading(true);
     const user = await getLocalStorage("user");
-
-    await getPostCall(
-      "trip/tripToStation",
-      "POST",
-      JSON.stringify({ id: bookingData?.id, noti_token: bookingData?.userData?.noti_token }),
+    await getCall(
+      `booking/getBookingByBookingId?id=${bookingData?.id}`,
       user?.token
     )
-      .then((e) => {
-        setLoader(false);
-        navigation.navigate("TripStationScreen", { bookingData });
+      .then(async (e) => {
+        console.log(e?.data?.carHandedToDriver);
+        if (e?.data?.carHandedToDriver) {
+          await getPostCall(
+            "trip/tripToStation",
+            "POST",
+            JSON.stringify({
+              id: bookingData?.id,
+              noti_token: bookingData?.userData?.noti_token,
+            }),
+            user?.token
+          )
+            .then((e) => {
+              setLoading(false);
+              navigation.navigate("TripStationScreen", { bookingData });
+            })
+            .catch((e) => {
+              setLoading(false);
+              console.log("catch", e);
+            });
+        } else {
+          console.log(e?.data?.carHandedToDriver);
+
+          setLoading(false);
+          setError({
+            value: true,
+            message: "Please wait for the Customer to confirm",
+          });
+        }
       })
       .catch((e) => {
-        setLoader(false);
-        console.log("catch", e);
+        setLoading(false);
+        console.log(e);
       });
   };
 
@@ -46,7 +72,11 @@ export default CarPickedScreen = ({ route }) => {
         backgroundColor: "white",
       }}
     >
-      <LoadingOverlay loading={loader} />
+      <MessageOverlay
+        value={error.value}
+        setValue={setError}
+        message={error.message}
+      />
       <View>
         <BackButton />
         <View
@@ -94,7 +124,7 @@ export default CarPickedScreen = ({ route }) => {
       </View>
       <GreenButon
         text="Vehicle Received"
-        disabled={approved || loading}
+        disabled={loading}
         loading={loading}
         width="100%"
         onPress={handleClick}
