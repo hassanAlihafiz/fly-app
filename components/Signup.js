@@ -56,6 +56,7 @@ const Signup = ({ navigation, loginAs }) => {
     status: false,
     status_approved: false,
     noti_token: "",
+    url: "",
   });
   const [file, setFile] = React.useState(null);
   const [uploading, setUploading] = React.useState(false);
@@ -101,6 +102,7 @@ const Signup = ({ navigation, loginAs }) => {
       });
   };
 
+  console.log(data);
   const handleSignup = async () => {
     setLoader(true);
 
