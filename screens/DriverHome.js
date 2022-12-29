@@ -13,6 +13,7 @@ import { widthPercentageToDP } from "react-native-responsive-screen";
 import DriverHomeBooking from "../components/DriverHomeBooking";
 import { Linking } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { MessageOverlay } from "../components/Overlays";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -44,10 +45,22 @@ const DriverHome = ({ navigation }) => {
     lng: 0,
   });
   const [bookingData, setBookingData] = React.useState(null);
-
+  const [statusError, setStatusError] = React.useState(false);
   const toggleSwitch = () => {
     setIsEnabled(!isEnabled);
   };
+
+  React.useEffect(() => {
+    (async () => {
+      const user = await getLocalStorage("user");
+
+      if (!user?.status_approved) {
+        setStatusError(true);
+        return;
+      }
+    })();
+  }, [isEnabled]);
+
   React.useEffect(() => {
     let interval = 0;
     if (isEnabled === false) {
@@ -73,6 +86,7 @@ const DriverHome = ({ navigation }) => {
           disableLocation();
           return;
         }
+
         setDriverOnline();
         setLoading(true);
         interval = setInterval(() => {
@@ -269,16 +283,21 @@ const DriverHome = ({ navigation }) => {
     <View>
       <DateView name={moment().format("ddd, DD MMM YYYY z")} color="black" />
       {/* <CardView name="Hello Dev" img={require("../assets/sedan.jpeg")} /> */}
+      {/* <MessageOverlay
+        value={statusError.value}
+        message={statusError.message && "Wait for the status to approved"}
+        setValue={setStatusError}
+      /> */}
       <View
         style={{
           padding: 10,
-          // height: widthPercentageToDP("100%"),
           height: "100%",
           display: "flex",
           alignItems: "center",
         }}
       >
         <DriverHomeStatusCard
+          statusError={statusError}
           loading={loading}
           status={status}
           isEnabled={isEnabled}

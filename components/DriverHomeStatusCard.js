@@ -4,6 +4,7 @@ import { ActivityIndicator, Switch, Text } from "react-native";
 import { View } from "react-native";
 
 export default DriverHomeStatusCard = ({
+  statusError,
   loading,
   status,
   isEnabled,

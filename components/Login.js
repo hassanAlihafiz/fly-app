@@ -27,7 +27,6 @@ const Login = ({ navigation, loginAs }) => {
     userType: loginAs,
   });
 
-
   const handleLogin = async () => {
     const noti_token = await getLocalStorage("noti_token");
 
@@ -39,70 +38,123 @@ const Login = ({ navigation, loginAs }) => {
       });
       setLoader(false);
     } else {
-      var config = {
-        method: "post",
-        url: "https://sunny-jetty-368714.ue.r.appspot.com/users/login",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify(data),
-      };
-      axios(config)
+      getPostCall("users/login", "POST", JSON.stringify(data))
         .then(async (response) => {
-          setSuccess({
-            value: true,
-            message: "Login Successful",
-          });
-          setTimeout(() => {
-            setSuccess({
-              value: false,
-              message: "",
+          const _data = response?.data;
+          if (response?.data != "Wrong user type") {
+            if (_data?.userType === "customer") {
+              setLoader(false);
+              setSuccess({
+                value: true,
+                message: "Login Successful",
+              });
+              setTimeout(() => {
+                setSuccess({
+                  value: false,
+                  message: "",
+                });
+              }, 2000);
+              setLocalStorage("user", JSON.stringify(_data));
+              await getPostCall(
+                "notification/addNotiToken",
+                "POST",
+                JSON.stringify({
+                  id: _data.id,
+                  noti_token: noti_token,
+                  userType: _data?.userType,
+                }),
+                _data?.token
+              )
+                .then((e) => console.log("noti token added to db"))
+                .catch((e) => console.log("error adding noti token to db"));
+              navigation.navigate("HomeScreen");
+            } else if (_data?.userType === "driver") {
+              console.log(_data.status_approved);
+              if (_data.status_approved) {
+                setLoader(false);
+                setSuccess({
+                  value: true,
+                  message: "Login Successful",
+                });
+                setTimeout(() => {
+                  setSuccess({
+                    value: false,
+                    message: "",
+                  });
+                }, 2000);
+                setLocalStorage("user", JSON.stringify(_data));
+                await getPostCall(
+                  "notification/addNotiToken",
+                  "POST",
+                  JSON.stringify({
+                    id: _data.id,
+                    noti_token: noti_token,
+                    userType: _data?.userType,
+                  }),
+                  response?.data?.token
+                )
+                  .then((e) => console.log("noti token added to db"))
+                  .catch((e) => console.log("error adding noti token to db"));
+                navigation.navigate("DriverScreen");
+              } else {
+                setLoader(false);
+                setError({
+                  value: true,
+                  message: "Please wait for the admin to approve your account.",
+                });
+              }
+            }
+          } else {
+            setLoader(false);
+            setError({
+              value: true,
+              message: "Wrong login type",
             });
-          }, 2000);
-          if (response.data.userType === "customer" && loginAs === "customer") {
-            setLocalStorage("user", JSON.stringify(response?.data));
-            await getPostCall(
-              "notification/addNotiToken",
-              "POST",
-              JSON.stringify({
-                id: response?.data?.id,
-                noti_token: noti_token,
-                userType: response.data.userType,
-              }),
-              response?.data?.token
-            )
-              .then((e) => console.log("noti token added to db"))
-              .catch((e) => console.log("error adding noti token to db"));
-            navigation.navigate("HomeScreen");
-            setLoader(false);
-          } else if (
-            response.data.userType === "driver" &&
-            loginAs === "driver"
-          ) {
-            setLocalStorage("user", JSON.stringify(response?.data));
-            await getPostCall(
-              "notification/addNotiToken",
-              "POST",
-              JSON.stringify({
-                id: response?.data?.id,
-                noti_token: noti_token,
-                userType: response.data.userType,
-              }),
-              response?.data?.token
-            )
-              .then((e) => console.log("noti token added to db"))
-              .catch((e) => console.log("error adding noti token to db"));
-            navigation.navigate("DriverScreen");
-            setLoader(false);
           }
         })
         .catch((error) => {
-          console.log(error);
-          setLoader(false);
-          setError({
-            value: true,
-            message: "Invalid Credentials",
-          });
+          if (error.response.status == 401) {
+            const code = error?.response?.data?.code;
+
+            if (code == "auth/wrong-password") {
+              setLoader(false);
+              setError({
+                value: true,
+                message: "Wrong Credentials",
+              });
+            } else if (code == "auth/too-many-requests") {
+              setLoader(false);
+              setError({
+                value: true,
+                message:
+                  "Access to this account has been temporarily disabled due to many failed login attempts",
+              });
+            } else if (code == "auth/invalid-email") {
+              setLoader(false);
+              setError({
+                value: true,
+                message: "The email address is badly formatted",
+              });
+            } else if (code == "auth/user-not-found") {
+              setLoader(false);
+              setError({
+                value: true,
+                message: "No user found on provided email",
+              });
+            } else {
+              setLoader(false);
+              setError({
+                value: true,
+                message: "Error",
+              });
+            }
+          } else {
+            setLoader(false);
+            setError({
+              value: true,
+              message: "Error",
+            });
+          }
         });
     }
   };

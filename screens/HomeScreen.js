@@ -5,6 +5,8 @@ import CardView from "../components/CardView";
 import { setLocalStorage } from "../utils/LocalStorage";
 import * as BackgroundFetch from "expo-background-fetch";
 import * as TaskManager from "expo-task-manager";
+import { Image } from "react-native";
+import { withTheme } from "@rneui/themed";
 
 const BACKGROUND_FETCH_TASK = "background-fetch";
 
@@ -45,19 +47,38 @@ const Home = () => {
       if (isRegistered) {
         await registerBackgroundFetchAsync();
       }
-
-      // setStatus(status);
-      // setIsRegistered(isRegistered);
     };
     background();
   }, []);
 
   return (
-    <ScrollView>
-      {carTypes.map((value, key) => {
-        return <CardView key={key} name={value.name} img={value.img} />;
-      })}
-    </ScrollView>
+    <View>
+      <ScrollView style={{ marginBottom: 100 }}>
+        {carTypes.map((value, key) => {
+          return <CardView key={key} name={value.name} img={value.img} />;
+        })}
+      </ScrollView>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          height: 100,
+          width: "100%",
+          backgroundColor: "white",
+          padding: 1,
+        }}
+      >
+        <Image
+          source={require("../assets/Ad.jpeg")}
+          style={{
+            flex: 1,
+            width: "100%",
+            height: "100%",
+          }}
+        />
+      </View>
+    </View>
   );
 };
 

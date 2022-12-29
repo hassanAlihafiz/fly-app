@@ -113,7 +113,7 @@ export default MyBookings = () => {
                 }}
               >
                 {ongoingBooking.length == 0 ? (
-                  <Text>No ongoing booking</Text>
+                  <Text>No booking</Text>
                 ) : (
                   <MaterialIcons
                     name="arrow-forward-ios"
@@ -172,7 +172,7 @@ export default MyBookings = () => {
                 }}
               >
                 {completedBookings.length == 0 ? (
-                  <Text>No completed booking</Text>
+                  <Text>No booking</Text>
                 ) : (
                   <MaterialIcons
                     name="arrow-forward-ios"
