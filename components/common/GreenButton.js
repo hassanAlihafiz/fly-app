@@ -3,7 +3,14 @@ import { ActivityIndicator } from "react-native";
 import { Text } from "react-native";
 import { TouchableOpacity } from "react-native";
 
-export default GreenButton = ({ text, loading, onPress, disabled, width }) => {
+export default GreenButton = ({
+  text,
+  loading,
+  onPress,
+  disabled,
+  width,
+  margin,
+}) => {
   return (
     <TouchableOpacity
       style={{
@@ -13,6 +20,7 @@ export default GreenButton = ({ text, loading, onPress, disabled, width }) => {
         marginVertical: 20,
         marginHorizontal: 20,
         backgroundColor: disabled ? "#E9E9EA" : "#43ce51",
+        margin: margin,
 
         justifyContent: "center",
         alignItems: "center",

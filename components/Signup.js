@@ -31,6 +31,7 @@ import { LoadingOverlay, MessageOverlay, SuccessOverlay } from "./Overlays";
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import { Entypo } from "@expo/vector-icons";
+import MaskInput, { Masks } from "react-native-mask-input";
 
 const Signup = ({ navigation, loginAs }) => {
   const [loading, setLoading] = React.useState(true);
@@ -49,6 +50,7 @@ const Signup = ({ navigation, loginAs }) => {
     first_name: "",
     last_name: "",
     email: "",
+    phone_no: "",
     password: "",
     userType: loginAs,
     zipCodeId: "",
@@ -312,14 +314,30 @@ const Signup = ({ navigation, loginAs }) => {
               placeholder="Email"
               placeholderTextColor={formStyles.placeholderTextColor}
               autoComplete="email"
+              autoFocus={true}
+              value={data.email}
               onChangeText={(e) => handleData("email", e.toLowerCase())}
               style={formStyles.inputFull}
+            />
+
+            <MaskInput
+              value={data.phone_no}
+              style={formStyles.inputFull}
+              placeholder="Phone No"
+              autoFocus={true}
+              placeholderTextColor={formStyles.placeholderTextColor}
+              keyboardType="number-pad"
+              onChangeText={(masked, unmasked) => {
+                handleData("phone_no", masked);
+              }}
+              mask={Masks.USA_PHONE}
             />
 
             <TextInput
               placeholder="Password"
               placeholderTextColor={formStyles.placeholderTextColor}
               keyboardType="visible-password"
+              autoFocus={true}
               onChangeText={(e) => handleData("password", e)}
               secureTextEntry={true}
               style={formStyles.inputFull}

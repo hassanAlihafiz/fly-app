@@ -2,11 +2,12 @@ import { Text, View } from "react-native";
 import React, { Component } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import CardView from "../components/CardView";
-import { setLocalStorage } from "../utils/LocalStorage";
+import { getLocalStorage, setLocalStorage } from "../utils/LocalStorage";
 import * as BackgroundFetch from "expo-background-fetch";
 import * as TaskManager from "expo-task-manager";
 import { Image } from "react-native";
 import { withTheme } from "@rneui/themed";
+import { getCall } from "../utils/API";
 
 const BACKGROUND_FETCH_TASK = "background-fetch";
 
@@ -35,7 +36,10 @@ async function registerBackgroundFetchAsync() {
 }
 
 const Home = () => {
+  const [adLoad, setAdLoad] = React.useState(true);
+  const [adData, setAdData] = React.useState(null);
   React.useEffect(() => {
+    getAd();
     const background = async () => {
       const status = await BackgroundFetch.getStatusAsync();
       const isRegistered = await TaskManager.isTaskRegisteredAsync(
@@ -50,34 +54,55 @@ const Home = () => {
     };
     background();
   }, []);
+  const getAd = async () => {
+    const user = await getLocalStorage("user");
+
+    await getCall("ad/getAd", user?.token)
+      .then((e) => {
+        if (e.data != "") {
+          setAdData(e.data);
+        }
+        setAdLoad(false);
+      })
+      .catch((e) => setAdLoad(false));
+  };
 
   return (
     <View>
-      <ScrollView style={{ marginBottom: 100 }}>
+      <ScrollView style={adData != null && { marginBottom: 100 }}>
         {carTypes.map((value, key) => {
-          return <CardView key={key} name={value.name} img={value.img} />;
+          return (
+            <CardView
+              key={key}
+              name={value.name}
+              img={value.img}
+              adData={adData}
+            />
+          );
         })}
       </ScrollView>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          height: 100,
-          width: "100%",
-          backgroundColor: "white",
-          padding: 1,
-        }}
-      >
-        <Image
-          source={require("../assets/Ad.jpeg")}
+      {adData != null && (
+        <View
           style={{
-            flex: 1,
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            height: 100,
             width: "100%",
-            height: "100%",
+            backgroundColor: "white",
+            padding: 1,
           }}
-        />
-      </View>
+        >
+          <Image
+            source={{ url: adData?.url }}
+            style={{
+              flex: 1,
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        </View>
+      )}
     </View>
   );
 };

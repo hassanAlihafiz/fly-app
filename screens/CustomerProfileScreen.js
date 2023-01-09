@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
+import Profile from "../components/Profile";
 
 export default CustomerProfileScreen = () => {
   return (
@@ -10,29 +11,7 @@ export default CustomerProfileScreen = () => {
         backgroundColor: "white",
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderRadius: 10,
-
-          width: "100%",
-          backgroundColor: "white",
-          padding: 20,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 1,
-            height: 2,
-          },
-          shadowOpacity: 0.13,
-          shadowRadius: 4,
-
-          elevation: 20,
-        }}
-      >
-        <Text>CustomerProfile</Text>
-      </View>
+      <Profile title="Customer Profile" />
     </View>
   );
 };
