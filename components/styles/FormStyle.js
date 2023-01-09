@@ -54,6 +54,21 @@ export const formStyles = StyleSheet.create({
     paddingRight: 10,
     borderRadius: 5,
   },
+  inputBtn: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+
+    alignItems: "center",
+    marginBottom: 10,
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#d7d7d7",
+    width: widthPercentageToDP("80%"),
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 5,
+  },
   pickerIOS: {
     flexDirection: "row",
     alignItems: "center",

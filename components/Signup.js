@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ActionSheetIOS,
+  Button,
   Platform,
   Text,
   TextInput,
@@ -27,6 +28,10 @@ import { Picker } from "@react-native-picker/picker";
 
 import { container, formStyles } from "./styles/FormStyle";
 import { LoadingOverlay, MessageOverlay, SuccessOverlay } from "./Overlays";
+import * as DocumentPicker from "expo-document-picker";
+import axios from "axios";
+import { Entypo } from "@expo/vector-icons";
+import MaskInput, { Masks } from "react-native-mask-input";
 
 const Signup = ({ navigation, loginAs }) => {
   const [loading, setLoading] = React.useState(true);
@@ -45,14 +50,23 @@ const Signup = ({ navigation, loginAs }) => {
     first_name: "",
     last_name: "",
     email: "",
+    phone_no: "",
     password: "",
     userType: loginAs,
     zipCodeId: "",
-    available: true,
+    available: false,
     status: false,
+    status_approved: false,
     noti_token: "",
+    url: "",
   });
-
+  const [file, setFile] = React.useState(null);
+  const [uploading, setUploading] = React.useState(false);
+  const [uploadRes, setUploadRes] = React.useState({
+    error: false,
+    success: false,
+    message: "",
+  });
   const handleData = (name, value) => {
     setData({
       ...data,
@@ -90,8 +104,7 @@ const Signup = ({ navigation, loginAs }) => {
       });
   };
 
-  console.log(JSON.stringify(data));
-
+  console.log(data);
   const handleSignup = async () => {
     setLoader(true);
 
@@ -100,36 +113,52 @@ const Signup = ({ navigation, loginAs }) => {
       data.last_name == "" ||
       data.email == "" ||
       data.password == "" ||
-      data.zip == ""
+      data.zip == "" ||
+      (loginAs === "driver" && data?.url == undefined)
     ) {
       setError({
         value: true,
         message: "Fields can not be empty",
       });
+
       setLoader(false);
     } else {
       getPostCall("users/register", "POST", JSON.stringify(data), "")
         .then((e) => {
           setLoader(false);
-          setSuccess({
-            value: true,
-            message: `User Successfully Registered`,
-          });
-          setTimeout(() => {
-            setSuccess({
-              value: false,
-              message: "",
-            });
-          }, 2000);
-          handleData("token", e?.data?.token);
-          setLocalStorage(
-            "user",
-            JSON.stringify({ ...data, token: e?.data?.token, id: e?.data?.id })
-          );
           if (loginAs === "customer") {
+            setSuccess({
+              value: true,
+              message: `User Successfully Registered`,
+            });
+            setTimeout(() => {
+              setSuccess({
+                value: false,
+                message: "",
+              });
+            }, 2000);
+            handleData("token", e?.data?.token);
+            setLocalStorage(
+              "user",
+              JSON.stringify({
+                ...data,
+                token: e?.data?.token,
+                id: e?.data?.id,
+              })
+            );
             navigation.navigate("HomeScreen");
-          } else if (loginAs === "driver") {
-            navigation.navigate("DriverScreen");
+          } else {
+            setSuccess({
+              value: true,
+              message: `Your signup request has been submitted. Please wait for the admin to approve.`,
+            });
+            setTimeout(() => {
+              setSuccess({
+                value: false,
+                message: "",
+              });
+              navigation.navigate("Landing");
+            }, 5000);
           }
         })
         .catch((e) => {
@@ -161,7 +190,64 @@ const Signup = ({ navigation, loginAs }) => {
     );
   };
 
-  console.log(success);
+  const pickDoc = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+
+    if (result?.type != "cancel") {
+      setFile(result);
+
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("file", result);
+
+      await axios
+        .post(
+          "https://sunny-jetty-368714.ue.r.appspot.com/file/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((response) => {
+          handleData("url", response.data.url);
+          setUploading(false);
+
+          setUploadRes({
+            ...uploadRes,
+            success: true,
+            message: "File Uploaded",
+          });
+
+          setTimeout(() => {
+            setUploadRes({
+              ...uploadRes,
+              success: false,
+              message: "",
+            });
+          }, 3000);
+        })
+        .catch((error) => {
+          console.log(error);
+          setUploading(false);
+
+          setUploadRes({
+            ...uploadRes,
+            error: true,
+            message: "Error Uploading File",
+          });
+
+          setTimeout(() => {
+            setUploadRes({
+              ...uploadRes,
+              error: false,
+              message: "",
+            });
+          }, 3000);
+        });
+    }
+  };
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={container}>
@@ -169,14 +255,19 @@ const Signup = ({ navigation, loginAs }) => {
         <ActivityIndicator style={{ margin: 30 }} size="large" />
       ) : (
         <>
-          <LoadingOverlay loading={loader} />
-          <MessageOverlay
-            value={error.value}
-            setValue={setError}
-            message={error.message}
+          <LoadingOverlay
+            loading={loader || uploading}
+            text={uploading ? "Uploading..." : null}
           />
-
-          <SuccessOverlay value={loader} message={success.message} />
+          <MessageOverlay
+            value={error.value || uploadRes.error}
+            setValue={setError}
+            message={error.message || uploadRes.message}
+          />
+          <SuccessOverlay
+            value={success.value || uploadRes.success}
+            message={success.message || uploadRes.message}
+          />
           <FacebookSocialButton
             buttonViewStyle={{
               alignSelf: "center",
@@ -223,14 +314,30 @@ const Signup = ({ navigation, loginAs }) => {
               placeholder="Email"
               placeholderTextColor={formStyles.placeholderTextColor}
               autoComplete="email"
+              autoFocus={true}
+              value={data.email}
               onChangeText={(e) => handleData("email", e.toLowerCase())}
               style={formStyles.inputFull}
+            />
+
+            <MaskInput
+              value={data.phone_no}
+              style={formStyles.inputFull}
+              placeholder="Phone No"
+              autoFocus={true}
+              placeholderTextColor={formStyles.placeholderTextColor}
+              keyboardType="number-pad"
+              onChangeText={(masked, unmasked) => {
+                handleData("phone_no", masked);
+              }}
+              mask={Masks.USA_PHONE}
             />
 
             <TextInput
               placeholder="Password"
               placeholderTextColor={formStyles.placeholderTextColor}
               keyboardType="visible-password"
+              autoFocus={true}
               onChangeText={(e) => handleData("password", e)}
               secureTextEntry={true}
               style={formStyles.inputFull}
@@ -269,7 +376,20 @@ const Signup = ({ navigation, loginAs }) => {
                 </Picker>
               </View>
             )}
+            {loginAs === "driver" && (
+              <TouchableOpacity onPress={pickDoc} style={formStyles.inputBtn}>
+                <Text
+                  style={{
+                    color: "#9EA0A4",
+                  }}
+                >
+                  {data?.url == undefined ? "Upload the document" : file?.name}
+                </Text>
+                <Entypo name="upload-to-cloud" size={24} color="black" />
+              </TouchableOpacity>
+            )}
           </View>
+
           <TouchableOpacity
             style={formStyles.yellowButton}
             onPress={handleSignup}

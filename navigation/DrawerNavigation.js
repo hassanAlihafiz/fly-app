@@ -1,6 +1,6 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Settings } from "react-native";
+import { Settings, View } from "react-native";
 import CustomDrawerContent from "../components/CustomDrawer";
 import LandingScreen from "../screens/LandingScreen";
 import Login from "../screens/LoginScreen";
@@ -8,6 +8,7 @@ import StripeScreen from "../screens/StripeScreen";
 import {
   Entypo,
   Feather,
+  FontAwesome,
   FontAwesome5,
   Ionicons,
   MaterialCommunityIcons,
@@ -23,6 +24,7 @@ import ServiceOffered from "../screens/ServiceOffered";
 import SettingStack from "./stack/SettingStack";
 import MyBookings from "../screens/MyBookings";
 import MyBookingStack from "./stack/MyBookingStack";
+import CustomerProfileScreen from "../screens/CustomerProfileScreen";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -41,11 +43,15 @@ export default DrawerTab = () => {
           DrawerScreenOptions,
 
           drawerIcon: ({ focused, color }) => (
-            <Ionicons
-              name="ios-home"
-              size={22}
-              style={{ color: focused ? "black" : "grey" }}
-            />
+            <View style={iconStyle}>
+              <Ionicons
+                name="ios-home"
+                size={22}
+                style={{
+                  color: focused ? "black" : "grey",
+                }}
+              />
+            </View>
           ),
         }}
       />
@@ -57,12 +63,16 @@ export default DrawerTab = () => {
           DrawerScreenOptions,
 
           drawerIcon: ({ focused }) => (
-            <MaterialCommunityIcons
-              name="clipboard-check-multiple"
-              size={24}
-              color="black"
-              style={{ color: focused ? "black" : "grey" }}
-            />
+            <View style={iconStyle}>
+              <MaterialCommunityIcons
+                name="clipboard-check-multiple"
+                size={24}
+                color="black"
+                style={{
+                  color: focused ? "black" : "grey",
+                }}
+              />
+            </View>
           ),
         }}
       />
@@ -98,15 +108,19 @@ export default DrawerTab = () => {
           headerTitle: "Settings",
           DrawerScreenOptions,
           drawerIcon: ({ focused }) => (
-            <Ionicons
-              name="ios-settings"
-              size={24}
-              style={{ color: focused ? "black" : "grey" }}
-            />
+            <View style={iconStyle}>
+              <Ionicons
+                name="ios-settings"
+                size={24}
+                style={{
+                  color: focused ? "black" : "grey",
+                }}
+              />
+            </View>
           ),
         }}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Map"
         component={Map}
         options={{
@@ -119,6 +133,26 @@ export default DrawerTab = () => {
               color="black"
               style={{ color: focused ? "black" : "grey" }}
             />
+          ),
+        }}
+      /> */}
+      <Drawer.Screen
+        name="Profile"
+        component={CustomerProfileScreen}
+        options={{
+          headerTitle: "Profile",
+          DrawerScreenOptions,
+          drawerIcon: ({ focused }) => (
+            <View style={iconStyle}>
+              <FontAwesome
+                name="user"
+                size={24}
+                color="black"
+                style={{
+                  color: focused ? "black" : "grey",
+                }}
+              />
+            </View>
           ),
         }}
       />
@@ -142,13 +176,16 @@ const DrawerNavigatorOptions = {
 
 const DrawerScreenOptions = {
   headerTitleAlign: "center",
-
   headerStyle: {
     height: 80,
   },
   drawerLabelStyle: {
     borderBottomWidth: 1,
-
     borderBottomColor: "grey",
   },
+};
+
+const iconStyle = {
+  alignItems: "center",
+  width: 25,
 };

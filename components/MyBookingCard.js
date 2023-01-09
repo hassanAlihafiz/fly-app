@@ -18,7 +18,7 @@ export default function MyBookingCard({ data, ongoing }) {
     if (update) {
       setInterval(() => {
         getBooking();
-      }, 5000);
+      }, 1000);
     }
   }, [update]);
 
@@ -26,7 +26,10 @@ export default function MyBookingCard({ data, ongoing }) {
     const user = await getLocalStorage("user");
     await getCall(`booking/getBookingByBookingId?id=${data?.id}`, user?.token)
       .then(async (e) => {
-        await setLocalStorage("booking_data", JSON.stringify(e.data));
+        await setLocalStorage(
+          "booking_data",
+          JSON.stringify({ ...e.data, id: data?.id })
+        );
         setBookingStatus(e?.data?.bookingStatus);
       })
       .catch((e) => {
@@ -47,7 +50,7 @@ export default function MyBookingCard({ data, ongoing }) {
     } else if (bookingStatus == "trip-delivery") {
       navigation.navigate("MyBookingTripDeliveryScreen");
     } else if (bookingStatus == "delivery") {
-      navigation.navigate("DriverCustomerConfirm");
+      navigation.navigate("MyBookingDeliveryScreen");
     }
   };
 
@@ -100,7 +103,10 @@ export default function MyBookingCard({ data, ongoing }) {
         }}
       >
         {data.bookingStatus == "pending" ? (
-          <Text>Wait for your trip to start</Text>
+          <View style={{ alignItems: "center" }}>
+            <Text>Wait for your trip to start</Text>
+            <Text>Please refresh the page to update</Text>
+          </View>
         ) : (
           <TouchableOpacity
             style={{

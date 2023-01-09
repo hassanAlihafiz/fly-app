@@ -53,7 +53,6 @@ const AtStationScreen = ({ route }) => {
       }}
     >
       <LoadingOverlay loading={loader} />
-
       <View>
         <BackButton />
         <View
@@ -127,7 +126,7 @@ const AtStationScreen = ({ route }) => {
         onPress={toggleOverlay}
       />
       <ConfirmOverlay
-        show={showOverlay}
+        value={showOverlay}
         onClose={toggleOverlay}
         onOK={handleClick}
       />

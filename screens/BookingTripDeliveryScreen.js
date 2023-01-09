@@ -30,7 +30,7 @@ export default function BookingTripDeliveryScreen() {
     getBooking();
     setInterval(() => {
       getBooking();
-    }, 5000);
+    }, 1000);
   }, []);
 
   React.useEffect(() => {

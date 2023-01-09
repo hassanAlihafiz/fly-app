@@ -12,7 +12,7 @@ export const MessageOverlay = ({ value, message, setValue }) => {
       isVisible={value}
       overlayStyle={{
         padding: 20,
-        width: 250,
+        width: "90%",
         backgroundColor: "white",
         borderRadius: 10,
         justifyContent: "center",
@@ -37,6 +37,7 @@ export const MessageOverlay = ({ value, message, setValue }) => {
 };
 
 export const LoadingOverlay = ({ loading, text }) => {
+  console.log(text);
   return (
     <Overlay
       isVisible={loading}
@@ -76,10 +77,10 @@ export const SuccessOverlay = ({ value, message }) => {
   );
 };
 
-export const ConfirmOverlay = ({ show, onClose, onOK }) => {
+export const ConfirmOverlay = ({ value, onClose, onOK }) => {
   return (
     <Overlay
-      isVisible={show}
+      isVisible={value}
       overlayStyle={{
         margin: 20,
         padding: 20,

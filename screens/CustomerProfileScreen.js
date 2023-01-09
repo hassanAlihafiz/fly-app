@@ -1,8 +1,8 @@
-import { View, Text } from "react-native";
 import React from "react";
+import { Text, View } from "react-native";
 import Profile from "../components/Profile";
 
-const DriverProfile = () => {
+export default CustomerProfileScreen = () => {
   return (
     <View
       style={{
@@ -11,9 +11,7 @@ const DriverProfile = () => {
         backgroundColor: "white",
       }}
     >
-      <Profile title="Driver Profile" />
+      <Profile title="Customer Profile" />
     </View>
   );
 };
-
-export default DriverProfile;
