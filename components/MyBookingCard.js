@@ -8,7 +8,7 @@ import { View } from "react-native";
 import { getCall } from "../utils/API";
 import { getLocalStorage, setLocalStorage } from "../utils/LocalStorage";
 
-export default function MyBookingCard({ data, ongoing }) {
+export default function MyBookingCard({ index, data, ongoing }) {
   const navigation = useNavigation();
   const [bookingStatus, setBookingStatus] = React.useState(data.bookingStatus);
 
@@ -57,8 +57,8 @@ export default function MyBookingCard({ data, ongoing }) {
   return (
     <View
       style={{
-        borderTopColor: "#CCCCCC",
-        borderTopWidth: 1,
+        borderTopColor: index == 0 ? null : "#CCCCCC",
+        borderTopWidth: index == 0 ? null : 1,
         margin: 20,
         marginTop: 0,
         paddingTop: 20,
