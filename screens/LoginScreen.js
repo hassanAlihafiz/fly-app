@@ -10,8 +10,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { StatusBar } from "expo-status-bar";
 
 const Login = ({ route, navigation }) => {
-  // console.log(route.params.loginAs)
-  route.params.loginAs;
   return (
     <KeyboardAwareScrollView scrollEnabled={false}>
       <View

@@ -100,11 +100,11 @@ const Signup = ({ navigation, loginAs }) => {
         setLoading(false);
       })
       .catch((e) => {
-        console.log(e);
+        console.log("error", e);
       });
   };
 
-  console.log(data);
+  console.log("data", data);
   const handleSignup = async () => {
     setLoader(true);
 
@@ -162,7 +162,7 @@ const Signup = ({ navigation, loginAs }) => {
           }
         })
         .catch((e) => {
-          console.log(e);
+          console.log("error", e);
           setLoader(false);
           setError({
             value: true,
@@ -229,7 +229,7 @@ const Signup = ({ navigation, loginAs }) => {
           }, 3000);
         })
         .catch((error) => {
-          console.log(error);
+          console.log("error", error);
           setUploading(false);
 
           setUploadRes({

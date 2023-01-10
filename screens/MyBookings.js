@@ -62,7 +62,7 @@ export default MyBookings = () => {
 
   return (
     <ScrollView
-      style={{
+      contentContainerStyle={{
         flex: 1,
         backgroundColor: "white",
         padding: 20,
@@ -77,7 +77,7 @@ export default MyBookings = () => {
       {loader ? (
         <ActivityIndicator />
       ) : (
-        <>
+        <View>
           <View style={styles.main}>
             <TouchableOpacity
               disabled={ongoingBooking.length == 0}
@@ -132,7 +132,14 @@ export default MyBookings = () => {
             <ScrollView style={{ maxHeight: "90%" }}>
               {ongoingCollapse &&
                 ongoingBooking.map((value, key) => {
-                  return <MyBookingCard key={key} data={value} ongoing />;
+                  return (
+                    <MyBookingCard
+                      key={key}
+                      data={value}
+                      ongoing
+                      userType="customer"
+                    />
+                  );
                 })}
             </ScrollView>
           </View>
@@ -190,11 +197,13 @@ export default MyBookings = () => {
             <ScrollView style={{ maxHeight: "90%" }}>
               {completedCollapse &&
                 completedBookings.map((value, key) => {
-                  return <MyBookingCard key={key} data={value} />;
+                  return (
+                    <MyBookingCard key={key} data={value} userType="customer" />
+                  );
                 })}
             </ScrollView>
           </View>
-        </>
+        </View>
       )}
     </ScrollView>
   );

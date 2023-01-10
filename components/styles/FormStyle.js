@@ -21,6 +21,35 @@ export const formStyles = StyleSheet.create({
     height: 90,
     alignItems: "center",
   },
+  mainSecondRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: widthPercentageToDP("80%"),
+  },
+  inputIcon: {
+    borderTopLeftRadius: 5,
+    backgroundColor: "#d7d7d7",
+    borderBottomLeftRadius: 5,
+    icon: {
+      alignSelf: "center",
+      height: 40,
+      paddingTop: 7,
+      paddingLeft: 10,
+      paddingRight: 10,
+    },
+  },
+  inputWithIcon: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#d7d7d7",
+    width: widthPercentageToDP("70%"),
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+  },
   row: {
     flexDirection: "row",
     width: widthPercentageToDP("80%"),

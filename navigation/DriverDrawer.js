@@ -25,6 +25,8 @@ import AtStationScreen from "../screens/AtStationScreen";
 import DriverTripDelivery from "../screens/DriverTripDelivery";
 import DriverCustomerConfirm from "../screens/DriverCustomerConfirm";
 import { View } from "react-native";
+import ViewBookingDetails from "../screens/ViewBookingDetails";
+import DriverTripGasStation from "../screens/DriverTripGasStation";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -40,12 +42,29 @@ const HomeStack = () => {
       <Stack.Screen name="TripScreen" component={DriveTripScreen} />
       <Stack.Screen name="PickCarScreen" component={CarPickedScreen} />
       <Stack.Screen name="TripStationScreen" component={DriverTripStation} />
+      <Stack.Screen
+        name="TripGasStationScreen"
+        component={DriverTripGasStation}
+      />
       <Stack.Screen name="AtStationScreen" component={AtStationScreen} />
       <Stack.Screen name="TripDeliveryScreen" component={DriverTripDelivery} />
       <Stack.Screen
         name="DriverCustomerConfirm"
         component={DriverCustomerConfirm}
       />
+    </Stack.Navigator>
+  );
+};
+
+const CompletedStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="DirverCompleted" component={DriverCompleted} />
+      <Stack.Screen name="DriverViewCompleted" component={ViewBookingDetails} />
     </Stack.Navigator>
   );
 };
@@ -75,7 +94,7 @@ const DriverDrawerTab = () => {
       />
       <Drawer.Screen
         name="Completed Bookings"
-        component={DriverCompleted}
+        component={CompletedStack}
         options={{
           headerTitle: "Completed Bookings",
           DrawerScreenOptions,

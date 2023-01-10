@@ -120,22 +120,7 @@ export default DrawerTab = () => {
           ),
         }}
       />
-      {/* <Drawer.Screen
-        name="Map"
-        component={Map}
-        options={{
-          headerTitle: "Map",
-          DrawerScreenOptions,
-          drawerIcon: ({ focused }) => (
-            <FontAwesome5
-              name="map-marked-alt"
-              size={24}
-              color="black"
-              style={{ color: focused ? "black" : "grey" }}
-            />
-          ),
-        }}
-      /> */}
+
       <Drawer.Screen
         name="Profile"
         component={CustomerProfileScreen}

@@ -37,7 +37,7 @@ const Landing = () => {
         .catch((e) => {
           console.log("im catch");
 
-          console.log(e.response.data.success);
+          console.log("success", e.response.data.success);
           setLoader(false);
         });
     } else {

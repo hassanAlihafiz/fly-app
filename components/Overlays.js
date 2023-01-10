@@ -37,7 +37,6 @@ export const MessageOverlay = ({ value, message, setValue }) => {
 };
 
 export const LoadingOverlay = ({ loading, text }) => {
-  console.log(text);
   return (
     <Overlay
       isVisible={loading}

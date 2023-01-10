@@ -18,7 +18,15 @@ export default DriverHomeBooking = ({ data, loading }) => {
       navigation.navigate("TripScreen", { bookingData: data });
     } else if (data?.bookingStatus == "arrived_for_pickup") {
       navigation.navigate("PickCarScreen", { bookingData: data });
-    } else if (data?.bookingStatus == "trip_to_station") {
+    } else if (
+      data?.bookingStatus == "trip_to_station" &&
+      data?.bookType == "Gas"
+    ) {
+      navigation.navigate("TripGasStationScreen", { bookingData: data });
+    } else if (
+      data?.bookingStatus == "trip_to_station" &&
+      data?.bookType == "Car Wash"
+    ) {
       navigation.navigate("TripStationScreen", { bookingData: data });
     } else if (data?.bookingStatus == "at_station") {
       navigation.navigate("AtStationScreen", { bookingData: data });

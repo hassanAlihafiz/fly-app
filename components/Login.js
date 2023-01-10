@@ -189,33 +189,13 @@ const Login = ({ navigation, loginAs }) => {
       />
       <Text style={formStyles.blackTextCenter}>- or Log In With -</Text>
       <View style={formStyles.mainSecond}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-
-            width: wp("80%"),
-          }}
-        >
-          <View
-            style={{
-              borderTopLeftRadius: 5,
-              backgroundColor: "#d7d7d7",
-              borderBottomLeftRadius: 5,
-            }}
-          >
+        <View style={formStyles.mainSecondRow}>
+          <View style={formStyles.inputIcon}>
             <Feather
               name="mail"
               size={24}
               color="#737373"
-              style={{
-                alignSelf: "center",
-                height: 40,
-                paddingTop: 7,
-                paddingLeft: 10,
-                paddingRight: 10,
-              }}
+              style={formStyles.inputIcon.icon}
             />
           </View>
           <TextInput
@@ -228,45 +208,16 @@ const Login = ({ navigation, loginAs }) => {
             }
             placeholder="yours@example.com"
             autoComplete="email"
-            style={{
-              height: 40,
-              borderWidth: 1,
-              borderColor: "#d7d7d7",
-              width: wp("70%"),
-              paddingLeft: 10,
-              paddingRight: 10,
-              backgroundColor: "white",
-              borderTopRightRadius: 5,
-              borderBottomRightRadius: 5,
-            }}
+            style={formStyles.inputWithIcon}
           />
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            borderRadius: 30,
-            width: wp("80%"),
-          }}
-        >
-          <View
-            style={{
-              borderTopLeftRadius: 5,
-              backgroundColor: "#d7d7d7",
-              borderBottomLeftRadius: 5,
-            }}
-          >
+        <View style={formStyles.mainSecondRow}>
+          <View style={formStyles.inputIcon}>
             <MaterialIcons
               name="lock-outline"
               size={24}
               color="#737373"
-              style={{
-                alignSelf: "center",
-                height: 40,
-                paddingTop: 7,
-                paddingLeft: 10,
-                paddingRight: 10,
-              }}
+              style={formStyles.inputIcon.icon}
             />
           </View>
           <TextInput
@@ -280,16 +231,7 @@ const Login = ({ navigation, loginAs }) => {
             keyboardType="visible-password"
             secureTextEntry={true}
             placeholder="yours password"
-            style={{
-              height: 40,
-              borderWidth: 1,
-              borderColor: "#d7d7d7",
-              width: wp("70%"),
-              paddingLeft: 10,
-              paddingRight: 10,
-              borderTopRightRadius: 5,
-              borderBottomRightRadius: 5,
-            }}
+            style={formStyles.inputWithIcon}
           />
         </View>
       </View>
@@ -324,7 +266,6 @@ const Login = ({ navigation, loginAs }) => {
         </Text>
       </TouchableOpacity>
     </View>
-    // </KeyboardAvoidingView>
   );
 };
 

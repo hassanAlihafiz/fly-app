@@ -8,17 +8,19 @@ import { View } from "react-native";
 import { getCall } from "../utils/API";
 import { getLocalStorage, setLocalStorage } from "../utils/LocalStorage";
 
-export default function MyBookingCard({ index, data, ongoing }) {
+export default function MyBookingCard({ index, data, ongoing, userType }) {
   const navigation = useNavigation();
   const [bookingStatus, setBookingStatus] = React.useState(data.bookingStatus);
 
   const [update, setUpdate] = React.useState(false);
 
   React.useEffect(() => {
-    if (update) {
-      setInterval(() => {
-        getBooking();
-      }, 1000);
+    if (ongoing) {
+      if (update) {
+        setInterval(() => {
+          getBooking();
+        }, 1000);
+      }
     }
   }, [update]);
 
@@ -37,20 +39,36 @@ export default function MyBookingCard({ index, data, ongoing }) {
       });
   };
 
-  const handleClick = () => {
+  const handleBookingClick = () => {
     setUpdate(true);
     if (bookingStatus == "trip_started") {
       navigation.navigate("MyBookingTripScreen");
     } else if (bookingStatus == "arrived_for_pickup") {
       navigation.navigate("MyBookingArrivedForPickupScreen");
-    } else if (bookingStatus == "trip_to_station") {
+    } else if (
+      data?.bookingStatus == "trip_to_station" &&
+      data?.bookType == "Car Wash"
+    ) {
       navigation.navigate("MyBookingTripStationScreen");
+    } else if (
+      data?.bookingStatus == "trip_to_station" &&
+      data?.bookType == "Gas"
+    ) {
+      navigation.navigate("MyBookingTripGasStationScreen");
     } else if (bookingStatus == "at_station") {
       navigation.navigate("MyBookingAtStationScreen");
     } else if (bookingStatus == "trip-delivery") {
       navigation.navigate("MyBookingTripDeliveryScreen");
     } else if (bookingStatus == "delivery") {
       navigation.navigate("MyBookingDeliveryScreen");
+    }
+  };
+
+  const handleView = () => {
+    if (userType == "customer") {
+      navigation.navigate("MyBookingDetails", { data, userType });
+    } else {
+      navigation.navigate("DriverViewCompleted", { data, userType });
     }
   };
 
@@ -117,7 +135,7 @@ export default function MyBookingCard({ index, data, ongoing }) {
               justifyContent: "center",
               alignItems: "center",
             }}
-            onPress={handleClick}
+            onPress={ongoing ? handleBookingClick : handleView}
           >
             <Text style={{ color: "white" }}>
               {ongoing ? "View" : "View Details"}

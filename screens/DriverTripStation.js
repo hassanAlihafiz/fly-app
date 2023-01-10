@@ -49,7 +49,10 @@ export default DriverTripStation = ({ route }) => {
     await getPostCall(
       "trip/AtStation",
       "POST",
-      JSON.stringify({ id: bookingData?.id, noti_token: bookingData?.userData?.noti_token }),
+      JSON.stringify({
+        id: bookingData?.id,
+        noti_token: bookingData?.userData?.noti_token,
+      }),
       user?.token
     )
       .then((e) => {
@@ -75,7 +78,6 @@ export default DriverTripStation = ({ route }) => {
         setArrived={setArrived}
         radius={1}
       />
-
       <DriverMapCard
         loading={loading}
         text={`Go to ${bookingData.packageData.type} Station`}

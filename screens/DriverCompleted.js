@@ -65,7 +65,7 @@ const DriverCompleted = () => {
           {bookings.map((value, key) => {
             return (
               <View key={key}>
-                <MyBookingCard driver={true} index={key} data={value} ongoing />
+                <MyBookingCard driver={true} index={key} data={value} />
               </View>
             );
           })}

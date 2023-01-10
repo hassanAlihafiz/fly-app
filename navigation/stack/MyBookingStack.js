@@ -5,9 +5,11 @@ import BookingArrivedPickupScreen from "../../screens/BookingArrivedPickupScreen
 import BookingAtStationScreen from "../../screens/BookingAtStationScreen";
 import BookingDeliveryScreen from "../../screens/BookingDeliveryScreen";
 import BookingTripDeliveryScreen from "../../screens/BookingTripDeliveryScreen";
+import BookingTripGasStation from "../../screens/BookingTripGasStation";
 import BookingTripScreen from "../../screens/BookingTripScreen";
 import BookingTripStation from "../../screens/BookingTripStation";
 import MyBookings from "../../screens/MyBookings";
+import ViewBookingDetails from "../../screens/ViewBookingDetails";
 
 export default function MyBookingStack() {
   const Stack = createNativeStackNavigator();
@@ -19,6 +21,7 @@ export default function MyBookingStack() {
       }}
     >
       <Stack.Screen name="MyBookingsScreen" component={MyBookings} />
+      <Stack.Screen name="MyBookingDetails" component={ViewBookingDetails} />
       <Stack.Screen name="MyBookingTripScreen" component={BookingTripScreen} />
       <Stack.Screen
         name="MyBookingArrivedForPickupScreen"
@@ -27,6 +30,10 @@ export default function MyBookingStack() {
       <Stack.Screen
         name="MyBookingTripStationScreen"
         component={BookingTripStation}
+      />
+      <Stack.Screen
+        name="MyBookingTripGasStationScreen"
+        component={BookingTripGasStation}
       />
       <Stack.Screen
         name="MyBookingAtStationScreen"

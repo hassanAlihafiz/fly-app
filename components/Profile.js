@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import {
   ActionSheetIOS,
@@ -195,8 +196,13 @@ export default function Profile({ title }) {
         setValue={setError}
       />
       <SuccessOverlay value={success.value} message={success.message} />
-      <View>
+      <View style={cardStyle.header}>
         <Text style={cardStyle.title}>{edit ? "Edit Profile" : title}</Text>
+        <MaterialCommunityIcons
+          name="account-details"
+          size={24}
+          color="black"
+        />
       </View>
       {loader ? (
         <View>
@@ -375,10 +381,14 @@ const cardStyle = StyleSheet.create({
   shadowRadius: 4,
 
   elevation: 20,
-  title: {
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginTop: 10,
     marginBottom: 30,
-
+  },
+  title: {
     fontSize: 20,
     fontWeight: "bold",
   },

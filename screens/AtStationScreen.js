@@ -115,6 +115,9 @@ const AtStationScreen = ({ route }) => {
             <Text style={{ fontSize: 16, textAlign: "center" }}>
               Get the car gas filled in a gas station
             </Text>
+            <Text style={{ marginTop: 10, fontSize: 16, textAlign: "center" }}>
+              Number of gallon: {bookingData?.numOfGal}
+            </Text>
           </>
         )}
       </View>

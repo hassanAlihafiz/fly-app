@@ -14,6 +14,7 @@ import DriverHomeBooking from "../components/DriverHomeBooking";
 import { Linking } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MessageOverlay } from "../components/Overlays";
+import { combineTransition } from "react-native-reanimated";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -49,6 +50,17 @@ const DriverHome = ({ navigation }) => {
   const toggleSwitch = () => {
     setIsEnabled(!isEnabled);
   };
+
+  React.useEffect(() => {
+    (async () => {
+      const online = await getLocalStorage("online");
+      console.log(online == "yes");
+      if (online == "yes") {
+        setIsEnabled(true);
+      }
+      return;
+    })();
+  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -102,9 +114,10 @@ const DriverHome = ({ navigation }) => {
       updateLocationToBooking();
     }
   }, [locState]);
-  const disableLocation = () => {
+  const disableLocation = async () => {
     setIsEnabled(false);
     setStatus("Offline");
+    await setLocalStorage("online", JSON.stringify("no"));
     setDriverOffline();
     stopForegroundUpdate();
     stopBackgroundUpdate();
@@ -135,16 +148,17 @@ const DriverHome = ({ navigation }) => {
   };
   const setDriverOnline = async () => {
     const user = await getLocalStorage("user");
-    console.log("user", user);
+
     await getPostCall(
       "status/driverOnline",
       "POST",
       JSON.stringify({ id: user?.id }),
       user?.token
     )
-      .then((e) => {
+      .then(async (e) => {
         console.log("status updated on db");
         setStatus("Online");
+        setLocalStorage("online", JSON.stringify("yes"));
       })
       .catch((e) => {
         console.log("error", e);

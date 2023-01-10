@@ -22,6 +22,7 @@ export default DriverMapCard = ({ loading, text, duration, distance }) => {
         <ActivityIndicator />
       ) : (
         <>
+        
           <View style={styles.justifyBetween}>
             <View style={styles.alignCenter}>
               <Text style={styles.textSub}>{duration} min</Text>
